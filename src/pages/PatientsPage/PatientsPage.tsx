@@ -255,7 +255,6 @@ const PatientsPage: FC = () => {
               infoHandler(
                 'Справка\nЭто справочник пациентов питомцев.\nТут вы можете увидеть все записи в табличном виде.',
               );
-              console.log();
             }}
           >
             <QuestionCircle color="gray" size={20} />

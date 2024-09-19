@@ -204,7 +204,6 @@ const BreedsPage: FC = () => {
               infoHandler(
                 'Справка: справочник пород\nТут вы можете увидеть все записи в табличном виде, а также их добавлять, удалять и изменять',
               );
-              console.log();
             }}
           >
             <QuestionCircle color="gray" size={20} />

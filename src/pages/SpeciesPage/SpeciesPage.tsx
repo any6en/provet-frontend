@@ -170,7 +170,6 @@ const SpeciesPage: FC = () => {
               infoHandler(
                 'Справка\nЭто справочник пород питомцев.\nТут вы можете увидеть все записи в табличном виде.',
               );
-              console.log();
             }}
           >
             <QuestionCircle color="gray" size={20} />

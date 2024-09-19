@@ -207,7 +207,6 @@ const OwnersPage: FC = () => {
               infoHandler(
                 'Справка\nЭто справочник владельцев питомцев.\nТут вы можете увидеть все записи в табличном виде.',
               );
-              console.log();
             }}
           >
             <QuestionCircle color="gray" size={20} />

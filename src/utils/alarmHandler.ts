@@ -24,8 +24,6 @@ export const returnErrors = (error: any) => {
     return null;
   }
 
-  console.log(status);
-
   if (status === 400) {
     const errors: any = error?.response?.data;
     return errors.response.response.error;

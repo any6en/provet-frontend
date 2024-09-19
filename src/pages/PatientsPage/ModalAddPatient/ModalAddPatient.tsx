@@ -87,7 +87,6 @@ const ModalAddPatient: FC = () => {
           handleClose();
         })
         .catch((error) => {
-          console.log(error);
           errorHandler(error);
         })
         .finally(() => {

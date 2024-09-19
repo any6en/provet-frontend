@@ -35,11 +35,9 @@ const PatientPage = () => {
 
   useEffect(() => {
     fetchPatient();
-    console.log(patient);
   }, []);
 
   const getSrcImageIconPatient = (animalTypeId: number) => {
-    console.log(animalTypeId);
     if (animalTypeId === 1) {
       return 'https://cdn-icons-png.flaticon.com/512/15721/15721652.png';
     } else if (animalTypeId === 2) {

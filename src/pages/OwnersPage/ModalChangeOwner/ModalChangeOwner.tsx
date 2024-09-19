@@ -192,8 +192,6 @@ const ModalChangeOwner: FC = () => {
                       type="date"
                       value={data?.dateBirth && data.dateBirth.substring(0, 10)}
                       onChange={(e: any) => {
-                        console.log(data?.dateBirth.substring(0, 10));
-                        console.log(e.target.value);
                         setData({
                           ...data,
                           dateBirth: e.target.value,

@@ -54,14 +54,11 @@ const AuthPage: FC = () => {
           },
         })
         .then((res) => {
-          console.log(res);
-
           user.saveUser(res.data.response);
           dispatch(setGlobalUser(user));
           isRefresh(true);
         })
         .catch((error) => {
-          console.log(error);
           if (error) {
             errorHandler(error);
           }
