@@ -1,0 +1,170 @@
+@import '~bootstrap/scss/bootstrap';
+@import '../node_modules/noty/lib/noty.css';
+@import '../node_modules/noty/lib/themes/metroui.css';
+@import '../node_modules/noty/src/themes/bootstrap-v4.scss';
+
+html {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  position: relative;
+  height: 100%;
+  min-width: 320px;
+  font-weight: 400;
+  font-size: 14px;
+  //background-color: $bg-primary;
+  font-family: 'Roboto', sans-serif;
+  font-feature-settings: 'pnum' on, 'lnum' on;
+}
+
+#root {
+  height: 100%;
+}
+
+.form-select {
+  font-size: 14px;
+}
+
+img,
+svg {
+  display: block;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+fieldset {
+  margin: 0;
+}
+
+iframe {
+  border: none;
+}
+
+ol {
+  margin: 0 !important;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'],
+input[type='number']:hover,
+input[type='number']:focus {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+.visually-hidden {
+  position: fixed;
+  transform: scale(0);
+}
+
+.header {
+  //background-color: $bg-secondary;
+}
+
+.navbar {
+  background-color: transparent;
+}
+
+.tableCol {
+  width: 40px;
+}
+
+.dropdown-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-link {
+  padding-left: 0;
+}
+
+.subTable {
+  max-height: 60vh;
+}
+
+.Mui-TableHeadCell-Content-Wrapper {
+  white-space: nowrap !important;
+}
+
+// Убираем лишние отступы у чекбоксов
+.MuiCheckbox-root {
+  padding: 0 !important;
+}
+
+.matrixCell {
+  cursor: default;
+}
+
+// Стили для контекстного меню
+.contextContainer {
+  z-index: 1;
+  width: 100%;
+}
+
+.rightClick {
+  z-index: 12;
+  position: fixed;
+  background: #fff;
+  font-size: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 4px;
+  min-width: 310px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 5px -3px, rgba(0, 0, 0, 0.14) 0px 8px 10px 1px,
+    rgba(0, 0, 0, 0.12) 0px 3px 14px 2px;
+}
+
+.menuElement {
+  color: rgba(0, 0, 0, 0.87);
+  cursor: pointer;
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+
+.menuElement:hover {
+  //background: $bg-secondary;
+}
+
+// Чтобы при открытии модалок, экран затемнялся (не зависимо от того, сколько модалок открыто)
+.modal-backdrop {
+  z-index: 1055 !important;
+}
+
+// Убираем лишний padding-right в фильтрах у матриц
+th div .MuiInput-input {
+  padding-right: 0 !important;
+}
+
+.sendFormAddDataButton {
+  height: 37px;
+  width: 110px;
+}
