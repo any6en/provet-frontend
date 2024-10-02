@@ -1,19 +1,15 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { formatDate } from '../../../utils/dateFormatter';
-import { URL_PROVET } from '../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, ISpecie } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { URL_PROVET_API } from '../../../../config/config';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 
-const ModalAddBreed: FC = () => {
+const ModalAddAnimalType: FC = () => {
   // Флаг, открыта ли форма
-  const show = useAppSelector((state) => state.userReducer.modalAddBreed);
-  const { setShowModalAddBreed, setIsReloadTable } = userSlice.actions;
-
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const show = useAppSelector((state) => state.userReducer.modalAddAnimalType);
+  const { setShowModalAddAnimalType, setIsReloadTable } = userSlice.actions;
 
   const dispatch = useAppDispatch();
 
@@ -23,38 +19,12 @@ const ModalAddBreed: FC = () => {
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
 
-  // Обработчик монтирования компонента
-  useEffect(() => {
-    if (show) {
-      //controller.current = new AbortController();
-      const fetchSpecies = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}species`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setSpecies(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
-      };
-      fetchSpecies();
-    }
-  }, [show]);
-
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET}breed`, data, {
+        .post(`${URL_PROVET_API}animal_types`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -81,7 +51,7 @@ const ModalAddBreed: FC = () => {
   };
 
   const handleClose = (): void => {
-    dispatch(setShowModalAddBreed(false));
+    dispatch(setShowModalAddAnimalType(false));
 
     // При закрытии обрыв всех запросов
     //controller.current.abort();
@@ -105,7 +75,7 @@ const ModalAddBreed: FC = () => {
               <Form id="formModal">
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Порода
+                    Вид
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -117,35 +87,6 @@ const ModalAddBreed: FC = () => {
                         });
                       }}
                     />
-                  </Col>
-                </Form.Group>
-
-                <Form.Group className="mb-3" as={Row}>
-                  <Form.Label className="fs-6" column sm={4}>
-                    Вид
-                  </Form.Label>
-                  <Col sm={8} className="d-flex align-items-center justify-content-center">
-                    {species.length !== 0 ? (
-                      <Form.Select
-                        aria-label="select"
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            animalTypeId: Number(e.target.value),
-                          });
-                        }}
-                      >
-                        {species.map((obj) => {
-                          return (
-                            <option key={obj.id} value={obj.id} selected>
-                              {obj.name}
-                            </option>
-                          );
-                        })}
-                      </Form.Select>
-                    ) : (
-                      <Spinner variant="primary" />
-                    )}
                   </Col>
                 </Form.Group>
               </Form>
@@ -175,4 +116,4 @@ const ModalAddBreed: FC = () => {
   );
 };
 
-export default ModalAddBreed;
+export default ModalAddAnimalType;

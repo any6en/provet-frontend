@@ -1,21 +1,18 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET } from '../../../config/config';
 import axios from 'axios';
-import { successHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { ISpecie } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { URL_PROVET_API } from '../../../../config/config';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 
-const ModalChangeBreed: FC = () => {
+const ModalChangeAnimalType: FC = () => {
   // Флаг, открыта ли форма
-  const show = useAppSelector((state) => state.userReducer.modalChangeBreed);
-  const { setShowModalChangeBreed, setIsReloadTable } = userSlice.actions;
+  const show = useAppSelector((state) => state.userReducer.modalChangeAnimalType);
+  const { setShowModalChangeAnimalType, setIsReloadTable } = userSlice.actions;
 
   // Выбранная запись. Не подлежит редактированию!
-  const selectedData = useAppSelector((state) => state.userReducer.selectedBreed);
-
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const selectedData = useAppSelector((state) => state.userReducer.selectedAnimalType);
 
   const dispatch = useAppDispatch();
 
@@ -30,35 +27,15 @@ const ModalChangeBreed: FC = () => {
     if (show) {
       //controller.current = new AbortController();
       setData({ ...selectedData });
-
-      const fetchSpecies = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}species`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setSpecies(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
-      };
-      fetchSpecies();
     }
   }, [show]);
 
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET}breed`, data, {
+        .patch(`${URL_PROVET_API}animal_types`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -69,7 +46,9 @@ const ModalChangeBreed: FC = () => {
 
           handleClose();
         })
-        .catch((error) => {})
+        .catch((error) => {
+          errorHandler(error);
+        })
         .finally(() => {
           setIsPreload(false);
         });
@@ -83,7 +62,7 @@ const ModalChangeBreed: FC = () => {
   };
 
   const handleClose = (): void => {
-    dispatch(setShowModalChangeBreed(false));
+    dispatch(setShowModalChangeAnimalType(false));
 
     // При закрытии обрыв всех запросов
     //controller.current.abort();
@@ -98,7 +77,7 @@ const ModalChangeBreed: FC = () => {
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Карточка породы`}</Modal.Title>
+        <Modal.Title className="fs-6">{`Карточка вида`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>
@@ -107,7 +86,7 @@ const ModalChangeBreed: FC = () => {
               <Form id="formModal">
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Порода
+                    Вид
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -120,43 +99,6 @@ const ModalChangeBreed: FC = () => {
                         });
                       }}
                     />
-                  </Col>
-                </Form.Group>
-                <Form.Group className="mb-3" as={Row}>
-                  <Form.Label className="fs-6" column sm={4}>
-                    Вид
-                  </Form.Label>
-                  <Col sm={8} className="d-flex align-items-center justify-content-center">
-                    {species.length !== 0 ? (
-                      <Form.Select
-                        aria-label="select"
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            animalTypeId: Number(e.target.value),
-                          });
-                        }}
-                      >
-                        <option value="" selected={selectedData?.name === ''}></option>
-                        {species.map((obj) => {
-                          if (selectedData?.animalTypeId !== obj.id) {
-                            return (
-                              <option key={obj.id} value={obj.id}>
-                                {obj.name}
-                              </option>
-                            );
-                          } else {
-                            return (
-                              <option key={obj.id} value={obj.id} selected>
-                                {obj.name}
-                              </option>
-                            );
-                          }
-                        })}
-                      </Form.Select>
-                    ) : (
-                      <Spinner variant="primary" />
-                    )}
                   </Col>
                 </Form.Group>
               </Form>
@@ -186,4 +128,4 @@ const ModalChangeBreed: FC = () => {
   );
 };
 
-export default ModalChangeBreed;
+export default ModalChangeAnimalType;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { IBreed, IOwner, IPatient, ISpecie } from './UserSliceTypes';
+import { IBreed, IOwner, IPatient, IAnimalType } from './UserSliceTypes';
 
 interface UserState {
   isReloadTable: boolean;
@@ -16,9 +16,9 @@ interface UserState {
   modalAddBreed: boolean;
   selectedBreed: IBreed | null;
 
-  modalChangeSpecie: boolean;
-  modalAddSpecie: boolean;
-  selectedSpecie: ISpecie | null;
+  modalChangeAnimalType: boolean;
+  modalAddAnimalType: boolean;
+  selectedAnimalType: IAnimalType | null;
 }
 
 const initialState: UserState = {
@@ -35,9 +35,9 @@ const initialState: UserState = {
   selectedPatient: null,
 
   // Состояния для форм Виды
-  modalChangeSpecie: false,
-  modalAddSpecie: false,
-  selectedSpecie: null,
+  modalChangeAnimalType: false,
+  modalAddAnimalType: false,
+  selectedAnimalType: null,
 
   // Состояния для форм Породы
   modalChangeBreed: false,
@@ -77,14 +77,14 @@ export const userSlice = createSlice({
     },
 
     // Состояния методы для форм Виды
-    setShowModalChangeSpecie(state, action: PayloadAction<boolean>) {
-      state.modalChangeSpecie = action.payload;
+    setShowModalChangeAnimalType(state, action: PayloadAction<boolean>) {
+      state.modalChangeAnimalType = action.payload;
     },
-    setShowModalAddSpecie(state, action: PayloadAction<boolean>) {
-      state.modalAddSpecie = action.payload;
+    setShowModalAddAnimalType(state, action: PayloadAction<boolean>) {
+      state.modalAddAnimalType = action.payload;
     },
-    setSelectedSpecie(state, action: PayloadAction<ISpecie | null>) {
-      state.selectedSpecie = action.payload;
+    setSelectedAnimalType(state, action: PayloadAction<IAnimalType | null>) {
+      state.selectedAnimalType = action.payload;
     },
 
     // Состояния для форм Породы

@@ -1,106 +1,75 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
+import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
+import { IBreed, IPatient, IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
-import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
+import { infoHandler } from '../../../utils/alarmHandler';
+import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
-import { infoHandler } from '../../utils/alarmHandler';
-import { URL_PROVET } from '../../config/config';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { IBreed, ISpecie } from '../../store/reducers/UserSlice/UserSliceTypes';
 import Swal from 'sweetalert2';
+import ProvetAPI from '../../../utils/ProvetAPI';
 
-const BreedsPage: FC = () => {
+const PatientsPage: FC = () => {
   const dispatch = useAppDispatch();
 
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const [patients, setPatients] = useState<IPatient[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
+  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const { setIsReloadTable, setShowModalChangeBreed, setShowModalAddBreed, setSelectedBreed } =
-    userSlice.actions;
+  const controller = useRef(new AbortController());
 
-  const fetchBreeds = async () => {
+  const {
+    setIsReloadTable,
+    setShowModalChangePatient,
+    setShowModalAddPatient,
+    setSelectedPatient,
+  } = userSlice.actions;
+
+  const fetchData = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET) {
-      axios
-        .get(`${URL_PROVET}breeds`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setBreeds(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
+
+    const api = new ProvetAPI();
+
+    // Получаем справочники
+    let res: any = await api.getList('patients', controller.current, true);
+    if (res) setPatients(res.rows);
+
+    res = await api.getList('breeds', controller.current, true);
+    if (res) setBreeds(res.rows);
+
+    res = await api.getList('animal_types', controller.current, true);
+    if (res) setAnimalTypes(res.rows);
   };
 
-  const fetchSpecies = async () => {
-    setIsReloadTable(true);
-    if (URL_PROVET) {
-      axios
-        .get(`${URL_PROVET}species`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setSpecies(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
-  };
+  useEffect(() => {
+    // При монтировании компонента
+    controller.current = new AbortController();
+
+    fetchData();
+
+    return () => {
+      // При размонтировании компонента
+      controller.current.abort();
+    };
+  }, []);
 
   // Обновляем матрицу после изменения данных роли устройства
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
     dispatch(setIsReloadTable(false));
-    fetchSpecies();
-    fetchBreeds();
+    fetchData();
   }
 
-  useEffect(() => {
-    fetchSpecies();
-    fetchBreeds();
-  }, []);
-
-  const columns: MRT_ColumnDef<IBreed>[] = [
-    {
-      accessorKey: 'id',
-      header: 'ID',
-      size: 10,
-      Cell: ({ row }) => row.original.id,
-    },
-    {
-      accessorKey: 'animalTypeId',
-      header: 'Вид',
-      size: 10,
-      Cell: ({ row }) => {
-        const specie: any = species.find((b) => b.id === row.original.animalTypeId);
-        return specie.name;
-      },
-    },
-    {
-      accessorKey: 'name',
-      header: 'Порода',
-      size: 150,
-      Cell: ({ row }) => row.original.name,
-    },
-  ];
-
-  const handleDeleteBreed = async (breedId: number) => {
+  const handleDeletePatient = async (patientId: number) => {
     Swal.fire({
       title: 'Вы уверены?',
-      text: 'Отменить удаление невозможно',
+      text: 'Отменить удаление нельзя...',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -108,16 +77,18 @@ const BreedsPage: FC = () => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (URL_PROVET) {
+        if (URL_PROVET_API) {
           try {
-            await axios.delete(`${URL_PROVET}breed/${breedId}`, {
+            await axios.delete(`${URL_PROVET_API}directories/patients/patient/${patientId}`, {
               headers: {
                 'Content-Type': 'application/json',
               },
             });
 
             // Обновите состояние, чтобы удалить владельца из списка
-            setBreeds((prevBreeds) => prevBreeds.filter((breed) => breed.id !== breedId));
+            setPatients((prevPatients) =>
+              prevPatients.filter((patient) => patient.id !== patientId),
+            );
 
             Swal.fire({
               title: 'Успешно!',
@@ -136,16 +107,65 @@ const BreedsPage: FC = () => {
     });
   };
 
+  const columns: MRT_ColumnDef<IPatient>[] = [
+    {
+      accessorKey: 'id',
+      header: 'ID',
+      size: 10,
+      Cell: ({ row }) => row.original.id,
+    },
+    {
+      accessorKey: 'nickname',
+      header: 'Кличка',
+      size: 150,
+      Cell: ({ row }) => row.original.nickname,
+    },
+    {
+      accessorKey: 'specieId',
+      header: 'Вид',
+      size: 150,
+      Cell: ({ row }) => {
+        const specie: any = animalTypes.find((b) => b.id === row.original.animalTypeId);
+        return specie.name;
+      },
+    },
+    {
+      accessorKey: 'breedId',
+      header: 'Порода',
+      size: 150,
+      Cell: ({ row }) => {
+        const breed: any = breeds.find((b) => b.id === row.original.breedId);
+        return breed.name;
+      },
+    },
+    {
+      accessorKey: 'age',
+      header: 'Дата рождения',
+      size: 100,
+      Cell: ({ row }) => formatDate2(row.original.dateBirth),
+    },
+    {
+      accessorKey: 'gender',
+      header: 'Пол',
+      size: 200,
+      Cell: ({ row }) => (row.original.gender === 1 ? 'Самец' : 'Самка'),
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'Дата создания профиля',
+      size: 200,
+      Cell: ({ row }) => formatDate(row.original.createdAt),
+    },
+  ];
+
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: breeds,
+    data: patients.length !== 0 && breeds.length !== 0 && animalTypes.length !== 0 ? patients : [],
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        // @ts-ignore
-        dispatch(setSelectedBreed({ ...row.original, specie: undefined }));
-
-        dispatch(setShowModalChangeBreed(true));
+        dispatch(setSelectedPatient(row.original));
+        dispatch(setShowModalChangePatient(true));
       },
     }),
     muiTableContainerProps: {
@@ -182,17 +202,16 @@ const BreedsPage: FC = () => {
         <Tooltip arrow title="Обновить">
           <IconButton
             onClick={() => {
-              fetchSpecies();
-              fetchBreeds();
+              fetchData();
             }}
           >
             <ArrowClockwise />
           </IconButton>
         </Tooltip>
-        <Tooltip arrow title="Добавить породу">
+        <Tooltip arrow title="Добавить пациента">
           <IconButton
             onClick={() => {
-              dispatch(setShowModalAddBreed(true));
+              dispatch(setShowModalAddPatient(true));
             }}
           >
             <PlusLg color="green" size={20} />
@@ -202,7 +221,7 @@ const BreedsPage: FC = () => {
           <IconButton
             onClick={() => {
               infoHandler(
-                'Справка: справочник пород\nТут вы можете увидеть все записи в табличном виде, а также их добавлять, удалять и изменять',
+                'Справка\nЭто справочник пациентов питомцев.\nТут вы можете увидеть все записи в табличном виде.',
               );
             }}
           >
@@ -223,10 +242,8 @@ const BreedsPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          handleDeleteBreed(row.original.id);
-          fetchSpecies();
-          fetchBreeds();
-          closeMenu();
+          handleDeletePatient(row.original.id);
+          fetchData();
         }}
       >
         <ListItemIcon>
@@ -236,13 +253,14 @@ const BreedsPage: FC = () => {
       </MenuItem>,
     ],
   });
+
   return (
     <>
       <Container fluid className="py-2">
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
           <Breadcrumb.Item active>
-            Породы {isReloadTable && <Spinner variant="primary" size="sm" />}
+            Пациенты {isReloadTable && <Spinner variant="primary" size="sm" />}
           </Breadcrumb.Item>
         </Breadcrumb>
         <MaterialReactTable table={table} />
@@ -251,4 +269,4 @@ const BreedsPage: FC = () => {
   );
 };
 
-export default BreedsPage;
+export default PatientsPage;

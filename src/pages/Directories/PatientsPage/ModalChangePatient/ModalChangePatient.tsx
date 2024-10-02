@@ -1,14 +1,15 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET } from '../../../config/config';
+import { URL_PROVET } from '../../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, IPatient, ISpecie } from '../../../store/reducers/UserSlice/UserSliceTypes';
-import { formatDate } from '../../../utils/dateFormatter';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import { IBreed, IPatient, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import { formatDate } from '../../../../utils/dateFormatter';
 import { PlusLg } from 'react-bootstrap-icons';
 import { Box, IconButton, Tooltip } from '@mui/material';
+import ProvetAPI from '../../../../utils/ProvetAPI';
 
 const ModalChangePatient: FC = () => {
   // Флаг, открыта ли форма
@@ -18,12 +19,14 @@ const ModalChangePatient: FC = () => {
   // Выбранная запись. Не подлежит редактированию!
   const selectedData = useAppSelector((state) => state.userReducer.selectedPatient);
 
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
 
-  const [selectedSpecie, setSelectedSpecie] = useState<any>(-1);
+  const [selectedSpecie, setSelectedAnimalType] = useState<any>(-1);
 
   const dispatch = useAppDispatch();
+
+  const controller = useRef(new AbortController());
 
   // Состояние для хранения измененных данных в форме
   const [data, setData] = useState<any>({});
@@ -34,48 +37,22 @@ const ModalChangePatient: FC = () => {
   // Обработчик монтирования компонента
   useEffect(() => {
     if (show) {
-      //controller.current = new AbortController();
-      setData({ ...selectedData });
-      setSelectedSpecie(data?.speciesId);
+      controller.current = new AbortController();
 
-      const fetchBreeds = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}breeds`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setBreeds(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
+      setData({ ...selectedData });
+      setSelectedAnimalType(data?.speciesId);
+
+      const fetchData = async () => {
+        const api = new ProvetAPI();
+
+        // Получаем справочники
+        let res: any = await api.getList('breeds', controller.current, true);
+        if (res) setBreeds(res.rows);
+
+        res = await api.getList('animal_types', controller.current, true);
+        if (res) setAnimalTypes(res.rows);
       };
-      const fetchSpecies = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}species`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setSpecies(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
-      };
-      fetchSpecies();
-      fetchBreeds();
+      fetchData();
     }
   }, [show]);
 
@@ -84,7 +61,7 @@ const ModalChangePatient: FC = () => {
 
     if (URL_PROVET) {
       axios
-        .patch(`${URL_PROVET}patient`, data, {
+        .patch(`${URL_PROVET}directories/patients/patient`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -110,10 +87,10 @@ const ModalChangePatient: FC = () => {
 
   const handleClose = (): void => {
     dispatch(setShowModalChangePatient(false));
-    setSelectedSpecie(-1);
+    setSelectedAnimalType(-1);
 
     // При закрытии обрыв всех запросов
-    //controller.current.abort();
+    controller.current.abort();
     cleanForm();
   };
 
@@ -139,11 +116,11 @@ const ModalChangePatient: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="text"
-                      value={data?.name}
+                      value={data?.nickname}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          name: e.target.value,
+                          nickname: e.target.value,
                         });
                       }}
                     />
@@ -154,19 +131,19 @@ const ModalChangePatient: FC = () => {
                     Вид
                   </Form.Label>
                   <Col sm={7} className="d-flex align-items-center justify-content-center">
-                    {species.length !== 0 ? (
+                    {animalTypes.length !== 0 ? (
                       <Form.Select
                         aria-label="select"
                         onChange={(e: any) => {
-                          if (e.target.value === '') setSelectedSpecie(-1);
+                          if (e.target.value === '') setSelectedAnimalType(-1);
                           setData({
                             ...data,
                             animalTypeId: Number(e.target.value),
                           });
                         }}
                       >
-                        <option value="" selected={selectedData?.name === ''}></option>
-                        {species.map((obj) => {
+                        <option value="" selected={selectedData?.nickname === ''}></option>
+                        {animalTypes.map((obj: any) => {
                           if (selectedData?.animalTypeId !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
@@ -186,7 +163,7 @@ const ModalChangePatient: FC = () => {
                       <Spinner variant="primary" />
                     )}
                   </Col>
-                  <Col sm={1} className="d-flex align-items-center justify-content-center">
+                  {/* <Col sm={1} className="d-flex align-items-center justify-content-center">
                     <Box className="d-flex flex-nowrap align-items-center align-content-start">
                       <Tooltip arrow title="Добавить вид">
                         <IconButton
@@ -198,7 +175,7 @@ const ModalChangePatient: FC = () => {
                         </IconButton>
                       </Tooltip>
                     </Box>
-                  </Col>
+                  </Col> */}
                 </Form.Group>
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>

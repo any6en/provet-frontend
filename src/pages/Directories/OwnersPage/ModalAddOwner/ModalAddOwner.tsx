@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { formatDate } from '../../../utils/dateFormatter';
-import { URL_PROVET_API } from '../../../config/config';
+import { formatDate } from '../../../../utils/dateFormatter';
+import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 
 const ModalAddOwner: FC = () => {
   // Флаг, открыта ли форма

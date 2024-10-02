@@ -1,17 +1,17 @@
 import { FC, useState, useEffect } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { formatDate, formatDate2 } from '../../utils/dateFormatter';
+import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
-import { infoHandler } from '../../utils/alarmHandler';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../config/config';
+import { infoHandler } from '../../../utils/alarmHandler';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { IOwner } from '../../store/reducers/UserSlice/UserSliceTypes';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
 
 const OwnersPage: FC = () => {
   const dispatch = useAppDispatch();

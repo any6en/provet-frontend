@@ -46,28 +46,28 @@ const Header: FC = () => {
               id="basic-nav-dropdown"
             >
               <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="owners/">
+                <NavLink className="nav-link" aria-current="page" to="directories/owners">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
                     Владельцы
                   </div>
                 </NavLink>
               </NavDropdown.Item>
               <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="patients/">
+                <NavLink className="nav-link" aria-current="page" to="directories/patients">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
                     Пациенты
                   </div>
                 </NavLink>
               </NavDropdown.Item>
               <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="species/">
+                <NavLink className="nav-link" aria-current="page" to="directories/animal_types">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Виды
+                    Виды животных
                   </div>
                 </NavLink>
               </NavDropdown.Item>
               <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="breeds/">
+                <NavLink className="nav-link" aria-current="page" to="directories/breeds">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
                     Породы
                   </div>

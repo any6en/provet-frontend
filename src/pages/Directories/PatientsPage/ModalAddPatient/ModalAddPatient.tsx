@@ -1,23 +1,26 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET } from '../../../config/config';
+import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, ISpecie } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import { IBreed, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import ProvetAPI from '../../../../utils/ProvetAPI';
 
 const ModalAddPatient: FC = () => {
   // Флаг, открыта ли форма
   const show = useAppSelector((state) => state.userReducer.modalAddPatient);
   const { setShowModalAddPatient, setIsReloadTable } = userSlice.actions;
 
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
 
   const [selectedSpecie, setSelectedSpecie] = useState<any>(-1);
 
   const dispatch = useAppDispatch();
+
+  const controller = useRef(new AbortController());
 
   // Состояние для хранения измененных данных в форме
   const [data, setData] = useState<any>({});
@@ -28,54 +31,28 @@ const ModalAddPatient: FC = () => {
   // Обработчик монтирования компонента
   useEffect(() => {
     if (show) {
-      //controller.current = new AbortController();
-      const fetchBreeds = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}breeds`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setBreeds(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
+      controller.current = new AbortController();
+
+      const fetchData = async () => {
+        const api = new ProvetAPI();
+
+        // Получаем справочники
+        let res: any = await api.getList('breeds', controller.current, true);
+        if (res) setBreeds(res.rows);
+
+        res = await api.getList('animal_types', controller.current, true);
+        if (res) setAnimalTypes(res.rows);
       };
-      const fetchSpecies = async () => {
-        setIsReloadTable(true);
-        if (URL_PROVET) {
-          axios
-            .get(`${URL_PROVET}species`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setSpecies(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
-      };
-      fetchSpecies();
-      fetchBreeds();
+      fetchData();
     }
   }, [show]);
 
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET}pateint`, data, {
+        .post(`${URL_PROVET_API}directories/patients/patient`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -106,7 +83,7 @@ const ModalAddPatient: FC = () => {
     setSelectedSpecie(-1);
 
     // При закрытии обрыв всех запросов
-    //controller.current.abort();
+    controller.current.abort();
     cleanForm();
   };
 
@@ -135,7 +112,7 @@ const ModalAddPatient: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          name: e.target.value,
+                          nickname: e.target.value,
                         });
                       }}
                     />
@@ -147,20 +124,20 @@ const ModalAddPatient: FC = () => {
                     Вид
                   </Form.Label>
                   <Col sm={8} className="d-flex align-items-center justify-content-center">
-                    {species.length !== 0 ? (
+                    {animalTypes.length !== 0 ? (
                       <Form.Select
                         aria-label="select"
                         onChange={(e: any) => {
                           setSelectedSpecie(e.target.value === '' ? -1 : Number(e.target.value));
                           setData({
                             ...data,
-                            speciesId: Number(e.target.value),
+                            animalTypeId: Number(e.target.value),
                           });
                         }}
                       >
-                        <option value="" selected={data?.name === ''}></option>
-                        {species.map((obj) => {
-                          if (data?.speciesId !== obj.id) {
+                        <option value="" selected={data?.nickname === ''}></option>
+                        {animalTypes.map((obj) => {
+                          if (data?.animalTypeId !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
                                 {obj.name}

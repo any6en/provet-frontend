@@ -1,8 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
-import PatientsPage from '../pages/PatientsPage/PatientsPage';
-import OwnersPage from '../pages/OwnersPage/OwnersPage';
+
 import MainPage from '../pages/MainPage/MainPage';
 import { useAppDispatch } from '../hooks/redux';
 import { globalUserSlice } from '../store/reducers/GlobalUserSlice/GlobalUserSlice';
@@ -10,9 +9,12 @@ import User from '../utils/User';
 import { useEffect } from 'react';
 import AuthPage from '../pages/AuthPage/AuthPage';
 import LogoutPage from '../pages/LogoutPage/LogoutPage';
-import BreedsPage from '../pages/BreedsPage/BreedsPage';
-import SpeciesPage from '../pages/SpeciesPage/SpeciesPage';
-import ReceptionPage from '../pages/ReceptionPage/ReceptionPage';
+
+import PatientsPage from '../pages/Directories/PatientsPage/PatientsPage';
+import OwnersPage from '../pages/Directories/OwnersPage/OwnersPage';
+import BreedsPage from '../pages/Directories/BreedsPage/BreedsPage';
+import AnimalTypesPage from '../pages/Directories/AnimalTypesPage/AnimalTypesPage';
+
 import PatientPage from '../pages/PatientPage/PatientPage';
 import SearchPatientsPage from '../pages/SearchPatients/SearchPatients';
 
@@ -36,13 +38,13 @@ function Root() {
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
           {/* Главные справочники */}
-          <Route path="owners" element={<OwnersPage />} />
-          <Route path="patients" element={<PatientsPage />} />
+          <Route path="directories/owners" element={<OwnersPage />} />
+          <Route path="directories/patients" element={<PatientsPage />} />
           {/* Дополнительные справочники */}
-          <Route path="species" element={<SpeciesPage />} />
-          <Route path="breeds" element={<BreedsPage />} />
+          <Route path="directories/animal_types" element={<AnimalTypesPage />} />
+          <Route path="directories/breeds" element={<BreedsPage />} />
+
           <Route path="/patient/:id" element={<PatientPage />} />
-          <Route path="reception" element={<ReceptionPage />} />
           <Route path="search_patients" element={<SearchPatientsPage />} />
         </Route>
       )}

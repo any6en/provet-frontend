@@ -3,13 +3,11 @@ import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'materi
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { calculateAge, formatDate, formatDate2 } from '../../utils/dateFormatter';
 import { Breadcrumb, Button, Container, Spinner } from 'react-bootstrap';
-import { IBreed, IOwner, IPatient, ISpecie } from '../../store/reducers/UserSlice/UserSliceTypes';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
-import { infoHandler } from '../../utils/alarmHandler';
-import { URL_PROVET } from '../../config/config';
+import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
@@ -28,9 +26,9 @@ const SearchPatientsPage: FC = () => {
   const fetchData = async () => {
     const fetch = async () => {
       setIsReloadTable(true);
-      if (URL_PROVET) {
+      if (URL_PROVET_API) {
         axios
-          .get(`${URL_PROVET}api/patients?includeOwners=true`, {
+          .get(`${URL_PROVET_API}patients?includeOwners=true`, {
             headers: {
               'Content-Type': 'application/json',
             },

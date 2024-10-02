@@ -11,7 +11,7 @@ export interface IOwner {
 
 export interface IPatient {
   id: number;
-  name: string;
+  nickname: string;
   breedId: number;
   animalTypeId: number;
   dateBirth: string;
@@ -26,7 +26,7 @@ export interface IBreed {
   animalTypeId: number;
 }
 
-export interface ISpecie {
+export interface IAnimalType {
   id: number;
   name: string;
 }

@@ -3,14 +3,14 @@ import { Button, Col, Container, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { NavLink, useNavigate } from 'react-router-dom';
 import style from './AuthPage.module.scss';
-import { useAppDispatch } from '../../hooks/redux';
 import useForceUpdate from 'use-force-update';
 import axios from 'axios';
 import FormData from 'form-data';
-import { errorHandler } from '../../utils/alarmHandler';
+import { globalUserSlice } from '../../store/reducers/GlobalUserSlice/GlobalUserSlice';
+import { useAppDispatch } from '../../hooks/redux';
 import User from '../../utils/User';
 import { URL_PROVET } from '../../config/config';
-import { globalUserSlice } from '../../store/reducers/GlobalUserSlice/GlobalUserSlice';
+import { errorHandler } from '../../utils/alarmHandler';
 
 const AuthPage: FC = () => {
   const user = new User();

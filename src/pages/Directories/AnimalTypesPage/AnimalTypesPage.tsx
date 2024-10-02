@@ -5,34 +5,37 @@ import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
 import axios from 'axios';
-import { infoHandler } from '../../utils/alarmHandler';
-import { URL_PROVET } from '../../config/config';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { ISpecie } from '../../store/reducers/UserSlice/UserSliceTypes';
 import Swal from 'sweetalert2';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { URL_PROVET_API } from '../../../config/config';
 
-const LaboratoryPage: FC = () => {
+const AnimalTypesPage: FC = () => {
   const dispatch = useAppDispatch();
 
-  const [species, setSpecies] = useState<ISpecie[]>([]);
+  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const { setIsReloadTable, setShowModalChangeSpecie, setShowModalAddSpecie, setSelectedSpecie } =
-    userSlice.actions;
+  const {
+    setIsReloadTable,
+    setShowModalChangeAnimalType,
+    setShowModalAddAnimalType,
+    setSelectedAnimalType,
+  } = userSlice.actions;
 
-  const fetchSpecies = async () => {
+  const fetchAnimalTypes = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET}species`, {
+        .get(`${URL_PROVET_API}animal_types`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
-          setSpecies(response.data.response.rows);
+          setAnimalTypes(response.data.response.rows);
         })
         .catch(() => {})
         .finally(() => {
@@ -44,17 +47,17 @@ const LaboratoryPage: FC = () => {
   // Обновляем матрицу после изменения данных роли устройства
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
     dispatch(setIsReloadTable(false));
-    fetchSpecies();
+    fetchAnimalTypes();
   }
 
   useEffect(() => {
-    fetchSpecies();
+    fetchAnimalTypes();
   }, []);
 
-  const columns: MRT_ColumnDef<ISpecie>[] = [
+  const columns: MRT_ColumnDef<IAnimalType>[] = [
     {
       accessorKey: 'id',
-      header: 'ID',
+      header: 'Номер',
       size: 10,
       Cell: ({ row }) => row.original.id,
     },
@@ -66,7 +69,7 @@ const LaboratoryPage: FC = () => {
     },
   ];
 
-  const handleDeleteSpecie = async (specieId: number) => {
+  const handleDeleteAnimalType = async (animalTypeId: number) => {
     Swal.fire({
       title: 'Вы уверены?',
       text: 'Отменить удаление невозможно',
@@ -77,16 +80,18 @@ const LaboratoryPage: FC = () => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (URL_PROVET) {
+        if (URL_PROVET_API) {
           try {
-            await axios.delete(`${URL_PROVET}specie/${specieId}`, {
+            await axios.delete(`${URL_PROVET_API}animal_types/${animalTypeId}`, {
               headers: {
                 'Content-Type': 'application/json',
               },
             });
 
             // Обновите состояние, чтобы удалить владельца из списка
-            setSpecies((prevSpecies) => prevSpecies.filter((specie) => specie.id !== specieId));
+            setAnimalTypes((prevAnimalType) =>
+              prevAnimalType.filter((animalType) => animalType.id !== animalTypeId),
+            );
 
             Swal.fire({
               title: 'Успешно!',
@@ -108,11 +113,11 @@ const LaboratoryPage: FC = () => {
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: species,
+    data: animalTypes,
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        dispatch(setSelectedSpecie(row.original));
-        dispatch(setShowModalChangeSpecie(true));
+        dispatch(setSelectedAnimalType(row.original));
+        dispatch(setShowModalChangeAnimalType(true));
       },
     }),
     muiTableContainerProps: {
@@ -149,7 +154,7 @@ const LaboratoryPage: FC = () => {
         <Tooltip arrow title="Обновить">
           <IconButton
             onClick={() => {
-              fetchSpecies();
+              fetchAnimalTypes();
             }}
           >
             <ArrowClockwise />
@@ -158,20 +163,14 @@ const LaboratoryPage: FC = () => {
         <Tooltip arrow title="Добавить вид">
           <IconButton
             onClick={() => {
-              dispatch(setShowModalAddSpecie(true));
+              dispatch(setShowModalAddAnimalType(true));
             }}
           >
             <PlusLg color="green" size={20} />
           </IconButton>
         </Tooltip>
         <Tooltip arrow title="Получить справку">
-          <IconButton
-            onClick={() => {
-              infoHandler(
-                'Справка\nЭто справочник пород питомцев.\nТут вы можете увидеть все записи в табличном виде.',
-              );
-            }}
-          >
+          <IconButton onClick={() => {}}>
             <QuestionCircle color="gray" size={20} />
           </IconButton>
         </Tooltip>
@@ -189,8 +188,8 @@ const LaboratoryPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          handleDeleteSpecie(row.original.id);
-          fetchSpecies();
+          handleDeleteAnimalType(row.original.id);
+          fetchAnimalTypes();
           closeMenu();
         }}
       >
@@ -207,7 +206,7 @@ const LaboratoryPage: FC = () => {
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
           <Breadcrumb.Item active>
-            Виды {isReloadTable && <Spinner variant="primary" size="sm" />}
+            Виды животных {isReloadTable && <Spinner variant="primary" size="sm" />}
           </Breadcrumb.Item>
         </Breadcrumb>
         <MaterialReactTable table={table} />
@@ -216,4 +215,4 @@ const LaboratoryPage: FC = () => {
   );
 };
 
-export default LaboratoryPage;
+export default AnimalTypesPage;
