@@ -117,7 +117,7 @@ const ModalAddOwner: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          firstName: e.target.value,
+                          first_name: e.target.value,
                         });
                       }}
                     />
@@ -134,7 +134,7 @@ const ModalAddOwner: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          lastName: e.target.value,
+                          last_name: e.target.value,
                         });
                       }}
                     />
@@ -185,7 +185,7 @@ const ModalAddOwner: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          dateBirth: e.target.value,
+                          date_birth: e.target.value,
                         });
                       }}
                     />

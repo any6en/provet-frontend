@@ -1,12 +1,12 @@
 export interface IOwner {
   id: number;
-  lastName: string;
-  firstName: string;
+  last_name: string;
+  first_name: string;
   patronymic: string;
   address: string;
-  dateBirth: string;
+  date_birth: string;
   gender: number;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IPatient {

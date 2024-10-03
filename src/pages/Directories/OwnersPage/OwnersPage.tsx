@@ -63,13 +63,13 @@ const OwnersPage: FC = () => {
       accessorKey: 'lastName',
       header: 'Фамилия',
       size: 150,
-      Cell: ({ row }) => row.original.lastName,
+      Cell: ({ row }) => row.original.last_name,
     },
     {
       accessorKey: 'firstName',
       header: 'Имя',
       size: 150,
-      Cell: ({ row }) => row.original.firstName,
+      Cell: ({ row }) => row.original.first_name,
     },
     {
       accessorKey: 'patronymic',
@@ -87,7 +87,7 @@ const OwnersPage: FC = () => {
       accessorKey: 'dateBirth',
       header: 'Дата рождения',
       size: 100,
-      Cell: ({ row }) => formatDate2(row.original.dateBirth),
+      Cell: ({ row }) => formatDate2(row.original.date_birth),
     },
     {
       accessorKey: 'gender',
@@ -99,7 +99,7 @@ const OwnersPage: FC = () => {
       accessorKey: 'createdAt',
       header: 'Дата создания профиля',
       size: 200,
-      Cell: ({ row }) => formatDate(row.original.createdAt),
+      Cell: ({ row }) => formatDate(row.original.created_at),
     },
   ];
 

@@ -58,30 +58,6 @@ const ModalChangeOwner: FC = () => {
     }
   };
 
-  const handleSignDocument = async () => {
-    try {
-      // Отправляем запрос на бэкенд с идентификатором владельца
-      const response = await fetch(`https://localhost:7182/owners/generate_document/${data.id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const blob = await response.blob();
-
-      // Создаем ссылку на файл и начинаем загрузку
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'СНоПД.docx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Ошибка при создании документа:', error);
-    }
-  };
-
   // Очистка формы
   const cleanForm = () => {
     setData({});
@@ -118,11 +94,11 @@ const ModalChangeOwner: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="text"
-                      value={data?.firstName}
+                      value={data?.first_name}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          firstName: e.target.value,
+                          first_name: e.target.value,
                         });
                       }}
                     />
@@ -136,11 +112,11 @@ const ModalChangeOwner: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="text"
-                      value={data?.lastName}
+                      value={data?.last_name}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          lastName: e.target.value,
+                          last_name: e.target.value,
                         });
                       }}
                     />
@@ -190,11 +166,11 @@ const ModalChangeOwner: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="date"
-                      value={data?.dateBirth && data.dateBirth.substring(0, 10)}
+                      value={data?.date_birth && data.date_birth.substring(0, 10)}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          dateBirth: e.target.value,
+                          date_birth: e.target.value,
                         });
                       }}
                     />
@@ -237,12 +213,7 @@ const ModalChangeOwner: FC = () => {
                 </Form.Group>
               </Form>
             </Col>
-            <Row>Дата создания профиля: {formatDate(selectedData?.createdAt)}</Row>
-            <Row>
-              <a className="p-0" style={{ color: 'blue' }} onClick={handleSignDocument}>
-                Подписать согласие на обработку персональных данных
-              </a>
-            </Row>
+            <Row>Дата создания профиля: {formatDate(selectedData?.created_at)}</Row>
           </Row>
         </Container>
       </Modal.Body>
