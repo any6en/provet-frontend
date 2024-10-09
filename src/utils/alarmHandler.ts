@@ -23,27 +23,11 @@ export const returnErrors = (error: any) => {
     errorHandler('Доступ к запрошенному ресурсу запрещен');
     return null;
   }
+  console.log(123);
 
   if (status === 400) {
     const errors: any = error?.response?.data;
-    console.log(errors);
-    console.log(errors.response);
-    console.log(errors.response);
-    console.log(errors.response.response);
-    console.log(errors.response.response.errors);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    console.log(errors.response.response.errors[0]);
-    return errors.response.response.errors[0];
+    return errors.response.errors;
   }
 
   if (status >= 500) {
