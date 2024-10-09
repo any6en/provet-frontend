@@ -46,35 +46,12 @@ const ModalAddOwner: FC = () => {
           handleClose();
         })
         .catch((error) => {
+          console.log(error);
           errorHandler(error);
         })
         .finally(() => {
           setIsPreload(false);
         });
-    }
-  };
-
-  const handleSignDocument = async () => {
-    try {
-      // Отправляем запрос на бэкенд с идентификатором владельца
-      const response = await fetch(`https://localhost:7182/owners/generate_document/${data.id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const blob = await response.blob();
-
-      // Создаем ссылку на файл и начинаем загрузку
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'СНоПД.docx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Ошибка при создании документа:', error);
     }
   };
 

@@ -11,8 +11,6 @@ const setupInterceptors = () => {
     // Обработка неуспешного запроса от сервера (400-е)
     function (error) {
       if (error?.response || error?.message) {
-        console.log(error?.response);
-        console.log(error?.message);
         const res: string | null = returnErrors(error);
         return Promise.reject(res);
       }

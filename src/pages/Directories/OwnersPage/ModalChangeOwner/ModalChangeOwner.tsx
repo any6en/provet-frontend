@@ -38,7 +38,7 @@ const ModalChangeOwner: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET_API}directories/owners/owner`, data, {
+        .patch(`${URL_PROVET_API}directories/owners/`, data, {
           headers: {
             'Content-Type': 'application/json',
           },

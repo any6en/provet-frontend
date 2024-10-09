@@ -26,7 +26,24 @@ export const returnErrors = (error: any) => {
 
   if (status === 400) {
     const errors: any = error?.response?.data;
-    return errors.response.response.error;
+    console.log(errors);
+    console.log(errors.response);
+    console.log(errors.response);
+    console.log(errors.response.response);
+    console.log(errors.response.response.errors);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    console.log(errors.response.response.errors[0]);
+    return errors.response.response.errors[0];
   }
 
   if (status >= 500) {
