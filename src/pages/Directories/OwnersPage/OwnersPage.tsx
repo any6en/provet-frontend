@@ -42,7 +42,7 @@ const OwnersPage: FC = () => {
     }
   };
 
-  // Обновляем матрицу после изменения данных роли устройства
+  // Обновляем матрицу после изменения данных
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
     dispatch(setIsReloadTable(false));
     fetchOwners();

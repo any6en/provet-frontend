@@ -24,7 +24,7 @@ const ModalAddAnimalType: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET_API}animal_types`, data, {
+        .post(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
           headers: {
             'Content-Type': 'application/json',
           },

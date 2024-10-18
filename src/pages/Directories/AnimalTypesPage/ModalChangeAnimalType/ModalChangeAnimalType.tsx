@@ -35,7 +35,7 @@ const ModalChangeAnimalType: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET_API}animal_types`, data, {
+        .patch(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
           headers: {
             'Content-Type': 'application/json',
           },

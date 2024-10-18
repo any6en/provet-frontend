@@ -29,7 +29,7 @@ const AnimalTypesPage: FC = () => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}animal_types`, {
+        .get(`${URL_PROVET_API}directories/animal_types`, {
           headers: {
             'Content-Type': 'application/json',
           },

@@ -38,14 +38,14 @@ const ModalChangeOwner: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET_API}directories/owners/`, data, {
+        .patch(`${URL_PROVET_API}directories/owners/owner`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.success);
+          successHandler('Успешно');
 
           handleClose();
         })
@@ -180,35 +180,29 @@ const ModalChangeOwner: FC = () => {
                   <Form.Label className="fs-6" column sm={4}>
                     Пол
                   </Form.Label>
-                  <Col sm={8}>
-                    <Form.Control
-                      as="select"
-                      value={data?.gender || ''}
+                  <Col sm={4} className="d-flex align-items-center">
+                    <Form.Check
+                      type="radio"
+                      name="gender"
+                      value={1}
+                      label="Мужской"
+                      checked={data?.gender === 1}
                       onChange={(e: any) => {
-                        setData({ ...data, gender: Number(e.target.value) });
+                        setData({ ...data, gender: 1 });
                       }}
-                    >
-                      <option value="" selected={data?.gender === ''}></option>
-                      {[
-                        { id: 1, name: 'Мужской' },
-                        { id: 2, name: 'Женский' },
-                        { id: 9, name: 'Неизвестно' },
-                      ].map((obj) => {
-                        if (data?.gender !== obj.id) {
-                          return (
-                            <option key={obj.id} value={obj.id}>
-                              {obj.name}
-                            </option>
-                          );
-                        } else {
-                          return (
-                            <option key={obj.id} value={obj.id} selected>
-                              {obj.name}
-                            </option>
-                          );
-                        }
-                      })}
-                    </Form.Control>
+                    />
+                  </Col>
+                  <Col sm={4} className="d-flex align-items-center">
+                    <Form.Check
+                      type="radio"
+                      name="gender"
+                      value={2}
+                      label="Женский"
+                      checked={data?.gender === 2}
+                      onChange={(e: any) => {
+                        setData({ ...data, gender: 2 });
+                      }}
+                    />
                   </Col>
                 </Form.Group>
               </Form>
