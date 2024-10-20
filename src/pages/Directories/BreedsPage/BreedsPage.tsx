@@ -16,7 +16,6 @@ import { IBreed } from './IBreeds';
 const BreedsPage: FC = () => {
   const dispatch = useAppDispatch();
 
-  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
@@ -120,7 +119,13 @@ const BreedsPage: FC = () => {
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         // @ts-ignore
-        dispatch(setSelectedBreed(row.original));
+        const { animal_type_name, ...data } = row.original; // Извлекаем поля, которые хотим исключить
+
+        dispatch(
+          setSelectedBreed({
+            ...data, // Добавляем оставшиеся поля
+          }),
+        );
 
         dispatch(setShowModalChangeBreed(true));
       },
