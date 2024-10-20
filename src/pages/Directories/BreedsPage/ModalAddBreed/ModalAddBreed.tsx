@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import { formatDate } from '../../../../utils/dateFormatter';
-import { URL_PROVET } from '../../../../config/config';
+import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
@@ -27,11 +27,12 @@ const ModalAddBreed: FC = () => {
   useEffect(() => {
     if (show) {
       //controller.current = new AbortController();
-      const fetchAnimalTypes = async () => {
+
+      const fetch = async () => {
         setIsReloadTable(true);
-        if (URL_PROVET) {
+        if (URL_PROVET_API) {
           axios
-            .get(`${URL_PROVET}animal_types`, {
+            .get(`${URL_PROVET_API}directories/animal_types`, {
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -45,16 +46,16 @@ const ModalAddBreed: FC = () => {
             });
         }
       };
-      fetchAnimalTypes();
+      fetch();
     }
   }, [show]);
 
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET}breed`, data, {
+        .post(`${URL_PROVET_API}breeds/breed`, data, {
           headers: {
             'Content-Type': 'application/json',
           },

@@ -31,11 +31,13 @@ const ModalChangeBreed: FC = () => {
       //controller.current = new AbortController();
       setData({ ...selectedData });
 
-      const fetchAnimalTypes = async () => {
+      console.log(selectedData);
+
+      const fetch = async () => {
         setIsReloadTable(true);
         if (URL_PROVET_API) {
           axios
-            .get(`${URL_PROVET_API}animal_types`, {
+            .get(`${URL_PROVET_API}directories/animal_types`, {
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -49,7 +51,7 @@ const ModalChangeBreed: FC = () => {
             });
         }
       };
-      fetchAnimalTypes();
+      fetch();
     }
   }, [show]);
 
@@ -58,7 +60,7 @@ const ModalChangeBreed: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET_API}breed`, data, {
+        .patch(`${URL_PROVET_API}breeds/breed`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -133,13 +135,13 @@ const ModalChangeBreed: FC = () => {
                         onChange={(e: any) => {
                           setData({
                             ...data,
-                            animalTypeId: Number(e.target.value),
+                            animal_type_id: Number(e.target.value),
                           });
                         }}
                       >
                         <option value="" selected={selectedData?.name === ''}></option>
                         {animalTypes.map((obj) => {
-                          if (selectedData?.animalTypeId !== obj.id) {
+                          if (selectedData?.animal_type_id !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
                                 {obj.name}

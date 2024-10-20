@@ -82,11 +82,14 @@ const AnimalTypesPage: FC = () => {
       if (result.isConfirmed) {
         if (URL_PROVET_API) {
           try {
-            await axios.delete(`${URL_PROVET_API}animal_types/${animalTypeId}`, {
-              headers: {
-                'Content-Type': 'application/json',
+            await axios.delete(
+              `${URL_PROVET_API}directories/animal_types/animal_type/${animalTypeId}`,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
               },
-            });
+            );
 
             // Обновите состояние, чтобы удалить владельца из списка
             setAnimalTypes((prevAnimalType) =>

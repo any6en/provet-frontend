@@ -23,7 +23,7 @@ export interface IPatient {
 export interface IBreed {
   id: number;
   name: string;
-  animalTypeId: number;
+  animal_type_id: number;
 }
 
 export interface IAnimalType {

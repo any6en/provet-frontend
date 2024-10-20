@@ -172,7 +172,7 @@ const ModalAddPatient: FC = () => {
                         >
                           <option value="Не выбрано" selected={data?.name === ''}></option>
                           {breeds
-                            .filter((obj: IBreed) => obj.animalTypeId === data?.animalTypeId)
+                            .filter((obj: IBreed) => obj.animal_type_id === data?.animal_type_id)
                             .map((obj: IBreed) => (
                               <option
                                 key={obj.id}

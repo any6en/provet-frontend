@@ -9,8 +9,9 @@ import { infoHandler } from '../../../utils/alarmHandler';
 import { URL_PROVET_API } from '../../../config/config';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IBreed, IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import Swal from 'sweetalert2';
+import { IBreed } from './IBreeds';
 
 const BreedsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -23,11 +24,11 @@ const BreedsPage: FC = () => {
   const { setIsReloadTable, setShowModalChangeBreed, setShowModalAddBreed, setSelectedBreed } =
     userSlice.actions;
 
-  const fetchBreeds = async () => {
+  const fetch = async () => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}breeds`, {
+        .get(`${URL_PROVET_API}directories/breeds`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -42,35 +43,14 @@ const BreedsPage: FC = () => {
     }
   };
 
-  const fetchAnimalTypes = async () => {
-    setIsReloadTable(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}animal_types`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setAnimalTypes(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
-  };
-
   // Обновляем матрицу после изменения данных роли устройства
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
     dispatch(setIsReloadTable(false));
-    fetchAnimalTypes();
-    fetchBreeds();
+    fetch();
   }
 
   useEffect(() => {
-    fetchAnimalTypes();
-    fetchBreeds();
+    fetch();
   }, []);
 
   const columns: MRT_ColumnDef<IBreed>[] = [
@@ -81,13 +61,10 @@ const BreedsPage: FC = () => {
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'animalTypeId',
+      accessorKey: 'animal_type_name',
       header: 'Вид',
       size: 10,
-      Cell: ({ row }) => {
-        const animalType: any = animalTypes.find((b) => b.id === row.original.animalTypeId);
-        return animalType.name;
-      },
+      Cell: ({ row }) => row.original.animal_type_name,
     },
     {
       accessorKey: 'name',
@@ -143,7 +120,7 @@ const BreedsPage: FC = () => {
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         // @ts-ignore
-        dispatch(setSelectedBreed({ ...row.original, animal_type: undefined }));
+        dispatch(setSelectedBreed(row.original));
 
         dispatch(setShowModalChangeBreed(true));
       },
@@ -182,8 +159,7 @@ const BreedsPage: FC = () => {
         <Tooltip arrow title="Обновить">
           <IconButton
             onClick={() => {
-              fetchAnimalTypes();
-              fetchBreeds();
+              fetch();
             }}
           >
             <ArrowClockwise />
@@ -224,8 +200,7 @@ const BreedsPage: FC = () => {
         key={0}
         onClick={() => {
           handleDeleteBreed(row.original.id);
-          fetchAnimalTypes();
-          fetchBreeds();
+          fetch();
           closeMenu();
         }}
       >
