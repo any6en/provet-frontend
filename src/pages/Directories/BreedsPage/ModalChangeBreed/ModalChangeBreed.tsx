@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET, URL_PROVET_API } from '../../../../config/config';
+import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
@@ -60,14 +60,14 @@ const ModalChangeBreed: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .patch(`${URL_PROVET_API}breeds/breed`, data, {
+        .patch(`${URL_PROVET_API}directories/breeds/breed`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись изменена');
 
           handleClose();
         })

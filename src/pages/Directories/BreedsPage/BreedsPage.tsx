@@ -61,16 +61,16 @@ const BreedsPage: FC = () => {
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'animal_type_name',
-      header: 'Вид',
-      size: 10,
-      Cell: ({ row }) => row.original.animal_type_name,
-    },
-    {
       accessorKey: 'name',
       header: 'Порода',
       size: 150,
       Cell: ({ row }) => row.original.name,
+    },
+    {
+      accessorKey: 'animal_type_name',
+      header: 'Вид',
+      size: 10,
+      Cell: ({ row }) => row.original.animal_type_name,
     },
   ];
 
@@ -87,7 +87,7 @@ const BreedsPage: FC = () => {
       if (result.isConfirmed) {
         if (URL_PROVET_API) {
           try {
-            await axios.delete(`${URL_PROVET_API}breed/${breedId}`, {
+            await axios.delete(`${URL_PROVET_API}directories/breeds/breed/${breedId}`, {
               headers: {
                 'Content-Type': 'application/json',
               },

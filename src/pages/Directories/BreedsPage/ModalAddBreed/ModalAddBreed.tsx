@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { formatDate } from '../../../../utils/dateFormatter';
 import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 
 const ModalAddBreed: FC = () => {
   // Флаг, открыта ли форма
@@ -55,14 +54,14 @@ const ModalAddBreed: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET_API}breeds/breed`, data, {
+        .post(`${URL_PROVET_API}directories/breeds/breed`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись добавлена');
 
           handleClose();
         })
@@ -132,13 +131,14 @@ const ModalAddBreed: FC = () => {
                         onChange={(e: any) => {
                           setData({
                             ...data,
-                            animalTypeId: Number(e.target.value),
+                            animal_type_id: Number(e.target.value),
                           });
                         }}
                       >
+                        <option value="" selected></option>
                         {animalTypes.map((obj) => {
                           return (
-                            <option key={obj.id} value={obj.id} selected>
+                            <option key={obj.id} value={obj.id}>
                               {obj.name}
                             </option>
                           );
