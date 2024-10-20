@@ -38,6 +38,7 @@ const ModalChangePatient: FC = () => {
       controller.current = new AbortController();
 
       setData({ ...selectedData });
+
       setSelectedAnimalType(data?.animal_type_id);
 
       const fetch = async () => {

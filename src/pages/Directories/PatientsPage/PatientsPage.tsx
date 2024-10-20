@@ -153,7 +153,13 @@ const PatientsPage: FC = () => {
     data: patients,
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        dispatch(setSelectedPatient({ ...row.original }));
+        const { breed_name, animal_type_name, ...data } = row.original; // Извлекаем поля, которые хотим исключить
+
+        dispatch(
+          setSelectedPatient({
+            ...data, // Добавляем оставшиеся поля
+          }),
+        );
         dispatch(setShowModalChangePatient(true));
       },
     }),
