@@ -16,7 +16,7 @@ const ModalAddPatient: FC = () => {
   const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
 
-  const [selectedSpecie, setSelectedSpecie] = useState<any>(-1);
+  const [selectedAnimalType, setSelectedAnimalType] = useState<any>(-1);
 
   const dispatch = useAppDispatch();
 
@@ -80,7 +80,7 @@ const ModalAddPatient: FC = () => {
 
   const handleClose = (): void => {
     dispatch(setShowModalAddPatient(false));
-    setSelectedSpecie(-1);
+    setSelectedAnimalType(-1);
 
     // При закрытии обрыв всех запросов
     controller.current.abort();
@@ -128,7 +128,9 @@ const ModalAddPatient: FC = () => {
                       <Form.Select
                         aria-label="select"
                         onChange={(e: any) => {
-                          setSelectedSpecie(e.target.value === '' ? -1 : Number(e.target.value));
+                          setSelectedAnimalType(
+                            e.target.value === '' ? -1 : Number(e.target.value),
+                          );
                           setData({
                             ...data,
                             animal_type_id: Number(e.target.value),
@@ -164,7 +166,7 @@ const ModalAddPatient: FC = () => {
                     Порода
                   </Form.Label>
                   <Col sm={8} className="d-flex align-items-center justify-content-center">
-                    {selectedSpecie != -1 ? (
+                    {selectedAnimalType != -1 ? (
                       breeds.length !== 0 ? (
                         <Form.Select
                           aria-label="select"

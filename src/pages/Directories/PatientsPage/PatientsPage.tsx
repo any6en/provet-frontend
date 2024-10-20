@@ -153,7 +153,7 @@ const PatientsPage: FC = () => {
     data: patients,
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        dispatch(setSelectedPatient(row.original));
+        dispatch(setSelectedPatient({ ...row.original }));
         dispatch(setShowModalChangePatient(true));
       },
     }),

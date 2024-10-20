@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
-import { successHandler } from '../../../../utils/alarmHandler';
+import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
@@ -71,7 +71,9 @@ const ModalChangeBreed: FC = () => {
 
           handleClose();
         })
-        .catch((error) => {})
+        .catch((error) => {
+          errorHandler(error);
+        })
         .finally(() => {
           setIsPreload(false);
         });
