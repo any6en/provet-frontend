@@ -31,7 +31,7 @@ const ModalAddAnimalType: FC = () => {
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись добавлена');
 
           handleClose();
         })

@@ -59,7 +59,7 @@ const ModalAddPatient: FC = () => {
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись добавлена');
 
           handleClose();
         })
@@ -112,7 +112,7 @@ const ModalAddPatient: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          nickname: e.target.value,
+                          nickname: e.target.value != '' ? e.target.value : undefined,
                         });
                       }}
                     />
@@ -131,13 +131,15 @@ const ModalAddPatient: FC = () => {
                           setSelectedSpecie(e.target.value === '' ? -1 : Number(e.target.value));
                           setData({
                             ...data,
-                            animalTypeId: Number(e.target.value),
+                            animal_type_id: Number(e.target.value),
                           });
                         }}
                       >
-                        <option value="" selected={data?.nickname === ''}></option>
+                        <option value="" selected disabled>
+                          Выберите вид животного
+                        </option>
                         {animalTypes.map((obj) => {
-                          if (data?.animalTypeId !== obj.id) {
+                          if (data?.animal_type_id !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
                                 {obj.name}
@@ -167,17 +169,19 @@ const ModalAddPatient: FC = () => {
                         <Form.Select
                           aria-label="select"
                           onChange={(e: any) => {
-                            setData({ ...data, breedId: Number(e.target.value) });
+                            setData({ ...data, breed_id: Number(e.target.value) });
                           }}
                         >
-                          <option value="Не выбрано" selected={data?.name === ''}></option>
+                          <option value="" selected disabled>
+                            Выберите породу
+                          </option>
                           {breeds
                             .filter((obj: IBreed) => obj.animal_type_id === data?.animal_type_id)
                             .map((obj: IBreed) => (
                               <option
                                 key={obj.id}
                                 value={obj.id}
-                                selected={data?.breedId === obj.id}
+                                selected={data?.breed_id === obj.id}
                               >
                                 {obj.name}
                               </option>
@@ -198,11 +202,11 @@ const ModalAddPatient: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="date"
-                      value={data?.dateBirth && data.dateBirth.substring(0, 10)}
+                      value={data?.date_birth && data.date_birth.substring(0, 10)}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          dateBirth: e.target.value,
+                          date_birth: e.target.value,
                         });
                       }}
                     />

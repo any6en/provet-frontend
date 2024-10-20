@@ -42,7 +42,7 @@ const ModalChangeAnimalType: FC = () => {
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись изменена');
 
           handleClose();
         })

@@ -3,7 +3,7 @@ import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'materi
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
-import { IBreed, IPatient, IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import { IBreed, IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
@@ -13,6 +13,7 @@ import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProvetAPI from '../../../utils/ProvetAPI';
+import { IPatient } from './IPatients';
 
 const PatientsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +33,7 @@ const PatientsPage: FC = () => {
     setSelectedPatient,
   } = userSlice.actions;
 
-  const fetchData = async () => {
+  const fetch = async () => {
     setIsReloadTable(true);
 
     const api = new ProvetAPI();
@@ -40,19 +41,13 @@ const PatientsPage: FC = () => {
     // Получаем справочники
     let res: any = await api.getList('patients', controller.current, true);
     if (res) setPatients(res.rows);
-
-    res = await api.getList('breeds', controller.current, true);
-    if (res) setBreeds(res.rows);
-
-    res = await api.getList('animal_types', controller.current, true);
-    if (res) setAnimalTypes(res.rows);
   };
 
   useEffect(() => {
     // При монтировании компонента
     controller.current = new AbortController();
 
-    fetchData();
+    fetch();
 
     return () => {
       // При размонтировании компонента
@@ -63,7 +58,7 @@ const PatientsPage: FC = () => {
   // Обновляем матрицу после изменения данных роли устройства
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
     dispatch(setIsReloadTable(false));
-    fetchData();
+    fetch();
   }
 
   const handleDeletePatient = async (patientId: number) => {
@@ -121,28 +116,22 @@ const PatientsPage: FC = () => {
       Cell: ({ row }) => row.original.nickname,
     },
     {
-      accessorKey: 'specieId',
+      accessorKey: 'animal_type_name',
       header: 'Вид',
       size: 150,
-      Cell: ({ row }) => {
-        const specie: any = animalTypes.find((b) => b.id === row.original.animalTypeId);
-        return specie.name;
-      },
+      Cell: ({ row }) => row.original.animal_type_name,
     },
     {
-      accessorKey: 'breedId',
+      accessorKey: 'breed_name',
       header: 'Порода',
       size: 150,
-      Cell: ({ row }) => {
-        const breed: any = breeds.find((b) => b.id === row.original.breedId);
-        return breed.name;
-      },
+      Cell: ({ row }) => row.original.breed_name,
     },
     {
       accessorKey: 'age',
       header: 'Дата рождения',
       size: 100,
-      Cell: ({ row }) => formatDate2(row.original.dateBirth),
+      Cell: ({ row }) => formatDate2(row.original.date_birth),
     },
     {
       accessorKey: 'gender',
@@ -154,14 +143,14 @@ const PatientsPage: FC = () => {
       accessorKey: 'createdAt',
       header: 'Дата создания профиля',
       size: 200,
-      Cell: ({ row }) => formatDate(row.original.createdAt),
+      Cell: ({ row }) => formatDate(row.original.created_at),
     },
   ];
 
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: patients.length !== 0 && breeds.length !== 0 && animalTypes.length !== 0 ? patients : [],
+    data: patients,
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         dispatch(setSelectedPatient(row.original));
@@ -202,7 +191,7 @@ const PatientsPage: FC = () => {
         <Tooltip arrow title="Обновить">
           <IconButton
             onClick={() => {
-              fetchData();
+              fetch();
             }}
           >
             <ArrowClockwise />
@@ -243,7 +232,7 @@ const PatientsPage: FC = () => {
         key={0}
         onClick={() => {
           handleDeletePatient(row.original.id);
-          fetchData();
+          fetch();
         }}
       >
         <ListItemIcon>

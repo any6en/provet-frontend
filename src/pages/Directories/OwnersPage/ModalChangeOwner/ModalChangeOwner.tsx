@@ -45,7 +45,7 @@ const ModalChangeOwner: FC = () => {
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler('Успешно');
+          successHandler('Запись изменена');
 
           handleClose();
         })

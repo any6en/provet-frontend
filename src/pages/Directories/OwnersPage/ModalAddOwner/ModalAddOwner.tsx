@@ -41,7 +41,7 @@ const ModalAddOwner: FC = () => {
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler('Успешно!');
+          successHandler('Запись добавлена');
 
           handleClose();
         })

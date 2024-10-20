@@ -1,14 +1,12 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET } from '../../../../config/config';
+import { URL_PROVET, URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, IPatient, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import { IBreed, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 import { formatDate } from '../../../../utils/dateFormatter';
-import { PlusLg } from 'react-bootstrap-icons';
-import { Box, IconButton, Tooltip } from '@mui/material';
 import ProvetAPI from '../../../../utils/ProvetAPI';
 
 const ModalChangePatient: FC = () => {
@@ -40,9 +38,9 @@ const ModalChangePatient: FC = () => {
       controller.current = new AbortController();
 
       setData({ ...selectedData });
-      setSelectedAnimalType(data?.speciesId);
+      setSelectedAnimalType(data?.animal_type_id);
 
-      const fetchData = async () => {
+      const fetch = async () => {
         const api = new ProvetAPI();
 
         // Получаем справочники
@@ -52,7 +50,7 @@ const ModalChangePatient: FC = () => {
         res = await api.getList('animal_types', controller.current, true);
         if (res) setAnimalTypes(res.rows);
       };
-      fetchData();
+      fetch();
     }
   }, [show]);
 
@@ -61,18 +59,20 @@ const ModalChangePatient: FC = () => {
 
     if (URL_PROVET) {
       axios
-        .patch(`${URL_PROVET}directories/patients/patient`, data, {
+        .patch(`${URL_PROVET_API}directories/patients/patient`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler(res.data.response.message);
+          successHandler('Запись изменена');
 
           handleClose();
         })
-        .catch((error) => {})
+        .catch((error) => {
+          errorHandler(error);
+        })
         .finally(() => {
           setIsPreload(false);
         });
@@ -120,7 +120,7 @@ const ModalChangePatient: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          nickname: e.target.value,
+                          nickname: e.target.value != '' ? e.target.value : undefined,
                         });
                       }}
                     />
@@ -138,13 +138,16 @@ const ModalChangePatient: FC = () => {
                           if (e.target.value === '') setSelectedAnimalType(-1);
                           setData({
                             ...data,
-                            animalTypeId: Number(e.target.value),
+                            animal_type_id: Number(e.target.value),
+                            breed_id: undefined,
                           });
                         }}
                       >
-                        <option value="" selected={selectedData?.nickname === ''}></option>
+                        <option value="" selected={selectedData?.nickname === ''} disabled>
+                          Выберите вид животного
+                        </option>
                         {animalTypes.map((obj: any) => {
-                          if (selectedData?.animalTypeId !== obj.id) {
+                          if (selectedData?.animal_type_id !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
                                 {obj.name}
@@ -187,17 +190,23 @@ const ModalChangePatient: FC = () => {
                         <Form.Select
                           aria-label="select"
                           onChange={(e: any) => {
-                            setData({ ...data, breedId: Number(e.target.value) });
+                            setData({ ...data, breed_id: Number(e.target.value) });
                           }}
                         >
-                          <option value="Не выбрано" selected={data?.name === ''}></option>
+                          <option
+                            value=""
+                            selected={data?.breed_id === '' || data?.breed_id === undefined}
+                            disabled
+                          >
+                            Выберите породу
+                          </option>
                           {breeds
                             .filter((obj: IBreed) => obj.animal_type_id === data?.animal_type_id)
                             .map((obj: IBreed) => (
                               <option
                                 key={obj.id}
                                 value={obj.id}
-                                selected={data?.breedId === obj.id}
+                                selected={data?.breed_id === obj.id}
                               >
                                 {obj.name}
                               </option>
@@ -218,11 +227,11 @@ const ModalChangePatient: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="date"
-                      value={data?.dateBirth && data.dateBirth.substring(0, 10)}
+                      value={data?.date_birth && data.date_birth.substring(0, 10)}
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          dateBirth: e.target.value,
+                          date_birth: e.target.value,
                         });
                       }}
                     />
@@ -259,7 +268,7 @@ const ModalChangePatient: FC = () => {
                 </Form.Group>
               </Form>
             </Col>
-            <Row>Дата создания профиля: {formatDate(selectedData?.createdAt)}</Row>
+            <Row>Дата создания профиля: {formatDate(selectedData?.created_at)}</Row>
           </Row>
         </Container>
       </Modal.Body>

@@ -12,12 +12,12 @@ export interface IOwner {
 export interface IPatient {
   id: number;
   nickname: string;
-  breedId: number;
-  animalTypeId: number;
-  dateBirth: string;
+  breed_id: number;
+  animal_type_id: number;
+  date_birth: string;
   age: number;
   gender: number;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IBreed {
