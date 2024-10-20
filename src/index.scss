@@ -81,10 +81,6 @@ input[type='number']:focus {
   transform: scale(0);
 }
 
-.header {
-  //background-color: $bg-secondary;
-}
-
 .navbar {
   background-color: transparent;
 }
@@ -148,10 +144,6 @@ input[type='number']:focus {
   justify-content: flex-start;
   align-items: center;
   gap: 5px;
-}
-
-.menuElement:hover {
-  //background: $bg-secondary;
 }
 
 // Чтобы при открытии модалок, экран затемнялся (не зависимо от того, сколько модалок открыто)

@@ -135,7 +135,9 @@ const ModalAddBreed: FC = () => {
                           });
                         }}
                       >
-                        <option value="" selected></option>
+                        <option value="" disabled selected>
+                          Выберите вид животного
+                        </option>
                         {animalTypes.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
