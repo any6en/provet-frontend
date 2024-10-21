@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import style from './PatientPage.module.scss';
 import { Breadcrumb, Col, Container, NavDropdown, Row, Tab, Tabs } from 'react-bootstrap';
 import { NavLink, useParams } from 'react-router-dom';
-import { URL_PROVET } from '../../config/config';
+import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
-import { IPatient } from '../../store/reducers/UserSlice/UserSliceTypes';
-import { PersonLinesFill } from 'react-bootstrap-icons';
 import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { calculateAge } from '../../utils/dateFormatter';
 import { Tooltip } from '@mui/material';
 import ScaleIcon from '@mui/icons-material/Scale';
+import PatientJournal from './components/PatientJournal';
 
 const PatientPage = () => {
   const { id } = useParams();
@@ -18,15 +17,15 @@ const PatientPage = () => {
   const [patient, setPatient] = useState<any>(null);
 
   const fetchPatient = async () => {
-    if (URL_PROVET) {
+    if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET}api/patients/${id}`, {
+        .get(`${URL_PROVET_API}directories/patients?id=${id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
-          setPatient(response.data.response.row);
+          setPatient(response.data.response);
         })
         .catch(() => {})
         .finally(() => {});
@@ -38,6 +37,7 @@ const PatientPage = () => {
   }, []);
 
   const getSrcImageIconPatient = (animalTypeId: number) => {
+    console.log(animalTypeId);
     if (animalTypeId === 1) {
       return 'https://cdn-icons-png.flaticon.com/512/15721/15721652.png';
     } else if (animalTypeId === 2) {
@@ -59,7 +59,7 @@ const PatientPage = () => {
           <Col sm={2}></Col>
           <Col sm={8} className="d-flex align-items-center">
             <img
-              src={getSrcImageIconPatient(patient && patient.animalTypeId)}
+              src={getSrcImageIconPatient(patient && patient.animal_type_id)}
               className={`border border-3 align-self-center ${style.animalImage}`}
               style={{
                 borderRadius: '50%',
@@ -113,7 +113,7 @@ const PatientPage = () => {
                 >
                   <CalendarTodayIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />
                   &nbsp;
-                  {calculateAge(patient && patient.dateBirth)}
+                  {calculateAge(patient && patient.date_birth)}
                 </span>
               </Tooltip>
             </span>
@@ -135,7 +135,7 @@ const PatientPage = () => {
         <Tabs>
           {/* Вкладка журнал */}
           <Tab eventKey="journal" title={<span className="p-2">Журнал</span>}>
-            фффффффффффф
+            <PatientJournal patient_id={patient?.id} />
           </Tab>
           {/* Вкладка владельцы */}
           <Tab eventKey="owners" title={<span className="p-2">Владельцы</span>}>

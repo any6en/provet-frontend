@@ -8,6 +8,7 @@ import { avatarEmpty } from '../../utils/Avatar';
 import ScienceIcon from '@mui/icons-material/Science';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Header: FC = () => {
   const user = useAppSelector((state) => state.globalUserReducer.globalUser);
@@ -34,14 +35,25 @@ const Header: FC = () => {
             <Image src={require('./logo.png')} className={`${style.logo}`} />
           </Col>
           <Col sm={8} className="d-flex align-items-center p-0">
-            <Nav.Link as={NavLink} to="/search_patients" className="p-2">
-              <SearchIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
+            <Nav.Link as={NavLink} to="/go">
+              <EditIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
+              <span style={{ color: '#fff' }}>Вести прием</span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/laboratory" className="p-2">
+            <Nav.Link as={NavLink} to="/search_patients">
+              <SearchIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
+              <span style={{ color: '#fff' }}>Поиск</span>
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/laboratory">
               <ScienceIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
+              <span style={{ color: '#fff' }}>Лаборатория</span>
             </Nav.Link>
             <NavDropdown
-              title={<LibraryBooksIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />}
+              title={
+                <>
+                  <LibraryBooksIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />{' '}
+                  <span style={{ color: '#fff' }}>Справочники</span>
+                </>
+              }
               className="p-2"
               id="basic-nav-dropdown"
             >

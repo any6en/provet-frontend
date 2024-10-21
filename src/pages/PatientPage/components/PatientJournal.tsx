@@ -1,41 +1,40 @@
 import { FC, useState, useEffect } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { calculateAge, formatDate, formatDate2 } from '../../utils/dateFormatter';
-import { Breadcrumb, Button, Container, Spinner } from 'react-bootstrap';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
+import { Breadcrumb, Button, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
-import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { IOwner } from '../../store/reducers/UserSlice/UserSliceTypes';
 import { useNavigate } from 'react-router-dom';
-import { infoHandler } from '../../utils/alarmHandler';
+import { infoHandler } from '../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { URL_PROVET_API } from '../../../config/config';
+import { IJournal } from './IJournal';
 
-const SearchPatientsPage: FC = () => {
+interface Props {
+  patient_id: number;
+}
+
+const PatientJournal: FC<Props> = ({ patient_id }) => {
   const dispatch = useAppDispatch();
 
-  const navigate = useNavigate();
-  const [owners, setOwners] = useState<IOwner[]>([]);
+  const { setIsReloadTable } = userSlice.actions;
 
-  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
-
-  const { setIsReloadTable, setShowModalChangeOwner, setShowModalAddOwner, setSelectedOwner } =
-    userSlice.actions;
+  const [data, setData] = useState<IJournal[]>([]);
 
   const fetch = async () => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}directories/owners`, {
+        .get(`${URL_PROVET_API}journal`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
-          setOwners(response.data.response.rows);
+          setData(response.data.response.rows);
         })
         .catch(() => {})
         .finally(() => {
@@ -54,7 +53,9 @@ const SearchPatientsPage: FC = () => {
     fetch();
   }
 
-  const columns: MRT_ColumnDef<IOwner>[] = [
+  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
+
+  const columns: MRT_ColumnDef<any>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
@@ -62,56 +63,33 @@ const SearchPatientsPage: FC = () => {
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'lastName',
-      header: 'Фамилия',
-      size: 150,
-      Cell: ({ row }) => row.original.last_name,
-    },
-    {
-      accessorKey: 'firstName',
-      header: 'Имя',
-      size: 150,
-      Cell: ({ row }) => row.original.first_name,
-    },
-    {
       accessorKey: 'patronymic',
-      header: 'Отчество',
+      header: 'Дата',
       size: 150,
-      Cell: ({ row }) => row.original.patronymic,
+      Cell: ({ row }) => row.original.date,
     },
+    {
+      accessorKey: 'lastName',
+      header: 'Содержание',
+      size: 150,
+      Cell: ({ row }) => row.original.content,
+    },
+
     {
       accessorKey: 'address',
-      header: 'Адрес проживания',
+      header: 'Врач',
       size: 200,
-      Cell: ({ row }) => row.original.address,
-    },
-    {
-      accessorKey: 'dateBirth',
-      header: 'Дата рождения',
-      size: 100,
-      Cell: ({ row }) => formatDate2(row.original.date_birth),
-    },
-    {
-      accessorKey: 'gender',
-      header: 'Пол',
-      size: 200,
-      Cell: ({ row }) => (row.original.gender === 1 ? 'Мужской' : 'Женский'),
-    },
-    {
-      accessorKey: 'createdAt',
-      header: 'Дата создания профиля',
-      size: 200,
-      Cell: ({ row }) => formatDate(row.original.created_at),
+      Cell: ({ row }) => row.original.doctor,
     },
   ];
 
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: owners,
+    data: data,
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        navigate(`/patients/${row.original.id}`);
+        //navigate(`/patients/${row.original.id}`);
       },
     }),
     muiTableContainerProps: {
@@ -174,25 +152,14 @@ const SearchPatientsPage: FC = () => {
       },
     },
   });
+
   return (
-    <>
-      <Container fluid className="py-2">
-        <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
-          <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-          <Breadcrumb.Item active>
-            Быстрый поиск {isReloadTable && <Spinner variant="primary" size="sm" />}
-          </Breadcrumb.Item>
-        </Breadcrumb>
-      </Container>
-      <Container className="py-2">
-        <p>
-          Для продолжения выберите в таблице нужного владельца, а после раскройте его и выберите
-          нужного пациента
-        </p>
+    <Form className="px-3">
+      <Row>
         <MaterialReactTable table={table} />
-      </Container>
-    </>
+      </Row>
+    </Form>
   );
 };
 
-export default SearchPatientsPage;
+export default PatientJournal;

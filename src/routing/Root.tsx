@@ -17,6 +17,7 @@ import AnimalTypesPage from '../pages/Directories/AnimalTypesPage/AnimalTypesPag
 
 import PatientPage from '../pages/PatientPage/PatientPage';
 import SearchPatientsPage from '../pages/SearchPatients/SearchPatients';
+import OwnerPatientsPage from '../pages/OwnerPatientsPage/OwnerPatientsPage';
 
 function Root() {
   const dispatch = useAppDispatch();
@@ -46,6 +47,8 @@ function Root() {
 
           <Route path="/patient/:id" element={<PatientPage />} />
           <Route path="search_patients" element={<SearchPatientsPage />} />
+
+          <Route path="patients/:owner_idParam?" element={<OwnerPatientsPage />} />
         </Route>
       )}
       <Route path="/login" element={<AuthPage />} />
