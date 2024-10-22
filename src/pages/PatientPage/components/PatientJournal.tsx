@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { URL_PROVET_API } from '../../../config/config';
 import { IJournal } from './IJournal';
+import { formatDate } from '../../../utils/dateFormatter';
 
 interface Props {
   patient_id: number;
@@ -28,12 +29,14 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}journal`, {
+        .get(`${URL_PROVET_API}journal?owner_id=${patient_id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
+          console.log(response);
+          console.log(response.data.response.rows);
           setData(response.data.response.rows);
         })
         .catch(() => {})
@@ -44,8 +47,8 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
   };
 
   useEffect(() => {
-    fetch();
-  }, []);
+    if (patient_id) fetch();
+  }, [patient_id]);
 
   // Обновляем матрицу, флаг isReloadTable
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
@@ -63,13 +66,13 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'patronymic',
+      accessorKey: 'date',
       header: 'Дата',
       size: 150,
       Cell: ({ row }) => row.original.date,
     },
     {
-      accessorKey: 'lastName',
+      accessorKey: 'content',
       header: 'Содержание',
       size: 150,
       Cell: ({ row }) => row.original.content,
@@ -144,7 +147,7 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
         </Tooltip>
       </Box>
     ),
-    enableRowActions: true,
+
     initialState: {
       columnPinning: {
         left: ['mrt-row-expand', 'mrt-row-select'],

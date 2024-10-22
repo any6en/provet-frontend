@@ -36,11 +36,10 @@ const PatientPage = () => {
     fetchPatient();
   }, []);
 
-  const getSrcImageIconPatient = (animalTypeId: number) => {
-    console.log(animalTypeId);
-    if (animalTypeId === 1) {
+  const getSrcImageIconPatient = (animal_type_id: number) => {
+    if (animal_type_id === 1) {
       return 'https://cdn-icons-png.flaticon.com/512/15721/15721652.png';
-    } else if (animalTypeId === 2) {
+    } else if (animal_type_id === 2) {
       return 'https://cdn-icons-png.flaticon.com/512/10890/10890561.png';
     }
   };
