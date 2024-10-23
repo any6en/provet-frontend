@@ -1,40 +1,98 @@
-import { useEffect, useState } from 'react';
-import style from './PatientPage.module.scss';
-import { Breadcrumb, Col, Container, NavDropdown, Row, Tab, Tabs } from 'react-bootstrap';
+import { FC, useEffect, useState } from 'react';
+import {
+  Modal,
+  Button,
+  Form,
+  Container,
+  Row,
+  Col,
+  Breadcrumb,
+  Spinner,
+  NavDropdown,
+  Tabs,
+  Tab,
+} from 'react-bootstrap';
 import { NavLink, useParams } from 'react-router-dom';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { calculateAge } from '../../utils/dateFormatter';
+import { calculateAge, formatDateDMYDT } from '../../utils/dateFormatter';
 import { Tooltip } from '@mui/material';
 import ScaleIcon from '@mui/icons-material/Scale';
-import PatientJournal from './components/PatientJournal';
+import { errorHandler } from '../../utils/alarmHandler';
 
-const PatientPage = () => {
-  const { patient_idParam } = useParams();
+import style from '../PatientPage/PatientPage.module.scss';
+import Visit from './Visit';
+
+const VisitsPage: FC = () => {
+  // Состояния-хранилища данных
+  const [data, setData] = useState<any>(null);
 
   const [patient, setPatient] = useState<any>(null);
+  const [doctors, setDoctors] = useState<any>(null);
+  const [owner, setOwner] = useState<any>(null);
+  const [visits, setVisits] = useState<any>(null);
 
-  const fetchPatient = async () => {
+  const { primary_visit_idParam } = useParams();
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}directories/patients?id=${patient_idParam}`, {
+        .get(`${URL_PROVET_API}journal_visits?primary_visit_id=${primary_visit_idParam}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
-          setPatient(response.data.response);
+          setVisits(response.data.response);
+
+          axios
+            .get(`${URL_PROVET_API}directories/patients?id=${response.data.response.patient_id}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setPatient(response.data.response);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
+          axios
+            .get(`${URL_PROVET_API}directories/owners?id=${response.data.response.owner_id}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setOwner(response.data.response);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
+          axios
+            .get(`${URL_PROVET_API}directories/users?id=${response.data.response.user_id}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setDoctors(response.data.response.rows);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
         })
-        .catch(() => {})
-        .finally(() => {});
+        .catch((error) => {
+          errorHandler(error);
+        });
     }
   };
-
-  useEffect(() => {
-    fetchPatient();
-  }, []);
 
   const getSrcImageIconPatient = (animal_type_id: number) => {
     if (animal_type_id === 1) {
@@ -44,12 +102,21 @@ const PatientPage = () => {
     }
   };
 
+  const getFormatedFullName = (row: any) => {
+    console.log(row);
+    return row.last_name + ' ' + row.first_name[0] + '. ' + row.patronymic[0] + '.';
+  };
+  console.log(visits);
+
   return (
     <div>
       <Container fluid className="py-2">
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-          <Breadcrumb.Item active>Пациент №{patient_idParam}</Breadcrumb.Item>
+          <Breadcrumb.Item href={`#/patient/${visits?.patient_id}`}>
+            Пациент №{visits?.patient_id}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item active>Первичный прием №{visits?.id}</Breadcrumb.Item>
         </Breadcrumb>
       </Container>
       {/* Своеобразный HEADER */}
@@ -132,30 +199,27 @@ const PatientPage = () => {
       </Container>
       <Container className="py-2">
         <Tabs>
-          {/* Вкладка журнал */}
-          <Tab eventKey="journal" title={<span className="p-2">Журнал</span>}>
-            <PatientJournal patient_id={patient?.id} />
+          <Tab
+            eventKey="primary_visit"
+            title={<span className="p-2">{formatDateDMYDT(visits?.date, false, true)}</span>}
+          >
+            <Visit patient={patient} owner={owner} visit={visits} doctors={doctors} />
           </Tab>
-          {/* Вкладка владельцы */}
-          <Tab eventKey="owners" title={<span className="p-2">Владельцы</span>}>
-            sssssssssss
-          </Tab>
-          {/* Вкладка Свойства */}
-          <Tab eventKey="features" title={<span className="p-2">Свойства</span>}>
-            Свойства
-          </Tab>
-          {/* Вкладка Направления */}
-          <Tab eventKey="directions" title={<span className="p-2">Направления</span>}>
-            sssssssssss
-          </Tab>
-          {/* Вкладка Диагнозы */}
-          <Tab eventKey="diagnoses" title={<span className="p-2">Диагнозы</span>}>
-            sssssssssss
-          </Tab>
+          {visits?.subRows?.lenght !== 0 &&
+            visits?.subRows?.map((repeat_visit: any) => (
+              <Tab
+                eventKey={`repeat_visit${repeat_visit.id}`}
+                title={
+                  <span className="p-2">{formatDateDMYDT(repeat_visit.date, false, true)}</span>
+                }
+              >
+                <Visit patient={patient} owner={owner} visit={repeat_visit} doctors={doctors} />
+              </Tab>
+            ))}
         </Tabs>
       </Container>
     </div>
   );
 };
 
-export default PatientPage;
+export default VisitsPage;

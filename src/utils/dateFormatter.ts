@@ -45,3 +45,51 @@ export const calculateAge = (dateString: string): string => {
 
   return `${ageInYears} ${yearLabel} и ${ageInMonths} ${monthLabel}`;
 };
+
+export const formatDateDMYDT = (
+  dateString: string,
+  isNeedTime: boolean = false,
+  isMonthTranslate: boolean = false,
+) => {
+  const date = new Date(dateString);
+
+  // Получение деталей даты
+  const day = date.getDate().toString().padStart(2, '0');
+  const year = date.getFullYear();
+
+  // Названия месяцев на русском
+  const monthsInRussian = [
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
+  ];
+
+  // Если нужно перевести месяц на русский
+  const month = isMonthTranslate
+    ? monthsInRussian[date.getMonth()]
+    : (date.getMonth() + 1).toString().padStart(2, '0');
+
+  // Форматирование даты
+  const formattedDate = isMonthTranslate ? `${day} ${month} ${year}` : `${day}.${month}.${year}`;
+
+  // Получение времени
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+
+  // Если нужно только дату
+  if (!isNeedTime) {
+    return formattedDate;
+  }
+
+  // Если нужно время в формате [дата, время]
+  return [formattedDate, `${hours}:${minutes}`];
+};

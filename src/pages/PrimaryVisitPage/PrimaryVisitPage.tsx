@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Modal, Button, Form, Container, Row, Col, Breadcrumb } from 'react-bootstrap';
+import { Modal, Button, Form, Container, Row, Col, Breadcrumb, Spinner } from 'react-bootstrap';
 import { NavLink, useParams } from 'react-router-dom';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
@@ -14,36 +14,70 @@ import style from '../PatientPage/PatientPage.module.scss';
 
 const PrimaryVisitPage: FC = () => {
   // Состояния-хранилища данных
+  const [data, setData] = useState<any>(null);
+
   const [patient, setPatient] = useState<any>(null);
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [owner, setOwner] = useState<any>(null);
   const [visit, setVisit] = useState<any>(null);
+
+  const { primary_visit_idParam } = useParams();
+
+  useEffect(() => {
+    fetch();
+  }, []);
 
   const fetch = async () => {
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}directories/patients?id=1`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setPatient(response.data.response);
-        })
-        .catch(() => {})
-        .finally(() => {});
-
-      axios
-        .get(`${URL_PROVET_API}primary_visits?id=1`, {
+        .get(`${URL_PROVET_API}directories/primary_visits?id=${primary_visit_idParam}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
           setVisit(response.data.response);
+
+          axios
+            .get(`${URL_PROVET_API}directories/patients?id=${response.data.response.patient_id}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setPatient(response.data.response);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
+          axios
+            .get(`${URL_PROVET_API}directories/owners?id=${response.data.response.owner_id}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setOwner(response.data.response);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
+          axios
+            .get(`${URL_PROVET_API}directories/users`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setDoctors(response.data.response.rows);
+            })
+            .catch((error) => {
+              errorHandler(error);
+            });
         })
         .catch((error) => {
           errorHandler(error);
-        })
-        .finally(() => {});
+        });
     }
   };
 
@@ -53,6 +87,11 @@ const PrimaryVisitPage: FC = () => {
     } else if (animal_type_id === 2) {
       return 'https://cdn-icons-png.flaticon.com/512/10890/10890561.png';
     }
+  };
+
+  const getFormatedFullName = (row: any) => {
+    console.log(row);
+    return row.last_name + ' ' + row.first_name[0] + '. ' + row.patronymic[0] + '.';
   };
 
   return (
@@ -117,33 +156,74 @@ const PrimaryVisitPage: FC = () => {
         <Form>
           <Row>
             <Col>
-              <Form.Group>
-                <Form.Label>Врач</Form.Label>
-                <Form.Control as="select">
-                  <option value="">Выберите врача</option>
-                  {/* Выбор врача */}
-                </Form.Control>
+              <Form.Group className="mb-3" as={Row}>
+                <Form.Label className="fs-6" column sm={4}>
+                  Врач
+                </Form.Label>
+                <Col sm={3} className="d-flex align-items-center justify-content-center">
+                  {doctors.length !== 0 ? (
+                    <Form.Select
+                      aria-label="select"
+                      onChange={(e: any) => {
+                        setData({
+                          ...data,
+                          user_id: Number(e.target.value),
+                        });
+                      }}
+                    >
+                      <option value="" selected disabled>
+                        Выберите врача
+                      </option>
+                      {doctors.map((obj) => {
+                        if (visit?.user_id !== obj.id) {
+                          return (
+                            <option key={obj.id} value={obj.id}>
+                              {getFormatedFullName(obj)}
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option key={obj.id} value={obj.id} selected>
+                              {getFormatedFullName(obj)}
+                            </option>
+                          );
+                        }
+                      })}
+                    </Form.Select>
+                  ) : (
+                    <Spinner variant="primary" size="sm" />
+                  )}
+                </Col>
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Владелец пациента</Form.Label>
-                <Form.Control as="select">
-                  <option value="">Выберите владельца</option>
-                  {/* Выбор владельца */}
-                </Form.Control>
+              <Form.Group className="mb-3" as={Row}>
+                <Form.Label className="fs-6" column sm={4}>
+                  Владелец
+                </Form.Label>
+                <Col sm={3} className="d-flex align-items-center justify-content-center">
+                  <Form.Control aria-label="text" value={owner?.first_name} size="sm" readOnly />
+                </Col>
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Пациент</Form.Label>
-                <Form.Control as="select">
-                  <option value="">Выберите пациента</option>
-                  {/* Выбор пациента */}
-                </Form.Control>
+              <Form.Group className="mb-3" as={Row}>
+                <Form.Label className="fs-6" column sm={4}>
+                  Пациент
+                </Form.Label>
+                <Col sm={3} className="d-flex align-items-center justify-content-center">
+                  <Form.Control aria-label="text" value={patient?.nickname} size="sm" readOnly />
+                </Col>
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Дата возникновения болезни</Form.Label>
-                <Form.Control type="date" />
+              <Form.Group className="mb-3" as={Row}>
+                <Form.Label className="fs-6" column sm={4}>
+                  Дата возникновения болезни
+                </Form.Label>
+                <Col sm={3} className="d-flex align-items-center justify-content-center">
+                  <Form.Control
+                    type="date"
+                    value={visit?.disease_onset_date && visit.disease_onset_date.substring(0, 10)}
+                  />
+                </Col>
               </Form.Group>
 
               <Form.Group>

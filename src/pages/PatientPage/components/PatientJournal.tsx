@@ -6,7 +6,7 @@ import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-i
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { infoHandler } from '../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
@@ -24,6 +24,7 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
   const { setIsReloadTable } = userSlice.actions;
 
   const [data, setData] = useState<IJournal[]>([]);
+  const navigate = useNavigate();
 
   const fetch = async () => {
     setIsReloadTable(true);
@@ -86,13 +87,19 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
     },
   ];
 
+  let location = useLocation();
+
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
     data: data,
+    enableExpanding: true,
+    getSubRows: (row) => row.subRows, //default
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        //navigate(`/patients/${row.original.id}`);
+        if (row.original.content === 'Первичный прием') {
+          navigate(`/primary_visits/${row.original.id}`);
+        }
       },
     }),
     muiTableContainerProps: {
