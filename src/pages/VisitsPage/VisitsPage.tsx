@@ -18,12 +18,13 @@ import axios from 'axios';
 import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { calculateAge, formatDateDMYDT } from '../../utils/dateFormatter';
-import { Tooltip } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import ScaleIcon from '@mui/icons-material/Scale';
 import { errorHandler } from '../../utils/alarmHandler';
 
 import style from '../PatientPage/PatientPage.module.scss';
 import Visit from './Visit';
+import { PlusLg } from 'react-bootstrap-icons';
 
 const VisitsPage: FC = () => {
   // Состояния-хранилища данных

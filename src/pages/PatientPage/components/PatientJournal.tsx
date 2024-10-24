@@ -98,7 +98,7 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         if (row.original.content === 'Первичный прием') {
-          navigate(`/primary_visits/${row.original.id}`);
+          navigate(`/visits/${row.original.id}`);
         }
       },
     }),

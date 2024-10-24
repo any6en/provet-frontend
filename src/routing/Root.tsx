@@ -18,7 +18,6 @@ import AnimalTypesPage from '../pages/Directories/AnimalTypesPage/AnimalTypesPag
 import PatientPage from '../pages/PatientPage/PatientPage';
 import SearchPatientsPage from '../pages/SearchPatients/SearchPatients';
 import OwnerPatientsPage from '../pages/OwnerPatientsPage/OwnerPatientsPage';
-import PrimaryVisitPage from '../pages/PrimaryVisitPage/PrimaryVisitPage';
 import VisitsPage from '../pages/VisitsPage/VisitsPage';
 
 function Root() {
