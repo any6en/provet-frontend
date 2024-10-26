@@ -19,6 +19,10 @@ interface UserState {
   modalChangeAnimalType: boolean;
   modalAddAnimalType: boolean;
   selectedAnimalType: IAnimalType | null;
+
+  modalChangeVisit: boolean;
+  setShowModalChangeVisit: boolean;
+  selectedVisit: any | null;
 }
 
 const initialState: UserState = {
@@ -43,6 +47,11 @@ const initialState: UserState = {
   modalChangeBreed: false,
   modalAddBreed: false,
   selectedBreed: null,
+
+  // Состояния для форм Визиты
+  modalChangeVisit: false,
+  setShowModalChangeVisit: false,
+  selectedVisit: null,
 };
 
 export const userSlice = createSlice({
@@ -96,6 +105,14 @@ export const userSlice = createSlice({
     },
     setSelectedBreed(state, action: PayloadAction<IBreed | null>) {
       state.selectedBreed = action.payload;
+    },
+
+    // Состояния для форм Визиты
+    setShowModalChangeVisit(state, action: PayloadAction<boolean>) {
+      state.modalChangeVisit = action.payload;
+    },
+    setSelectedVisit(state, action: PayloadAction<any | null>) {
+      state.selectedVisit = action.payload;
     },
   },
 });

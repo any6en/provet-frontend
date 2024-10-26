@@ -12,6 +12,7 @@ import ModalAddBreed from '../../pages/Directories/BreedsPage/ModalAddBreed/Moda
 
 import ModalChangeAnimalType from '../../pages/Directories/AnimalTypesPage/ModalChangeAnimalType/ModalChangeAnimalType';
 import ModalAddAnimalType from '../../pages/Directories/AnimalTypesPage/ModalAddAnimalType/ModalAddAnimalType';
+import ModalChangeVisit from '../../pages/VisitsPage/components/ModalChangeVisit/ModalChangeVisit';
 
 function Layout() {
   return (
@@ -30,6 +31,8 @@ function Layout() {
 
         <ModalChangeAnimalType />
         <ModalAddAnimalType />
+
+        <ModalChangeVisit />
       </main>
       <footer>{/* <Footer /> */}</footer>
     </>
