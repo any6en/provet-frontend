@@ -12,16 +12,17 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { URL_PROVET_API } from '../../../config/config';
 import { IJournal } from './IJournal';
-import { formatDate } from '../../../utils/dateFormatter';
+import { formatDate, formatDateDMYDT } from '../../../utils/dateFormatter';
 
 interface Props {
-  patient_id: number;
+  patient: any;
 }
 
-const PatientJournal: FC<Props> = ({ patient_id }) => {
+const PatientJournal: FC<Props> = ({ patient }) => {
   const dispatch = useAppDispatch();
 
-  const { setIsReloadTable } = userSlice.actions;
+  const { setIsReloadTable, setShowModalAddPrimaryVisit, setSelectedPrimaryVisit } =
+    userSlice.actions;
 
   const [data, setData] = useState<IJournal[]>([]);
   const navigate = useNavigate();
@@ -30,14 +31,12 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
       axios
-        .get(`${URL_PROVET_API}journal?owner_id=${patient_id}`, {
+        .get(`${URL_PROVET_API}journal?patient_id=${patient?.id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((response) => {
-          console.log(response);
-          console.log(response.data.response.rows);
           setData(response.data.response.rows);
         })
         .catch(() => {})
@@ -48,8 +47,8 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
   };
 
   useEffect(() => {
-    if (patient_id) fetch();
-  }, [patient_id]);
+    if (patient) fetch();
+  }, [patient]);
 
   // Обновляем матрицу, флаг isReloadTable
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {
@@ -63,31 +62,28 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
     {
       accessorKey: 'id',
       header: 'ID',
-      size: 10,
+      size: 5,
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'date',
+      accessorKey: 'date_visit',
       header: 'Дата',
-      size: 150,
-      Cell: ({ row }) => row.original.date,
+      size: 100,
+      Cell: ({ row }) => formatDateDMYDT(row.original.date_visit, false, true),
     },
     {
       accessorKey: 'content',
       header: 'Содержание',
-      size: 150,
+      size: 100,
       Cell: ({ row }) => row.original.content,
     },
-
     {
-      accessorKey: 'address',
+      accessorKey: 'doctor_full_name',
       header: 'Врач',
-      size: 200,
-      Cell: ({ row }) => row.original.doctor,
+      size: 50,
+      Cell: ({ row }) => row.original.doctor_full_name,
     },
   ];
-
-  let location = useLocation();
 
   const table = useMaterialReactTable({
     columns: columns,
@@ -141,6 +137,16 @@ const PatientJournal: FC<Props> = ({ patient_id }) => {
             }}
           >
             {!isReloadTable ? <ArrowClockwise /> : <Spinner variant="primary" size="sm" />}
+          </IconButton>
+        </Tooltip>
+        <Tooltip arrow title="Добавить первичный прием">
+          <IconButton
+            onClick={() => {
+              dispatch(setShowModalAddPrimaryVisit(true));
+              dispatch(setSelectedPrimaryVisit(patient));
+            }}
+          >
+            <PlusLg color="green" size={20} />
           </IconButton>
         </Tooltip>
         <Tooltip arrow title="Получить справку">

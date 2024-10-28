@@ -20,9 +20,21 @@ interface UserState {
   modalAddAnimalType: boolean;
   selectedAnimalType: IAnimalType | null;
 
-  modalChangeVisit: boolean;
-  setShowModalChangeVisit: boolean;
-  selectedVisit: any | null;
+  modalChangePrimaryVisit: boolean;
+  modalAddPrimaryVisit: boolean;
+
+  setShowModalChangePrimaryVisit: boolean;
+  setShowModalAddPrimaryVisit: boolean;
+
+  selectedPrimaryVisit: any | null;
+
+  modalChangeRepeatVisit: boolean;
+  modalAddRepeatVisit: boolean;
+
+  setShowModalChangeRepeatVisit: boolean;
+  setShowModalAddRepeatVisit: boolean;
+
+  selectedRepeatVisit: any | null;
 }
 
 const initialState: UserState = {
@@ -49,9 +61,22 @@ const initialState: UserState = {
   selectedBreed: null,
 
   // Состояния для форм Визиты
-  modalChangeVisit: false,
-  setShowModalChangeVisit: false,
-  selectedVisit: null,
+  modalChangePrimaryVisit: false,
+  modalAddPrimaryVisit: false,
+
+  setShowModalChangePrimaryVisit: false,
+  setShowModalAddPrimaryVisit: false,
+
+  selectedPrimaryVisit: null,
+
+  // Состояния для формы повторного приема
+  modalChangeRepeatVisit: false,
+  modalAddRepeatVisit: false,
+
+  setShowModalChangeRepeatVisit: false,
+  setShowModalAddRepeatVisit: false,
+
+  selectedRepeatVisit: null,
 };
 
 export const userSlice = createSlice({
@@ -108,11 +133,25 @@ export const userSlice = createSlice({
     },
 
     // Состояния для форм Визиты
-    setShowModalChangeVisit(state, action: PayloadAction<boolean>) {
-      state.modalChangeVisit = action.payload;
+    setShowModalChangePrimaryVisit(state, action: PayloadAction<boolean>) {
+      state.modalChangePrimaryVisit = action.payload;
     },
-    setSelectedVisit(state, action: PayloadAction<any | null>) {
-      state.selectedVisit = action.payload;
+    setShowModalAddPrimaryVisit(state, action: PayloadAction<boolean>) {
+      state.modalAddPrimaryVisit = action.payload;
+    },
+    setSelectedPrimaryVisit(state, action: PayloadAction<any | null>) {
+      state.selectedPrimaryVisit = action.payload;
+    },
+
+    // Состояния для формы повторого приема
+    setShowModalChangeRepeatVisit(state, action: PayloadAction<boolean>) {
+      state.modalChangeRepeatVisit = action.payload;
+    },
+    setShowModalAddRepeatVisit(state, action: PayloadAction<boolean>) {
+      state.modalAddRepeatVisit = action.payload;
+    },
+    setSelectedRepeatVisit(state, action: PayloadAction<any | null>) {
+      state.selectedRepeatVisit = action.payload;
     },
   },
 });

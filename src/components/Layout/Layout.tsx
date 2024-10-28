@@ -12,7 +12,11 @@ import ModalAddBreed from '../../pages/Directories/BreedsPage/ModalAddBreed/Moda
 
 import ModalChangeAnimalType from '../../pages/Directories/AnimalTypesPage/ModalChangeAnimalType/ModalChangeAnimalType';
 import ModalAddAnimalType from '../../pages/Directories/AnimalTypesPage/ModalAddAnimalType/ModalAddAnimalType';
-import ModalChangeVisit from '../../pages/VisitsPage/components/ModalChangeVisit/ModalChangeVisit';
+
+import ModalAddRepeatVisit from '../../pages/VisitsPage/components/ModalAddRepeatVisit/ModalAddRepeatVisit';
+import ModalChangePrimaryVisit from '../../pages/VisitsPage/components/ModalChangePrimaryVisit/ModalChangePrimaryVisit';
+import ModalChangeRepeatVisit from '../../pages/VisitsPage/components/ModalChangeRepeatVisit/ModalChangeRepeatVisit';
+import ModalAddPrimaryVisit from '../../pages/VisitsPage/components/ModalAddPrimaryVisit/ModalAddPrimaryVisit';
 
 function Layout() {
   return (
@@ -22,17 +26,19 @@ function Layout() {
         <Outlet />
         <ModalChangeOwner />
         <ModalAddOwner />
-
         <ModalChangePatient />
         <ModalAddPatient />
-
         <ModalChangeBreed />
         <ModalAddBreed />
-
         <ModalChangeAnimalType />
         <ModalAddAnimalType />
 
-        <ModalChangeVisit />
+        {/* Приемы */}
+        <ModalAddRepeatVisit />
+        <ModalChangeRepeatVisit />
+        <ModalAddPrimaryVisit />
+        <ModalChangePrimaryVisit />
+        {/* Приемы */}
       </main>
       <footer>{/* <Footer /> */}</footer>
     </>

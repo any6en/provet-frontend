@@ -1,6 +1,6 @@
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import Root from './Root';
 
-const router = createHashRouter([{ path: '/*', Component: Root }], { basename: '/' });
+const router = createBrowserRouter([{ path: '/*', element: <Root /> }], { basename: '/' });
 
 export default router;

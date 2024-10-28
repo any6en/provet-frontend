@@ -35,23 +35,18 @@ const Header: FC = () => {
             <Image src={require('./logo.png')} className={`${style.logo}`} />
           </Col>
           <Col sm={8} className="d-flex align-items-center p-0">
-            <Nav.Link as={NavLink} to="/go">
-              <EditIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
-              <span style={{ color: '#fff' }}>Вести прием</span>
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/search_patients">
+            <Nav.Link as={NavLink} to="/search_patients" className="pe-3">
               <SearchIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
-              <span style={{ color: '#fff' }}>Поиск</span>
+              <span style={{ color: '#fff' }}></span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/laboratory">
+            <Nav.Link as={NavLink} to="/laboratory" className="pe-3">
               <ScienceIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
-              <span style={{ color: '#fff' }}>Лаборатория</span>
+              <span style={{ color: '#fff' }}></span>
             </Nav.Link>
             <NavDropdown
               title={
                 <>
-                  <LibraryBooksIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />{' '}
-                  <span style={{ color: '#fff' }}>Справочники</span>
+                  <span style={{ color: '#fff', fontSize: 16 }}>Справочники</span>
                 </>
               }
               className="p-2"

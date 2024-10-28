@@ -31,10 +31,6 @@ const OwnerPatientsPage: FC = () => {
     setSelectedPatient,
   } = userSlice.actions;
 
-  useEffect(() => {
-    console.log(patients);
-  }, [patients]);
-
   const fetch = async () => {
     setIsReloadTable(true);
     if (URL_PROVET_API) {
@@ -165,14 +161,6 @@ const OwnerPatientsPage: FC = () => {
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         navigate(`/patient/${row.original.id}`);
-        // const { breed_name, animal_type_name, ...data } = row.original; // Извлекаем поля, которые хотим исключить
-
-        // dispatch(
-        //   setSelectedPatient({
-        //     ...data, // Добавляем оставшиеся поля
-        //   }),
-        // );
-        // dispatch(setShowModalChangePatient(true));
       },
     }),
     muiTableContainerProps: {
@@ -266,7 +254,14 @@ const OwnerPatientsPage: FC = () => {
       <Container fluid className="py-2">
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-          <Breadcrumb.Item active>Пациенты-питомцы владельца №{owner_idParam}</Breadcrumb.Item>
+          <Breadcrumb.Item
+            onClick={() => {
+              navigate(`/search_patients`);
+            }}
+          >
+            Быстрый поиск
+          </Breadcrumb.Item>
+          <Breadcrumb.Item active>Владелец пациентов №{owner_idParam}</Breadcrumb.Item>
         </Breadcrumb>
       </Container>
       <Container className="py-2">

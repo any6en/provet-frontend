@@ -31,8 +31,6 @@ const ModalChangeBreed: FC = () => {
       //controller.current = new AbortController();
       setData({ ...selectedData });
 
-      console.log(selectedData);
-
       const fetch = async () => {
         setIsReloadTable(true);
         if (URL_PROVET_API) {

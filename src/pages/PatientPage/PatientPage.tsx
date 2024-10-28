@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import style from './PatientPage.module.scss';
 import { Breadcrumb, Col, Container, NavDropdown, Row, Tab, Tabs } from 'react-bootstrap';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import TocIcon from '@mui/icons-material/Toc';
@@ -15,6 +15,10 @@ const PatientPage = () => {
   const { patient_idParam } = useParams();
 
   const [patient, setPatient] = useState<any>(null);
+
+  const location = useLocation();
+
+  const activeTab = location.hash.split('#')[1];
 
   const fetchPatient = async () => {
     if (URL_PROVET_API) {
@@ -44,11 +48,31 @@ const PatientPage = () => {
     }
   };
 
+  const handleSelectTab = (e: any) => {
+    navigate(`${location.pathname}#${e}`);
+  };
+
+  const navigate = useNavigate();
   return (
     <div>
       <Container fluid className="py-2">
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
+          <Breadcrumb.Item
+            onClick={() => {
+              navigate('/search_patients');
+            }}
+          >
+            Быстрый поиск
+          </Breadcrumb.Item>
+          <Breadcrumb.Item
+            onClick={() => {
+              navigate(`/patients/${patient?.owner_id}`);
+            }}
+          >
+            Владелец пациентов №{patient?.owner_id}
+          </Breadcrumb.Item>
+
           <Breadcrumb.Item active>Пациент №{patient_idParam}</Breadcrumb.Item>
         </Breadcrumb>
       </Container>
@@ -116,32 +140,17 @@ const PatientPage = () => {
                 </span>
               </Tooltip>
             </span>
-            <span className="p-2">
-              <Tooltip arrow title="Вес" placement="top">
-                <span
-                  className={style.text}
-                  style={{ display: 'inline-flex', alignItems: 'center' }}
-                >
-                  <ScaleIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />
-                  &nbsp; 700&nbsp;г.
-                </span>
-              </Tooltip>
-            </span>
           </Col>
         </Row>
       </Container>
       <Container className="py-2">
-        <Tabs>
+        <Tabs defaultActiveKey={activeTab} onSelect={handleSelectTab}>
           {/* Вкладка журнал */}
           <Tab eventKey="journal" title={<span className="p-2">Журнал</span>}>
-            <PatientJournal patient_id={patient?.id} />
-          </Tab>
-          {/* Вкладка владельцы */}
-          <Tab eventKey="owners" title={<span className="p-2">Владельцы</span>}>
-            sssssssssss
+            <PatientJournal patient={patient} />
           </Tab>
           {/* Вкладка Свойства */}
-          <Tab eventKey="features" title={<span className="p-2">Свойства</span>}>
+          <Tab eventKey="props" title={<span className="p-2">Свойства</span>}>
             Свойства
           </Tab>
           {/* Вкладка Направления */}
@@ -149,7 +158,13 @@ const PatientPage = () => {
             sssssssssss
           </Tab>
           {/* Вкладка Диагнозы */}
-          <Tab eventKey="diagnoses" title={<span className="p-2">Диагнозы</span>}>
+          <Tab
+            onSelect={(e) => {
+              handleSelectTab(e);
+            }}
+            eventKey="diagnoses"
+            title={<span className="p-2">Диагнозы</span>}
+          >
             sssssssssss
           </Tab>
         </Tabs>

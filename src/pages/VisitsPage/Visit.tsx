@@ -1,9 +1,18 @@
 import { FC } from 'react';
 import { Form, Row, Button, Col } from 'react-bootstrap';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { ArrowClockwise, Pencil, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
+import {
+  ArrowClockwise,
+  Pencil,
+  PlusLg,
+  Printer,
+  QuestionCircle,
+  Trash,
+} from 'react-bootstrap-icons';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch } from '../../hooks/redux';
+import AutoResizeTextarea from '../../components/AutoResizeTextarea/AutoResizeTextarea';
+import { URL_PROVET_API } from '../../config/config';
 
 interface Props {
   visit: any;
@@ -11,7 +20,14 @@ interface Props {
 }
 
 const Visit: FC<Props> = ({ visit, isPrimary }) => {
-  const { setShowModalChangeVisit, setSelectedVisit, setIsReloadTable } = userSlice.actions;
+  const {
+    setShowModalChangePrimaryVisit,
+    setSelectedPrimaryVisit,
+    setShowModalChangeRepeatVisit,
+    setSelectedRepeatVisit,
+    setIsReloadTable,
+    setShowModalAddRepeatVisit,
+  } = userSlice.actions;
 
   const dispatch = useAppDispatch();
 
@@ -31,11 +47,26 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
                 <ArrowClockwise />
               </IconButton>
             </Tooltip>
+            <Tooltip arrow title="Добавить вторичный прием">
+              <IconButton
+                onClick={() => {
+                  dispatch(setSelectedRepeatVisit(visit));
+                  dispatch(setShowModalAddRepeatVisit(true));
+                }}
+              >
+                <PlusLg color="green" size={20} />
+              </IconButton>
+            </Tooltip>
             <Tooltip arrow title="Редактировать">
               <IconButton
                 onClick={() => {
-                  dispatch(setShowModalChangeVisit(true));
-                  dispatch(setSelectedVisit(visit));
+                  if (isPrimary) {
+                    dispatch(setShowModalChangePrimaryVisit(true));
+                    dispatch(setSelectedPrimaryVisit(visit));
+                  } else {
+                    dispatch(setShowModalChangeRepeatVisit(true));
+                    dispatch(setSelectedRepeatVisit(visit));
+                  }
                 }}
               >
                 <Pencil color="green" size={20} />
@@ -50,6 +81,41 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
                 <Trash color="red" size={20} />
               </IconButton>
             </Tooltip>
+            <Tooltip arrow title="Скачать документ на печать">
+              <IconButton
+                onClick={async () => {
+                  try {
+                    const response = await fetch(
+                      `${URL_PROVET_API}document_generator/primary_visit?primary_visit_id=${visit.id}`,
+                      {
+                        method: 'GET',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                      },
+                    );
+
+                    if (!response.ok) {
+                      throw new Error('Ошибка при загрузке документа');
+                    }
+
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${visit.id}_первичный_прием.docx`; // Исправлено использование шаблонной строки
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }}
+              >
+                <Printer color="black" size={20} />
+              </IconButton>
+            </Tooltip>
             <Tooltip arrow title="Получить справку">
               <IconButton onClick={() => {}}>
                 <QuestionCircle color="gray" size={20} />
@@ -60,29 +126,14 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
       </Row>
 
       <Row>
-        {/* Поля с описаниями */}
-        {/* {[
-          { label: 'Владелец', value: visit?.owner_full_name },
-          { label: 'Кличка', value: visit?.nickname },
-          { label: 'Вид животного', value: visit?.animal_name },
-          { label: 'Порода', value: visit?.breed_name },
-          { label: 'Возраст', value: visit?.age },
-          { label: 'Пол', value: visit?.gender === 1 ? 'Самец' : 'Самка' },
-          { label: 'Вес', value: visit?.weight },
-          { label: 'Обследование', value: visit?.examination },
-          { label: 'Предварительный диагноз', value: visit?.prelim_diagnosis },
-          { label: 'Подтвержденный диагноз', value: visit?.confirmed_diagnosis },
-          { label: 'Назначение', value: visit?.confirmed_diagnosis }, // Проверьте, это правильное поле
-        ].map(({ label, value }, index) => (
-          <Row className="mb-3" as={Form.Group} key={index}>
-            <Form.Label className="fs-6" column sm={3}>
-              {label}
-            </Form.Label>
-            <Col sm={9} className="d-flex align-items-center">
-              <Form.Control aria-label={label} value={value} size="sm" readOnly />
-            </Col>
-          </Row>
-        ))} */}
+        <Form.Group className="mb-3" as={Row}>
+          <Form.Label className="fs-6" column sm={2}>
+            Врач
+          </Form.Label>
+          <Col sm={3} className="d-flex align-items-center justify-content-center">
+            <Form.Control aria-label="text" value={visit?.doctor_full_name} size="sm" readOnly />
+          </Col>
+        </Form.Group>
         <Form.Group className="mb-3" as={Row}>
           <Form.Label className="fs-6" column sm={2}>
             Владелец животного
@@ -138,6 +189,14 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             <Form.Control aria-label="text" value={visit?.weight} size="sm" readOnly />
           </Col>
         </Row>
+        <Row className="mb-3" as={Form.Group}>
+          <Form.Label className="fs-6" column sm={2}>
+            Анамнез
+          </Form.Label>
+          <Col sm={10} className="d-flex align-items-center justify-content-center">
+            <Form.Control aria-label="text" value={visit?.anamnesis} size="sm" readOnly />
+          </Col>
+        </Row>
 
         <Row className="mb-3" as={Form.Group}>
           <Form.Label className="fs-6" column sm={2}>
@@ -153,7 +212,11 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             Предварительный диагноз
           </Form.Label>
           <Col sm={5} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.prelim_diagnosis} size="sm" readOnly />
+            <AutoResizeTextarea
+              value={visit?.prelim_diagnosis}
+              onChange={(e: any) => {}}
+              readOnly={true}
+            />
           </Col>
         </Row>
         <Row className="mb-3" as={Form.Group}>
@@ -161,7 +224,11 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             Подтвержденный диагноз
           </Form.Label>
           <Col sm={5} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.confirmed_diagnosis} size="sm" readOnly />
+            <AutoResizeTextarea
+              value={visit?.confirmed_diagnosis}
+              onChange={(e: any) => {}}
+              readOnly={true}
+            />
           </Col>
         </Row>
         <Row className="mb-3" as={Form.Group}>
@@ -169,7 +236,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             Назначение
           </Form.Label>
           <Col sm={10} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.confirmed_diagnosis} size="sm" readOnly />
+            <AutoResizeTextarea value={visit?.result} onChange={(e: any) => {}} readOnly={true} />
           </Col>
         </Row>
 

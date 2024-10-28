@@ -12,7 +12,7 @@ import {
   Tabs,
   Tab,
 } from 'react-bootstrap';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import TocIcon from '@mui/icons-material/Toc';
@@ -31,12 +31,16 @@ import { errorHandler } from '../../utils/alarmHandler';
 import style from '../PatientPage/PatientPage.module.scss';
 import Visit from './Visit';
 import { PlusLg } from 'react-bootstrap-icons';
-import { ButtonBase } from '@mui/material';
+import { ButtonBase, IconButton, Tooltip } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 
 const VisitsPage: FC = () => {
   // Состояния-хранилища данных
   const [visits, setVisits] = useState<any>(null);
   const [doc, setDoc] = useState<any>(null);
+
+  const { setShowModalAddRepeatVisit, setSelectedRepeatVisit } = userSlice.actions;
 
   const { primary_visit_idParam } = useParams();
 
@@ -61,79 +65,92 @@ const VisitsPage: FC = () => {
     }
   };
 
+  const dispatch = useAppDispatch();
+  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
+  const { setIsReloadTable } = userSlice.actions;
+
+  // Обновляем матрицу после изменения данных роли устройства
+  if (useAppSelector((state) => state.userReducer.isReloadTable)) {
+    dispatch(setIsReloadTable(false));
+    fetch();
+  }
+
   // Преобразуем данные для получения нужного формата
   const steps = [];
 
   // Добавляем первичный прием
   steps.push({
     label: visits?.confirmed_diagnosis, // диагноз первичного приема
-    description: new Date(visits?.date), // время первичного приема
+    description: new Date(visits?.date_visit), // время первичного приема
   });
 
   // Добавляем повторные визиты
   visits?.subRows.forEach((repeat_visit: any) => {
     steps.push({
       label: repeat_visit.confirmed_diagnosis, // диагноз повторного приема
-      description: new Date(repeat_visit.date), // время повторного приема
+      description: new Date(repeat_visit.date_visit), // время повторного приема
     });
   });
 
+  const navigate = useNavigate();
   return (
     <Container fluid className="py-2">
       <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
         <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-        <Breadcrumb.Item href={`#/patient/${visits?.patient_id}`}>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate('/search_patients');
+          }}
+        >
+          Быстрый поиск
+        </Breadcrumb.Item>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate(`/patients/${visits?.owner_id}`);
+          }}
+        >
+          Владелец пациентов №{visits?.owner_id}
+        </Breadcrumb.Item>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate(`/patient/${visits?.patient_id}`);
+          }}
+        >
           Пациент №{visits?.patient_id}
         </Breadcrumb.Item>
-        <Breadcrumb.Item active>Приемы </Breadcrumb.Item>
+        <Breadcrumb.Item active>
+          Прием(-ы) от {formatDateDMYDT(visits?.date_visit, false, true)}
+        </Breadcrumb.Item>
       </Breadcrumb>
-      <Row className="py-1">
-        <Col sm={2} className="d-flex justify-content-center">
-          <Box>
-            <Stepper orientation="vertical">
-              {steps.map((step, index) => (
-                <Step key={step.label}>
-                  <StepLabel>{step.label}</StepLabel>
-                  <StepContent>
-                    <Typography>123</Typography>
-                    <Box sx={{ mb: 2 }}></Box>
-                  </StepContent>
-                </Step>
+      <Container fluid className="py-2">
+        <Row className="py-1">
+          <Tabs>
+            <Tab
+              eventKey="primary_visit"
+              title={
+                <span className="p-2">
+                  Первичный {formatDateDMYDT(visits?.date_visit, false, true)}
+                </span>
+              }
+            >
+              <Visit visit={visits} isPrimary={true} />
+            </Tab>
+            {visits?.subRows?.lenght !== 0 &&
+              visits?.subRows?.map((repeat_visit: any) => (
+                <Tab
+                  eventKey={`repeat_visit${repeat_visit.id}`}
+                  title={
+                    <span className="p-2">
+                      Вторичный {formatDateDMYDT(repeat_visit.date_visit, false, true)}
+                    </span>
+                  }
+                >
+                  <Visit visit={repeat_visit} isPrimary={false} />
+                </Tab>
               ))}
-            </Stepper>
-          </Box>
-        </Col>
-        <Col sm={10}>
-          <Container fluid className="pe-4">
-            {' '}
-            <Tabs>
-              <Tab
-                eventKey="primary_visit"
-                title={
-                  <span className="p-2">
-                    Первичный {formatDateDMYDT(visits?.date, false, true)}
-                  </span>
-                }
-              >
-                <Visit visit={visits} isPrimary={true} />
-              </Tab>
-              {visits?.subRows?.lenght !== 0 &&
-                visits?.subRows?.map((repeat_visit: any) => (
-                  <Tab
-                    eventKey={`repeat_visit${repeat_visit.id}`}
-                    title={
-                      <span className="p-2">
-                        Вторичный {formatDateDMYDT(repeat_visit.date, false, true)}
-                      </span>
-                    }
-                  >
-                    <Visit visit={repeat_visit} isPrimary={false} />
-                  </Tab>
-                ))}
-            </Tabs>
-          </Container>
-        </Col>
-      </Row>
+          </Tabs>
+        </Row>
+      </Container>
     </Container>
   );
 };
