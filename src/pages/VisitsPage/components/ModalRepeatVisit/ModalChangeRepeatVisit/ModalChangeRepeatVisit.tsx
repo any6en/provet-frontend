@@ -1,19 +1,19 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { URL_PROVET_API } from '../../../../config/config';
-import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
-import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import AutoResizeTextarea from '../../../../components/AutoResizeTextarea/AutoResizeTextarea';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { URL_PROVET_API } from '../../../../../config/config';
+import { errorHandler, successHandler } from '../../../../../utils/alarmHandler';
+import { userSlice } from '../../../../../store/reducers/UserSlice/UserSlice';
+import AutoResizeTextarea from '../../../../../components/AutoResizeTextarea/AutoResizeTextarea';
 
-const ModalChangePrimaryVisit: FC = () => {
+const ModalChangeRepeatVisit: FC = () => {
   // Флаг, открыта ли форма
-  const show = useAppSelector((state) => state.userReducer.modalChangePrimaryVisit);
-  const { setShowModalChangePrimaryVisit, setIsReloadTable } = userSlice.actions;
+  const show = useAppSelector((state) => state.userReducer.modalChangeRepeatVisit);
+  const { setShowModalChangeRepeatVisit, setIsReloadTable } = userSlice.actions;
 
   // Выбранная запись. Не подлежит редактированию!
-  const selectedData = useAppSelector((state) => state.userReducer.selectedPrimaryVisit);
+  const selectedData = useAppSelector((state) => state.userReducer.selectedRepeatVisit);
 
   const dispatch = useAppDispatch();
 
@@ -60,7 +60,6 @@ const ModalChangePrimaryVisit: FC = () => {
         content,
         nickname,
         owner_full_name,
-        primary_visit_id,
         subRows,
         age,
         ...remainingData
@@ -78,7 +77,7 @@ const ModalChangePrimaryVisit: FC = () => {
     if (URL_PROVET_API) {
       setIsReloadTable(true);
       axios
-        .patch(`${URL_PROVET_API}directories/primary_visits/primary_visit`, data, {
+        .patch(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -106,7 +105,7 @@ const ModalChangePrimaryVisit: FC = () => {
   };
 
   const handleClose = (): void => {
-    dispatch(setShowModalChangePrimaryVisit(false));
+    dispatch(setShowModalChangeRepeatVisit(false));
 
     // При закрытии обрыв всех запросов
     //controller.current.abort();
@@ -126,7 +125,7 @@ const ModalChangePrimaryVisit: FC = () => {
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Карточка первичного приема`}</Modal.Title>
+        <Modal.Title className="fs-6">{`Карточка повторного приема`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>
@@ -206,6 +205,7 @@ const ModalChangePrimaryVisit: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="date"
+                      value={data?.disease_onset_date && data.disease_onset_date}
                       onChange={(e: any) => {
                         setData({
                           ...data,
@@ -325,4 +325,4 @@ const ModalChangePrimaryVisit: FC = () => {
   );
 };
 
-export default ModalChangePrimaryVisit;
+export default ModalChangeRepeatVisit;

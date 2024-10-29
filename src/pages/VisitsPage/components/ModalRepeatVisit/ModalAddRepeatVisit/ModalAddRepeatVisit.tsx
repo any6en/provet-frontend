@@ -1,20 +1,20 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET_API } from '../../../../config/config';
+import { URL_PROVET_API } from '../../../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
-import AutoResizeTextarea from '../../../../components/AutoResizeTextarea/AutoResizeTextarea';
+import { errorHandler, successHandler } from '../../../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { userSlice } from '../../../../../store/reducers/UserSlice/UserSlice';
+import { IAnimalType } from '../../../../../store/reducers/UserSlice/UserSliceTypes';
+import AutoResizeTextarea from '../../../../../components/AutoResizeTextarea/AutoResizeTextarea';
 
-const ModalAddPrimaryVisit: FC = () => {
+const ModalAddRepeatVisit: FC = () => {
   // Флаг, открыта ли форма
-  const show = useAppSelector((state) => state.userReducer.modalAddPrimaryVisit);
-  const { setShowModalAddPrimaryVisit, setIsReloadTable } = userSlice.actions;
+  const show = useAppSelector((state) => state.userReducer.modalAddRepeatVisit);
+  const { setShowModalAddRepeatVisit, setIsReloadTable } = userSlice.actions;
 
   // Выбранная запись. Не подлежит редактированию!
-  const selectedData = useAppSelector((state) => state.userReducer.selectedPrimaryVisit);
+  const selectedData = useAppSelector((state) => state.userReducer.selectedRepeatVisit);
 
   const user = useAppSelector((state) => state.globalUserReducer.globalUser);
 
@@ -52,6 +52,27 @@ const ModalAddPrimaryVisit: FC = () => {
     if (show) {
       //controller.current = new AbortController();
 
+      const {
+        id,
+        disease_onset_date,
+        doctor_full_name,
+        anamnesis,
+        confirmed_diagnosis,
+        date_visit,
+        examination,
+        prelim_diagnosis,
+        result,
+        animal_name,
+        breed_name,
+        content,
+        nickname,
+        owner_full_name,
+        subRows,
+        age,
+        weight,
+        ...remainingData
+      } = selectedData;
+
       // Получаем текущую дату в UTC
       const now = new Date();
 
@@ -62,24 +83,7 @@ const ModalAddPrimaryVisit: FC = () => {
       // Форматируем дату как строку в формате YYYY-MM-DDTHH:mm
       const formattedDate = permTime.toISOString().substring(0, 16);
 
-      const patient_id = selectedData.id;
-      const {
-        created_at,
-        date_birth,
-        gender,
-        nickname,
-        animal_type_id,
-        animal_type_name,
-        breed_name,
-        ...remainingData
-      } = selectedData;
-
-      setData({
-        ...remainingData,
-        date_visit: formattedDate,
-        user_id: user.id,
-        patient_id: patient_id,
-      });
+      setData({ ...remainingData, date_visit: formattedDate });
 
       fetch();
     }
@@ -90,7 +94,7 @@ const ModalAddPrimaryVisit: FC = () => {
 
     if (URL_PROVET_API) {
       axios
-        .post(`${URL_PROVET_API}directories/primary_visits/primary_visit`, data, {
+        .post(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -117,7 +121,7 @@ const ModalAddPrimaryVisit: FC = () => {
   };
 
   const handleClose = (): void => {
-    dispatch(setShowModalAddPrimaryVisit(false));
+    dispatch(setShowModalAddRepeatVisit(false));
 
     // При закрытии обрыв всех запросов
     //controller.current.abort();
@@ -132,7 +136,7 @@ const ModalAddPrimaryVisit: FC = () => {
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Добавление первичного приема`}</Modal.Title>
+        <Modal.Title className="fs-6">{`Добавление повторного приема`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>
@@ -330,4 +334,4 @@ const ModalAddPrimaryVisit: FC = () => {
   );
 };
 
-export default ModalAddPrimaryVisit;
+export default ModalAddRepeatVisit;

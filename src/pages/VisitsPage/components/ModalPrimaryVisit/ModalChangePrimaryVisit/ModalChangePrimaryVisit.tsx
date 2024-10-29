@@ -1,31 +1,32 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
-import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
-import AutoResizeTextarea from '../../../../components/AutoResizeTextarea/AutoResizeTextarea';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { URL_PROVET_API } from '../../../../../config/config';
+import { errorHandler, successHandler } from '../../../../../utils/alarmHandler';
+import { userSlice } from '../../../../../store/reducers/UserSlice/UserSlice';
+import AutoResizeTextarea from '../../../../../components/AutoResizeTextarea/AutoResizeTextarea';
 
-const ModalAddRepeatVisit: FC = () => {
+const ModalChangePrimaryVisit: FC = () => {
   // Флаг, открыта ли форма
-  const show = useAppSelector((state) => state.userReducer.modalAddRepeatVisit);
-  const { setShowModalAddRepeatVisit, setIsReloadTable } = userSlice.actions;
+  const show = useAppSelector((state) => state.userReducer.modalChangePrimaryVisit);
+  const { setShowModalChangePrimaryVisit, setIsReloadTable } = userSlice.actions;
 
   // Выбранная запись. Не подлежит редактированию!
-  const selectedData = useAppSelector((state) => state.userReducer.selectedRepeatVisit);
-
-  const user = useAppSelector((state) => state.globalUserReducer.globalUser);
+  const selectedData = useAppSelector((state) => state.userReducer.selectedPrimaryVisit);
 
   const dispatch = useAppDispatch();
 
   // Состояние для хранения измененных данных в форме
   const [data, setData] = useState<any>({});
+
   const [users, setUsers] = useState<any>([]);
 
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
+
+  const controller = useRef(new AbortController());
+
   const fetch = async () => {
     setIsPreload(true);
     if (URL_PROVET_API) {
@@ -53,37 +54,19 @@ const ModalAddRepeatVisit: FC = () => {
       //controller.current = new AbortController();
 
       const {
-        id,
-        disease_onset_date,
-        doctor_full_name,
-        anamnesis,
-        confirmed_diagnosis,
-        date_visit,
-        examination,
-        prelim_diagnosis,
-        result,
         animal_name,
+        animal_type_id,
         breed_name,
         content,
         nickname,
         owner_full_name,
+        primary_visit_id,
         subRows,
         age,
-        weight,
         ...remainingData
       } = selectedData;
 
-      // Получаем текущую дату в UTC
-      const now = new Date();
-
-      // Преобразуем дату в пермское время (UTC+5)
-      const permTimeOffset = 5 * 60 * 60 * 1000; // смещение в миллисекундах
-      const permTime = new Date(now.getTime() + permTimeOffset);
-
-      // Форматируем дату как строку в формате YYYY-MM-DDTHH:mm
-      const formattedDate = permTime.toISOString().substring(0, 16);
-
-      setData({ ...remainingData, date_visit: formattedDate });
+      setData({ ...remainingData });
 
       fetch();
     }
@@ -93,15 +76,16 @@ const ModalAddRepeatVisit: FC = () => {
     setIsPreload(true);
 
     if (URL_PROVET_API) {
+      setIsReloadTable(true);
       axios
-        .post(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
+        .patch(`${URL_PROVET_API}directories/primary_visits/primary_visit`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
           dispatch(setIsReloadTable(true));
-          successHandler('Запись добавлена');
+          successHandler('Запись изменена');
 
           handleClose();
         })
@@ -109,6 +93,7 @@ const ModalAddRepeatVisit: FC = () => {
           errorHandler(error);
         })
         .finally(() => {
+          setIsReloadTable(true);
           setIsPreload(false);
         });
     }
@@ -121,11 +106,16 @@ const ModalAddRepeatVisit: FC = () => {
   };
 
   const handleClose = (): void => {
-    dispatch(setShowModalAddRepeatVisit(false));
+    dispatch(setShowModalChangePrimaryVisit(false));
 
     // При закрытии обрыв всех запросов
     //controller.current.abort();
     cleanForm();
+  };
+
+  const autoResizeTextArea = (e: any) => {
+    e.target.style.height = 'auto'; // Сбрасываем высоту
+    e.target.style.height = `${e.target.scrollHeight}px`; // Устанавливаем новую высоту
   };
 
   return (
@@ -136,7 +126,7 @@ const ModalAddRepeatVisit: FC = () => {
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Добавление повторного приема`}</Modal.Title>
+        <Modal.Title className="fs-6">{`Карточка первичного приема`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>
@@ -158,11 +148,11 @@ const ModalAddRepeatVisit: FC = () => {
                           });
                         }}
                       >
-                        <option value="" selected={user?.firstName === ''}>
+                        <option value="" selected={selectedData?.name === ''}>
                           Выберите врача
                         </option>
                         {users.map((obj: any) => {
-                          if (user?.id !== obj.id) {
+                          if (selectedData?.user_id !== obj.id) {
                             return (
                               <option key={obj.id} value={obj.id}>
                                 {obj.last_name +
@@ -199,6 +189,7 @@ const ModalAddRepeatVisit: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="text"
+                      value={data?.weight}
                       onChange={(e: any) => {
                         setData({
                           ...data,
@@ -323,7 +314,7 @@ const ModalAddRepeatVisit: FC = () => {
               className="px-0 sendFormAddDataButton"
             >
               <div className="d-flex align-items-center justify-content-center">
-                Добавить&nbsp;
+                Изменить&nbsp;
                 {isPreload && <Spinner size="sm" style={{ color: '#fff' }} />}
               </div>
             </Button>
@@ -334,4 +325,4 @@ const ModalAddRepeatVisit: FC = () => {
   );
 };
 
-export default ModalAddRepeatVisit;
+export default ModalChangePrimaryVisit;

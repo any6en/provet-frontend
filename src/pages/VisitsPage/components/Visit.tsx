@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { Form, Row, Button, Col } from 'react-bootstrap';
+import { FC, useState } from 'react';
+import { Form, Row, Button, Col, Spinner } from 'react-bootstrap';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import {
   ArrowClockwise,
@@ -9,10 +9,13 @@ import {
   QuestionCircle,
   Trash,
 } from 'react-bootstrap-icons';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { useAppDispatch } from '../../hooks/redux';
-import AutoResizeTextarea from '../../components/AutoResizeTextarea/AutoResizeTextarea';
-import { URL_PROVET_API } from '../../config/config';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { useAppDispatch } from '../../../hooks/redux';
+import AutoResizeTextarea from '../../../components/AutoResizeTextarea/AutoResizeTextarea';
+import { URL_PROVET_API } from '../../../config/config';
+import axios from 'axios';
+import { errorHandler } from '../../../utils/alarmHandler';
+import Swal from 'sweetalert2';
 
 interface Props {
   visit: any;
@@ -30,6 +33,8 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
   } = userSlice.actions;
 
   const dispatch = useAppDispatch();
+
+  const [isLoadPrintDocument, setIsLoadPrintDocument] = useState<boolean>(false);
 
   return (
     <Form className="px-3">
@@ -75,46 +80,83 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             <Tooltip arrow title="Удалить">
               <IconButton
                 onClick={() => {
-                  //dispatch(setShowModalAddAnimalType(true));
+                  const text = isPrimary
+                    ? 'Удаление первичного приема приведет к удалению записей, связанных с ним, то есть вложенных повторных приемов на основе этого'
+                    : 'Вы действительно хотите удалить этот повторный прием?';
+                  const query = isPrimary
+                    ? `primary_visits/primary_visit/${visit?.id}`
+                    : `repeat_visits/repeat_visit/${visit?.id}`;
+                  Swal.fire({
+                    title: 'Вы уверены?',
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Да',
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      if (URL_PROVET_API) {
+                        try {
+                          await axios.delete(`${URL_PROVET_API}directories/${query}`, {
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          });
+
+                          dispatch(setIsReloadTable(true));
+
+                          Swal.fire({
+                            title: 'Успешно!',
+                            text: 'Запись была удалена',
+                            icon: 'success',
+                          });
+                        } catch (error) {
+                          Swal.fire({
+                            title: 'Провал!',
+                            text: 'Что-то пошло не так',
+                            icon: 'error',
+                          });
+                        }
+                      }
+                    }
+                  });
                 }}
               >
                 <Trash color="red" size={20} />
               </IconButton>
             </Tooltip>
             <Tooltip arrow title="Скачать документ на печать">
-              <IconButton
-                onClick={async () => {
-                  try {
-                    const response = await fetch(
-                      `${URL_PROVET_API}document_generator/primary_visit?primary_visit_id=${visit.id}`,
-                      {
-                        method: 'GET',
+              {!isLoadPrintDocument ? (
+                <IconButton
+                  onClick={async () => {
+                    setIsLoadPrintDocument(true);
+                    const document_type = isPrimary
+                      ? `primary_visit?primary_visit_id=${visit?.id}`
+                      : `repeat_visit?repeat_visit_id=${visit?.id}`;
+                    axios
+                      .get(`${URL_PROVET_API}document_generator/${document_type}`, {
                         headers: {
                           'Content-Type': 'application/json',
                         },
-                      },
-                    );
-
-                    if (!response.ok) {
-                      throw new Error('Ошибка при загрузке документа');
-                    }
-
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${visit.id}_первичный_прием.docx`; // Исправлено использование шаблонной строки
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-                  } catch (error) {
-                    console.error(error);
-                  }
-                }}
-              >
-                <Printer color="black" size={20} />
-              </IconButton>
+                        responseType: 'blob',
+                      })
+                      .then((response) => {
+                        window.open(URL.createObjectURL(response.data));
+                      })
+                      .catch((error) => {
+                        errorHandler(error);
+                      })
+                      .finally(() => {
+                        setIsLoadPrintDocument(false);
+                      });
+                  }}
+                >
+                  <Printer color="black" size={20} />
+                </IconButton>
+              ) : (
+                <Spinner size="sm" style={{ color: 'blue' }} />
+              )}
             </Tooltip>
             <Tooltip arrow title="Получить справку">
               <IconButton onClick={() => {}}>

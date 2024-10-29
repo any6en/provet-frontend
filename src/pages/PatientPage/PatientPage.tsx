@@ -158,13 +158,7 @@ const PatientPage = () => {
             sssssssssss
           </Tab>
           {/* Вкладка Диагнозы */}
-          <Tab
-            onSelect={(e) => {
-              handleSelectTab(e);
-            }}
-            eventKey="diagnoses"
-            title={<span className="p-2">Диагнозы</span>}
-          >
+          <Tab eventKey="diagnoses" title={<span className="p-2">Диагнозы</span>}>
             sssssssssss
           </Tab>
         </Tabs>
