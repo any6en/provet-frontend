@@ -8,7 +8,6 @@ import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { calculateAge } from '../../utils/dateFormatter';
 import { Tooltip } from '@mui/material';
-import ScaleIcon from '@mui/icons-material/Scale';
 import PatientJournal from './components/PatientJournal';
 
 const PatientPage = () => {
@@ -20,24 +19,23 @@ const PatientPage = () => {
 
   const activeTab = location.hash.split('#')[1];
 
-  const fetchPatient = async () => {
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/patients?id=${patient_idParam}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setPatient(response.data.response);
-        })
-        .catch(() => {})
-        .finally(() => {});
-    }
+  const fetch = async () => {
+    axios
+      .get(`${URL_PROVET_API}directories/patients?id=${patient_idParam}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setPatient(response.data.response);
+      })
+      .catch(() => {})
+      .finally(() => {});
   };
 
+  // При монтировании компонента
   useEffect(() => {
-    fetchPatient();
+    fetch();
   }, []);
 
   const getSrcImageIconPatient = (animal_type_id: number) => {

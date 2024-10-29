@@ -29,21 +29,20 @@ const PatientJournal: FC<Props> = ({ patient }) => {
 
   const fetch = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}journal?patient_id=${patient?.id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setData(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
+
+    axios
+      .get(`${URL_PROVET_API}journal?patient_id=${patient?.id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setData(response.data.response.rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsReloadTable(false);
+      });
   };
 
   useEffect(() => {

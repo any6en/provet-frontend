@@ -50,26 +50,24 @@ const ModalAddPatient: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      axios
-        .post(`${URL_PROVET_API}directories/patients/patient`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись добавлена');
+    axios
+      .post(`${URL_PROVET_API}directories/patients/patient`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись добавлена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы

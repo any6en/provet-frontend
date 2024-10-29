@@ -72,31 +72,27 @@ const PatientsPage: FC = () => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (URL_PROVET_API) {
-          try {
-            await axios.delete(`${URL_PROVET_API}directories/patients/patient/${patientId}`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
+        try {
+          await axios.delete(`${URL_PROVET_API}directories/patients/patient/${patientId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
 
-            // Обновите состояние, чтобы удалить владельца из списка
-            setPatients((prevPatients) =>
-              prevPatients.filter((patient) => patient.id !== patientId),
-            );
+          // Обновите состояние, чтобы удалить владельца из списка
+          setPatients((prevPatients) => prevPatients.filter((patient) => patient.id !== patientId));
 
-            Swal.fire({
-              title: 'Успешно!',
-              text: 'Запись была удалена',
-              icon: 'success',
-            });
-          } catch (error) {
-            Swal.fire({
-              title: 'Провал!',
-              text: 'Что-то пошло не так',
-              icon: 'error',
-            });
-          }
+          Swal.fire({
+            title: 'Успешно!',
+            text: 'Запись была удалена',
+            icon: 'success',
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Провал!',
+            text: 'Что-то пошло не так',
+            icon: 'error',
+          });
         }
       }
     });

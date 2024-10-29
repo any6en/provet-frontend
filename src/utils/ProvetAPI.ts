@@ -15,17 +15,15 @@ export default class ProvetAPI {
    * @returns
    */
   async getList(path: string, controller?: AbortController, showError: boolean = true) {
-    if (URL_PROVET_API) {
-      try {
-        const resp = await axios.get(`${URL_PROVET_API}directories/${path}`, {
-          signal: controller?.signal,
-        });
+    try {
+      const resp = await axios.get(`${URL_PROVET_API}directories/${path}`, {
+        signal: controller?.signal,
+      });
 
-        return await resp.data.response;
-      } catch (error: any) {
-        if (error && showError) {
-          errorHandler(error);
-        }
+      return await resp.data.response;
+    } catch (error: any) {
+      if (error && showError) {
+        errorHandler(error);
       }
     }
   }

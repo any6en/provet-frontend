@@ -1,8 +1,6 @@
-import axios from 'axios';
 import { FC, useEffect } from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
-import { URL_PROVET } from '../../config/config';
 import User from '../../utils/User';
 
 const LogoutPage: FC = () => {

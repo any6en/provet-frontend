@@ -45,28 +45,26 @@ const AuthPage: FC = () => {
       setData(form);
     }
 
-    if (URL_PROVET) {
-      setIsBtnDisabled(true);
-      axios
-        .post(`${URL_PROVET}auth/login`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          user.saveUser(res.data.response);
-          dispatch(setGlobalUser(user));
-          isRefresh(true);
-        })
-        .catch((error) => {
-          if (error) {
-            errorHandler(error);
-          }
-        })
-        .finally(() => {
-          setIsBtnDisabled(false);
-        });
-    }
+    setIsBtnDisabled(true);
+    axios
+      .post(`${URL_PROVET}auth/login`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        user.saveUser(res.data.response);
+        dispatch(setGlobalUser(user));
+        isRefresh(true);
+      })
+      .catch((error) => {
+        if (error) {
+          errorHandler(error);
+        }
+      })
+      .finally(() => {
+        setIsBtnDisabled(false);
+      });
   };
 
   return (

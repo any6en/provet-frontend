@@ -29,21 +29,19 @@ const ModalAddBreed: FC = () => {
 
       const fetch = async () => {
         setIsReloadTable(true);
-        if (URL_PROVET_API) {
-          axios
-            .get(`${URL_PROVET_API}directories/animal_types`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setAnimalTypes(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
+        axios
+          .get(`${URL_PROVET_API}directories/animal_types`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => {
+            setAnimalTypes(response.data.response.rows);
+          })
+          .catch(() => {})
+          .finally(() => {
+            setIsReloadTable(false);
+          });
       };
       fetch();
     }
@@ -52,26 +50,24 @@ const ModalAddBreed: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      axios
-        .post(`${URL_PROVET_API}directories/breeds/breed`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись добавлена');
+    axios
+      .post(`${URL_PROVET_API}directories/breeds/breed`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись добавлена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы

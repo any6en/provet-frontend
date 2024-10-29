@@ -24,21 +24,19 @@ const BreedsPage: FC = () => {
 
   const fetch = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/breeds`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setBreeds(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
+    axios
+      .get(`${URL_PROVET_API}directories/breeds`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setBreeds(response.data.response.rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsReloadTable(false);
+      });
   };
 
   // Обновляем матрицу после изменения данных роли устройства
@@ -83,29 +81,27 @@ const BreedsPage: FC = () => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (URL_PROVET_API) {
-          try {
-            await axios.delete(`${URL_PROVET_API}directories/breeds/breed/${breedId}`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
+        try {
+          await axios.delete(`${URL_PROVET_API}directories/breeds/breed/${breedId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
 
-            // Обновите состояние, чтобы удалить владельца из списка
-            setBreeds((prevBreeds) => prevBreeds.filter((breed) => breed.id !== breedId));
+          // Обновите состояние, чтобы удалить владельца из списка
+          setBreeds((prevBreeds) => prevBreeds.filter((breed) => breed.id !== breedId));
 
-            Swal.fire({
-              title: 'Успешно!',
-              text: 'Запись была удалена',
-              icon: 'success',
-            });
-          } catch (error) {
-            Swal.fire({
-              title: 'Провал!',
-              text: 'Что-то пошло не так',
-              icon: 'error',
-            });
-          }
+          Swal.fire({
+            title: 'Успешно!',
+            text: 'Запись была удалена',
+            icon: 'success',
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Провал!',
+            text: 'Что-то пошло не так',
+            icon: 'error',
+          });
         }
       }
     });

@@ -27,21 +27,19 @@ const AnimalTypesPage: FC = () => {
 
   const fetchAnimalTypes = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/animal_types`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setAnimalTypes(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
+    axios
+      .get(`${URL_PROVET_API}directories/animal_types`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setAnimalTypes(response.data.response.rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsReloadTable(false);
+      });
   };
 
   // Обновляем матрицу после изменения данных роли устройства
@@ -80,34 +78,32 @@ const AnimalTypesPage: FC = () => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (URL_PROVET_API) {
-          try {
-            await axios.delete(
-              `${URL_PROVET_API}directories/animal_types/animal_type/${animalTypeId}`,
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+        try {
+          await axios.delete(
+            `${URL_PROVET_API}directories/animal_types/animal_type/${animalTypeId}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
               },
-            );
+            },
+          );
 
-            // Обновите состояние, чтобы удалить владельца из списка
-            setAnimalTypes((prevAnimalType) =>
-              prevAnimalType.filter((animalType) => animalType.id !== animalTypeId),
-            );
+          // Обновите состояние, чтобы удалить владельца из списка
+          setAnimalTypes((prevAnimalType) =>
+            prevAnimalType.filter((animalType) => animalType.id !== animalTypeId),
+          );
 
-            Swal.fire({
-              title: 'Успешно!',
-              text: 'Запись была удалена',
-              icon: 'success',
-            });
-          } catch (error) {
-            Swal.fire({
-              title: 'Провал!',
-              text: 'Что-то пошло не так',
-              icon: 'error',
-            });
-          }
+          Swal.fire({
+            title: 'Успешно!',
+            text: 'Запись была удалена',
+            icon: 'success',
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Провал!',
+            text: 'Что-то пошло не так',
+            icon: 'error',
+          });
         }
       }
     });

@@ -96,28 +96,26 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
                     confirmButtonText: 'Да',
                   }).then(async (result) => {
                     if (result.isConfirmed) {
-                      if (URL_PROVET_API) {
-                        try {
-                          await axios.delete(`${URL_PROVET_API}directories/${query}`, {
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                          });
+                      try {
+                        await axios.delete(`${URL_PROVET_API}directories/${query}`, {
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        });
 
-                          dispatch(setIsReloadTable(true));
+                        dispatch(setIsReloadTable(true));
 
-                          Swal.fire({
-                            title: 'Успешно!',
-                            text: 'Запись была удалена',
-                            icon: 'success',
-                          });
-                        } catch (error) {
-                          Swal.fire({
-                            title: 'Провал!',
-                            text: 'Что-то пошло не так',
-                            icon: 'error',
-                          });
-                        }
+                        Swal.fire({
+                          title: 'Успешно!',
+                          text: 'Запись была удалена',
+                          icon: 'success',
+                        });
+                      } catch (error) {
+                        Swal.fire({
+                          title: 'Провал!',
+                          text: 'Что-то пошло не так',
+                          icon: 'error',
+                        });
                       }
                     }
                   });

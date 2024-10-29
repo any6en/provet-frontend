@@ -1,37 +1,15 @@
 import { FC, useEffect, useState } from 'react';
-import {
-  Modal,
-  Button,
-  Form,
-  Container,
-  Row,
-  Col,
-  Breadcrumb,
-  Spinner,
-  NavDropdown,
-  Tabs,
-  Tab,
-} from 'react-bootstrap';
+import { Container, Row, Col, Breadcrumb, NavDropdown, Tabs, Tab } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { calculateAge, formatDateDMYDT } from '../../utils/dateFormatter';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import ScaleIcon from '@mui/icons-material/Scale';
+import { formatDateDMYDT } from '../../utils/dateFormatter';
 import { errorHandler } from '../../utils/alarmHandler';
-
 import style from '../PatientPage/PatientPage.module.scss';
 import Visit from './components/Visit';
-import { PlusLg } from 'react-bootstrap-icons';
-import { ButtonBase, IconButton, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 
@@ -45,20 +23,18 @@ const VisitsPage: FC = () => {
   }, []);
 
   const fetch = async () => {
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}journal_visits?primary_visit_id=${primary_visit_idParam}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setVisits(response.data.response);
-        })
-        .catch((error) => {
-          errorHandler(error);
-        });
-    }
+    axios
+      .get(`${URL_PROVET_API}journal_visits?primary_visit_id=${primary_visit_idParam}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setVisits(response.data.response);
+      })
+      .catch((error) => {
+        errorHandler(error);
+      });
   };
 
   const dispatch = useAppDispatch();

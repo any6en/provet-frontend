@@ -33,21 +33,19 @@ const ModalChangeBreed: FC = () => {
 
       const fetch = async () => {
         setIsReloadTable(true);
-        if (URL_PROVET_API) {
-          axios
-            .get(`${URL_PROVET_API}directories/animal_types`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-            .then((response) => {
-              setAnimalTypes(response.data.response.rows);
-            })
-            .catch(() => {})
-            .finally(() => {
-              setIsReloadTable(false);
-            });
-        }
+        axios
+          .get(`${URL_PROVET_API}directories/animal_types`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => {
+            setAnimalTypes(response.data.response.rows);
+          })
+          .catch(() => {})
+          .finally(() => {
+            setIsReloadTable(false);
+          });
       };
       fetch();
     }
@@ -56,26 +54,24 @@ const ModalChangeBreed: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      axios
-        .patch(`${URL_PROVET_API}directories/breeds/breed`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись изменена');
+    axios
+      .patch(`${URL_PROVET_API}directories/breeds/breed`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись изменена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы

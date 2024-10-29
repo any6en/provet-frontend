@@ -33,26 +33,24 @@ const ModalChangeAnimalType: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      axios
-        .patch(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись изменена');
+    axios
+      .patch(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись изменена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы

@@ -27,21 +27,19 @@ const SearchPatientsPage: FC = () => {
 
   const fetch = async () => {
     setIsReloadTable(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/owners`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setOwners(response.data.response.rows);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsReloadTable(false);
-        });
-    }
+    axios
+      .get(`${URL_PROVET_API}directories/owners`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setOwners(response.data.response.rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsReloadTable(false);
+      });
   };
 
   useEffect(() => {

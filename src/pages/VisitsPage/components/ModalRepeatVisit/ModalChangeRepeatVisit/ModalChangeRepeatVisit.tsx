@@ -29,23 +29,22 @@ const ModalChangeRepeatVisit: FC = () => {
 
   const fetch = async () => {
     setIsPreload(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/users`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setUsers(response.data.response.rows);
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+
+    axios
+      .get(`${URL_PROVET_API}directories/users`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setUsers(response.data.response.rows);
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Обработчик монтирования компонента
@@ -74,28 +73,26 @@ const ModalChangeRepeatVisit: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      setIsReloadTable(true);
-      axios
-        .patch(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись изменена');
+    setIsReloadTable(true);
+    axios
+      .patch(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись изменена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsReloadTable(true);
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsReloadTable(true);
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы

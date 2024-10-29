@@ -28,23 +28,22 @@ const ModalAddRepeatVisit: FC = () => {
   const [isPreload, setIsPreload] = useState<boolean>(false);
   const fetch = async () => {
     setIsPreload(true);
-    if (URL_PROVET_API) {
-      axios
-        .get(`${URL_PROVET_API}directories/users`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          setUsers(response.data.response.rows);
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+
+    axios
+      .get(`${URL_PROVET_API}directories/users`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setUsers(response.data.response.rows);
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Обработчик монтирования компонента
@@ -92,26 +91,24 @@ const ModalAddRepeatVisit: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET_API) {
-      axios
-        .post(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись добавлена');
+    axios
+      .post(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        dispatch(setIsReloadTable(true));
+        successHandler('Запись добавлена');
 
-          handleClose();
-        })
-        .catch((error) => {
-          errorHandler(error);
-        })
-        .finally(() => {
-          setIsPreload(false);
-        });
-    }
+        handleClose();
+      })
+      .catch((error) => {
+        errorHandler(error);
+      })
+      .finally(() => {
+        setIsPreload(false);
+      });
   };
 
   // Очистка формы
