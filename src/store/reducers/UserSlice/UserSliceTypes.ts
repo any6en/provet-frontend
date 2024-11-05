@@ -13,6 +13,7 @@ export interface IPatient {
   id: number;
   nickname: string;
   breed_id: number;
+  owner_id: number | undefined;
   animal_type_id: number;
   date_birth: string;
   age: number;

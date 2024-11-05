@@ -5,8 +5,9 @@ import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { IBreed, IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import { IBreed, IAnimalType, IOwner } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 import ProvetAPI from '../../../../utils/ProvetAPI';
+import { useParams } from 'react-router-dom';
 
 const ModalAddPatient: FC = () => {
   // Флаг, открыта ли форма
@@ -15,6 +16,7 @@ const ModalAddPatient: FC = () => {
 
   const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
+  const [owners, setOwners] = useState<IOwner[]>([]);
 
   const [selectedAnimalType, setSelectedAnimalType] = useState<any>(-1);
 
@@ -25,6 +27,8 @@ const ModalAddPatient: FC = () => {
   // Состояние для хранения измененных данных в форме
   const [data, setData] = useState<any>({});
 
+  const { owner_idParam } = useParams();
+
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
 
@@ -32,6 +36,10 @@ const ModalAddPatient: FC = () => {
   useEffect(() => {
     if (show) {
       controller.current = new AbortController();
+
+      setData({
+        owner_id: Number(owner_idParam),
+      });
 
       const fetchData = async () => {
         const api = new ProvetAPI();
@@ -42,6 +50,9 @@ const ModalAddPatient: FC = () => {
 
         res = await api.getList('animal_types', controller.current, true);
         if (res) setAnimalTypes(res.rows);
+
+        res = await api.getList('owners', controller.current, true);
+        if (res) setOwners(res.rows);
       };
       fetchData();
     }
@@ -114,6 +125,55 @@ const ModalAddPatient: FC = () => {
                         });
                       }}
                     />
+                  </Col>
+                </Form.Group>
+                <Form.Group className="mb-3" as={Row}>
+                  <Form.Label className="fs-6" column sm={4}>
+                    Владелец
+                  </Form.Label>
+                  <Col sm={8}>
+                    {owners.length !== 0 ? (
+                      <Form.Select
+                        aria-label="select"
+                        onChange={(e: any) => {
+                          setData({
+                            ...data,
+                            owner_id: Number(e.target.value),
+                          });
+                        }}
+                      >
+                        <option value="" selected={data?.name === ''}>
+                          Выберите врача
+                        </option>
+                        {owners.map((obj: any) => {
+                          if (data?.owner_id !== obj.id) {
+                            return (
+                              <option key={obj.id} value={obj.id}>
+                                {obj.last_name +
+                                  ' ' +
+                                  obj.first_name[0] +
+                                  '. ' +
+                                  obj.patronymic[0] +
+                                  '.'}
+                              </option>
+                            );
+                          } else {
+                            return (
+                              <option key={obj.id} value={obj.id} selected>
+                                {obj.last_name +
+                                  ' ' +
+                                  obj.first_name[0] +
+                                  '. ' +
+                                  obj.patronymic[0] +
+                                  '.'}
+                              </option>
+                            );
+                          }
+                        })}
+                      </Form.Select>
+                    ) : (
+                      <Spinner variant="primary" />
+                    )}
                   </Col>
                 </Form.Group>
 

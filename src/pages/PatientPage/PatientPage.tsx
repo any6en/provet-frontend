@@ -8,7 +8,8 @@ import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { calculateAge } from '../../utils/dateFormatter';
 import { Tooltip } from '@mui/material';
-import PatientJournal from './components/PatientJournal';
+import PatientJournal from './components/Journal/PatientJournal';
+import Properties from './components/Properties/Properties';
 
 const PatientPage = () => {
   const { patient_idParam } = useParams();
@@ -52,9 +53,9 @@ const PatientPage = () => {
 
   const navigate = useNavigate();
   return (
-    <div>
-      <Container fluid className="py-2">
-        <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
+    <>
+      <p className="py-2">
+        <Breadcrumb className="p-1 ps-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
           <Breadcrumb.Item
             onClick={() => {
@@ -73,12 +74,20 @@ const PatientPage = () => {
 
           <Breadcrumb.Item active>Пациент №{patient_idParam}</Breadcrumb.Item>
         </Breadcrumb>
-      </Container>
+      </p>
+
       {/* Своеобразный HEADER */}
-      <Container fluid className="py-2" style={{ backgroundColor: '#f8f8f8' }}>
+      <Container
+        fluid
+        className="py-2"
+        style={{
+          border: '1px solid #dee2e6',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        }}
+      >
         <Row>
-          <Col sm={2}></Col>
-          <Col sm={8} className="d-flex align-items-center">
+          <Col sm={1}></Col>
+          <Col sm={11} className="d-flex align-items-center">
             <img
               src={getSrcImageIconPatient(patient && patient.animal_type_id)}
               className={`border border-3 align-self-center ${style.animalImage}`}
@@ -106,13 +115,6 @@ const PatientPage = () => {
                   </div>
                 </NavLink>
               </NavDropdown.Item>
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="species/">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Стать лечащим врачом
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
               <NavDropdown.Item className="border-top text-dark">
                 <NavLink className="nav-link" aria-current="page" to="breeds/">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
@@ -121,11 +123,7 @@ const PatientPage = () => {
                 </NavLink>
               </NavDropdown.Item>
             </NavDropdown>
-            <span className="p-2" style={{ fontSize: '14px' }}>
-              <Tooltip arrow title="Номер медкарты" placement="top">
-                <span className={style.text}>№{patient && patient.id}</span>
-              </Tooltip>
-            </span>
+
             <span className="p-2">
               <Tooltip arrow title="Возраст" placement="top">
                 <span
@@ -141,7 +139,7 @@ const PatientPage = () => {
           </Col>
         </Row>
       </Container>
-      <Container className="py-2">
+      <Container className="py-4">
         <Tabs defaultActiveKey={activeTab} onSelect={handleSelectTab}>
           {/* Вкладка журнал */}
           <Tab eventKey="journal" title={<span className="p-2">Журнал</span>}>
@@ -149,7 +147,7 @@ const PatientPage = () => {
           </Tab>
           {/* Вкладка Свойства */}
           <Tab eventKey="props" title={<span className="p-2">Свойства</span>}>
-            Свойства
+            <Properties patient={patient} />
           </Tab>
           {/* Вкладка Направления */}
           <Tab eventKey="directions" title={<span className="p-2">Направления</span>}>
@@ -161,7 +159,7 @@ const PatientPage = () => {
           </Tab>
         </Tabs>
       </Container>
-    </div>
+    </>
   );
 };
 

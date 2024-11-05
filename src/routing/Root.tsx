@@ -10,11 +10,6 @@ import { useEffect } from 'react';
 import AuthPage from '../pages/AuthPage/AuthPage';
 import LogoutPage from '../pages/LogoutPage/LogoutPage';
 
-import PatientsPage from '../pages/Directories/PatientsPage/PatientsPage';
-import OwnersPage from '../pages/Directories/OwnersPage/OwnersPage';
-import BreedsPage from '../pages/Directories/BreedsPage/BreedsPage';
-import AnimalTypesPage from '../pages/Directories/AnimalTypesPage/AnimalTypesPage';
-
 import PatientPage from '../pages/PatientPage/PatientPage';
 import SearchPatientsPage from '../pages/SearchPatients/SearchPatients';
 import OwnerPatientsPage from '../pages/OwnerPatientsPage/OwnerPatientsPage';
@@ -39,12 +34,11 @@ function Root() {
       {user.isAuth() && (
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
-          {/* Главные справочники */}
+          {/* Главные справочники
           <Route path="directories/owners" element={<OwnersPage />} />
           <Route path="directories/patients" element={<PatientsPage />} />
-          {/* Дополнительные справочники */}
           <Route path="directories/animal_types" element={<AnimalTypesPage />} />
-          <Route path="directories/breeds" element={<BreedsPage />} />
+          <Route path="directories/breeds" element={<BreedsPage />} /> */}
 
           {/* Медицинское дело */}
           <Route path="search_patients" element={<SearchPatientsPage />} />

@@ -38,7 +38,7 @@ const ModalAddOwner: FC = () => {
           'Content-Type': 'application/json',
         },
       })
-      .then((res) => {
+      .then(() => {
         dispatch(setIsReloadTable(true));
         successHandler('Запись добавлена');
 
@@ -83,7 +83,7 @@ const ModalAddOwner: FC = () => {
               <Form id="formModal">
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Имя
+                    Имя<span style={{ color: 'red' }}>*</span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -100,7 +100,7 @@ const ModalAddOwner: FC = () => {
 
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Фамилия
+                    Фамилия<span style={{ color: 'red' }}>*</span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -117,7 +117,7 @@ const ModalAddOwner: FC = () => {
 
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Отчество
+                    Отчество<span style={{ color: 'red' }}>*</span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -167,7 +167,7 @@ const ModalAddOwner: FC = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
-                    Пол
+                    Пол<span style={{ color: 'red' }}>*</span>
                   </Form.Label>
                   <Col sm={4} className="d-flex align-items-center">
                     <Form.Check

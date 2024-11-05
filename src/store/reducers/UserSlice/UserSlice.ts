@@ -92,11 +92,11 @@ export const userSlice = createSlice({
     setShowModalChangeOwner(state, action: PayloadAction<boolean>) {
       state.modalChangeOwner = action.payload;
     },
-    setShowModalAddOwner(state, action: PayloadAction<boolean>) {
-      state.modalAddOwner = action.payload;
-    },
     setSelectedOwner(state, action: PayloadAction<IOwner | null>) {
       state.selectedOwner = action.payload;
+    },
+    setShowModalAddOwner(state, action: PayloadAction<boolean>) {
+      state.modalAddOwner = action.payload;
     },
 
     // Состояния методы для форм Пациенты

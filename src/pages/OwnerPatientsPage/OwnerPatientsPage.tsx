@@ -21,7 +21,6 @@ const OwnerPatientsPage: FC = () => {
   const [patients, setPatients] = useState<IPatient[]>([]);
 
   const { owner_idParam } = useParams();
-
   const controller = useRef(new AbortController());
 
   const {
@@ -198,7 +197,7 @@ const OwnerPatientsPage: FC = () => {
             <ArrowClockwise />
           </IconButton>
         </Tooltip>
-        <Tooltip arrow title="Добавить пациента">
+        <Tooltip arrow title="Добавить нового пациента">
           <IconButton
             onClick={() => {
               dispatch(setShowModalAddPatient(true));
@@ -246,23 +245,29 @@ const OwnerPatientsPage: FC = () => {
 
   return (
     <>
-      <Container fluid className="py-2">
-        <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
-          <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-          <Breadcrumb.Item
-            onClick={() => {
-              navigate(`/search_patients`);
-            }}
-          >
-            Быстрый поиск
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>Владелец пациентов №{owner_idParam}</Breadcrumb.Item>
-        </Breadcrumb>
-      </Container>
-      <Container className="py-2">
-        <p className="text-center">Для продолжения выберите в таблице нужного пациента</p>
-        <MaterialReactTable table={table} />
-      </Container>
+      {owner_idParam ? (
+        <>
+          <Container fluid className="py-2">
+            <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
+              <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
+              <Breadcrumb.Item
+                onClick={() => {
+                  navigate(`/search_patients`);
+                }}
+              >
+                Быстрый поиск
+              </Breadcrumb.Item>
+              <Breadcrumb.Item active>Владелец пациентов №{owner_idParam}</Breadcrumb.Item>
+            </Breadcrumb>
+          </Container>
+          <Container className="py-2">
+            <p>Выберите в матрице нужного пациента</p>
+            <MaterialReactTable table={table} />
+          </Container>
+        </>
+      ) : (
+        <Container fluid>Ошибка в запросе</Container>
+      )}
     </>
   );
 };

@@ -1,16 +1,16 @@
 import { FC, useState, useEffect } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
-import { infoHandler } from '../../../utils/alarmHandler';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { URL_PROVET_API } from '../../../config/config';
+import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { infoHandler } from '../../../utils/alarmHandler';
+import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
 
 const OwnersPage: FC = () => {

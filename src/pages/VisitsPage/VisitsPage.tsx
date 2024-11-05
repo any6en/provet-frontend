@@ -124,13 +124,6 @@ const VisitsPage: FC = () => {
                   </div>
                 </NavLink>
               </NavDropdown.Item>
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="species/">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Стать лечащим врачом
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
               <NavDropdown.Item className="border-top text-dark">
                 <NavLink className="nav-link" aria-current="page" to="breeds/">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
@@ -158,7 +151,7 @@ const VisitsPage: FC = () => {
           </Col>
         </Row>
       </Container>
-      <Container fluid className="py-2">
+      <Container className="py-2">
         <Row className="py-1">
           <Tabs activeKey={activeTab} onSelect={handleSelectTab}>
             <Tab

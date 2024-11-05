@@ -20,13 +20,16 @@ const SearchPatientsPage: FC = () => {
   const navigate = useNavigate();
   const [owners, setOwners] = useState<IOwner[]>([]);
 
+  const [isLoadMatrix, setLoadMatrix] = useState<boolean>(true);
+
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const { setIsReloadTable, setShowModalChangeOwner, setShowModalAddOwner, setSelectedOwner } =
-    userSlice.actions;
+  const { setIsReloadTable, setShowModalAddOwner } = userSlice.actions;
 
   const fetch = async () => {
     setIsReloadTable(true);
+    setLoadMatrix(true);
+
     axios
       .get(`${URL_PROVET_API}directories/owners`, {
         headers: {
@@ -39,6 +42,7 @@ const SearchPatientsPage: FC = () => {
       .catch(() => {})
       .finally(() => {
         setIsReloadTable(false);
+        setLoadMatrix(false);
       });
   };
 
@@ -107,6 +111,11 @@ const SearchPatientsPage: FC = () => {
     columns: columns,
     localization: MRT_Localization_RU,
     data: owners,
+    state: {
+      isLoading: isLoadMatrix,
+      showProgressBars: isLoadMatrix,
+    },
+
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
         navigate(`/patients/${row.original.id}`);
@@ -146,17 +155,27 @@ const SearchPatientsPage: FC = () => {
         <Tooltip arrow title="Обновить">
           <IconButton
             onClick={() => {
-              dispatch(setIsReloadTable(false));
               fetch();
             }}
           >
             {!isReloadTable ? <ArrowClockwise /> : <Spinner variant="primary" size="sm" />}
           </IconButton>
         </Tooltip>
+        <Tooltip arrow title="Добавить нового владельца">
+          <IconButton
+            onClick={() => {
+              dispatch(setShowModalAddOwner(true));
+            }}
+          >
+            <PlusLg color="green" size={20} />
+          </IconButton>
+        </Tooltip>
         <Tooltip arrow title="Получить справку">
           <IconButton
             onClick={() => {
-              infoHandler('Вы можете отфильтровать, отсортировать');
+              infoHandler(
+                'Вы можете отфильтровать, отсортировать, а также добавить нового владельца',
+              );
             }}
           >
             <QuestionCircle color="gray" size={20} />
@@ -164,13 +183,6 @@ const SearchPatientsPage: FC = () => {
         </Tooltip>
       </Box>
     ),
-    enableRowActions: true,
-    initialState: {
-      columnPinning: {
-        left: ['mrt-row-expand', 'mrt-row-select'],
-        right: ['mrt-row-actions'],
-      },
-    },
   });
   return (
     <>
@@ -178,15 +190,12 @@ const SearchPatientsPage: FC = () => {
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
           <Breadcrumb.Item active>
-            Быстрый поиск {isReloadTable && <Spinner variant="primary" size="sm" />}
+            Быстрый поиск {isLoadMatrix && <Spinner variant="primary" size="sm" />}
           </Breadcrumb.Item>
         </Breadcrumb>
       </Container>
       <Container className="py-2">
-        <p>
-          Для продолжения выберите в таблице нужного владельца, а после раскройте его и выберите
-          нужного пациента
-        </p>
+        <p>Выберите в матрице нужного владельца</p>
         <MaterialReactTable table={table} />
       </Container>
     </>

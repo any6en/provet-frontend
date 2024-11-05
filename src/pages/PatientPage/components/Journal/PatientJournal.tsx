@@ -7,12 +7,12 @@ import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { infoHandler } from '../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../config/config';
+import { infoHandler } from '../../../../utils/alarmHandler';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import { URL_PROVET_API } from '../../../../config/config';
 import { IJournal } from './IJournal';
-import { formatDate, formatDateDMYDT } from '../../../utils/dateFormatter';
+import { formatDate, formatDateDMYDT } from '../../../../utils/dateFormatter';
 
 interface Props {
   patient: any;
@@ -59,23 +59,18 @@ const PatientJournal: FC<Props> = ({ patient }) => {
 
   const columns: MRT_ColumnDef<any>[] = [
     {
-      accessorKey: 'id',
-      header: 'ID',
-      size: 5,
-      Cell: ({ row }) => row.original.id,
-    },
-    {
-      accessorKey: 'date_visit',
-      header: 'Дата',
-      size: 100,
-      Cell: ({ row }) => formatDateDMYDT(row.original.date_visit, false, true),
-    },
-    {
       accessorKey: 'content',
       header: 'Содержание',
       size: 100,
       Cell: ({ row }) => row.original.content,
     },
+    {
+      accessorKey: 'date_visit',
+      header: 'Дата визита',
+      size: 100,
+      Cell: ({ row }) => formatDateDMYDT(row.original.date_visit, false, true),
+    },
+
     {
       accessorKey: 'doctor_full_name',
       header: 'Врач',
@@ -96,6 +91,9 @@ const PatientJournal: FC<Props> = ({ patient }) => {
           navigate(`/visits/${row.original.id}`);
         }
       },
+      sx: {
+        backgroundColor: row.getCanExpand() ? '#ccc' : 'inherit',
+      },
     }),
     muiTableContainerProps: {
       sx: {
@@ -106,9 +104,7 @@ const PatientJournal: FC<Props> = ({ patient }) => {
     muiTablePaperProps: {
       elevation: 0,
       sx: {
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        borderRadius: '8px',
-        backgroundColor: '#f5f5f5',
+        border: '1px solid #dee2e6',
       },
     },
     muiTableHeadCellProps: {
@@ -159,17 +155,10 @@ const PatientJournal: FC<Props> = ({ patient }) => {
         </Tooltip>
       </Box>
     ),
-
-    initialState: {
-      columnPinning: {
-        left: ['mrt-row-expand', 'mrt-row-select'],
-        right: ['mrt-row-actions'],
-      },
-    },
   });
 
   return (
-    <Form className="px-3">
+    <Form className="px-3 py-2">
       <Row>
         <MaterialReactTable table={table} />
       </Row>

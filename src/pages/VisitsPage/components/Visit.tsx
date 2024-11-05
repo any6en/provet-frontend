@@ -279,6 +279,18 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             <AutoResizeTextarea value={visit?.result} onChange={(e: any) => {}} readOnly={true} />
           </Col>
         </Row>
+        <Form.Group className="mb-3" as={Row}>
+          <Form.Label className="fs-6" column sm={2}>
+            Дата визита
+          </Form.Label>
+          <Col sm={2}>
+            <Form.Control
+              type="date"
+              value={visit?.date_visit && visit.date_visit.substring(0, 10)}
+              disabled
+            />
+          </Col>
+        </Form.Group>
 
         {/* Добавьте сюда остальные поля формы с использованием visitData для отображения данных */}
         {/* <iframe

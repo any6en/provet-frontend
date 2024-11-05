@@ -23,7 +23,14 @@ const Header: FC = () => {
   };
 
   return (
-    <header className="header p-1" style={{ backgroundColor: '#099' }}>
+    <header
+      className="header p-1"
+      style={{
+        backgroundColor: '#099',
+        border: '1px solid #dee2e6',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+      }}
+    >
       <Container fluid>
         <Row className="d-flex align-items-center justify-content-center flex-nowrap">
           <Col
