@@ -5,7 +5,7 @@ import { calculateAge, formatDate, formatDate2 } from '../../utils/dateFormatter
 import { Breadcrumb, Button, Container, Spinner } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
+import { ArrowClockwise, PlusLg, QuestionCircle, Trash, Pencil } from 'react-bootstrap-icons';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
@@ -183,6 +183,38 @@ const SearchPatientsPage: FC = () => {
         </Tooltip>
       </Box>
     ),
+    enableRowActions: true,
+    initialState: {
+      columnPinning: { left: ['mrt-row-expand', 'mrt-row-select', 'mrt-row-actions'] },
+    },
+    renderRowActionMenuItems: ({ row, closeMenu }) => [
+      <MenuItem
+        key={0}
+        onClick={() => {
+          //handleDeleteBreed(row.original.id);
+          fetch();
+          closeMenu();
+        }}
+      >
+        <ListItemIcon>
+          <Pencil />
+        </ListItemIcon>
+        Изменить
+      </MenuItem>,
+      <MenuItem
+        key={0}
+        onClick={() => {
+          //handleDeleteBreed(row.original.id);
+          fetch();
+          closeMenu();
+        }}
+      >
+        <ListItemIcon>
+          <Trash />
+        </ListItemIcon>
+        Удалить
+      </MenuItem>,
+    ],
   });
   return (
     <>
