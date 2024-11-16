@@ -43,16 +43,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
         <Col sm={1} className="d-flex align-items-center justify-content-center" />
         <Col sm={2} className="d-flex align-items-center justify-content-right">
           <Box className="d-flex flex-nowrap align-items-center align-content-start">
-            <Tooltip arrow title="Обновить">
-              <IconButton
-                onClick={() => {
-                  //etchAnimalTypes();
-                }}
-              >
-                <ArrowClockwise />
-              </IconButton>
-            </Tooltip>
-            <Tooltip arrow title="Добавить вторичный прием">
+            <Tooltip arrow title="Добавить повторный прием">
               <IconButton
                 onClick={() => {
                   dispatch(setSelectedRepeatVisit(visit));
@@ -124,7 +115,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
                 <Trash color="red" size={20} />
               </IconButton>
             </Tooltip>
-            <Tooltip arrow title="Скачать документ на печать">
+            <Tooltip arrow title="Печать документа">
               {!isLoadPrintDocument ? (
                 <IconButton
                   onClick={async () => {

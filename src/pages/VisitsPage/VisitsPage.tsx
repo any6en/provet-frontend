@@ -12,6 +12,7 @@ import Visit from './components/Visit';
 import { Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
+import Swal from 'sweetalert2';
 
 const VisitsPage: FC = () => {
   // Состояния-хранилища данных
@@ -39,7 +40,13 @@ const VisitsPage: FC = () => {
 
   const dispatch = useAppDispatch();
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
-  const { setIsReloadTable } = userSlice.actions;
+
+  const {
+    setIsReloadTable,
+    setShowModalChangePatient,
+    setShowModalAddPatient,
+    setSelectedPatient,
+  } = userSlice.actions;
 
   // Обновляем матрицу после изменения данных роли устройства
   if (isReloadTable) {
@@ -117,15 +124,71 @@ const VisitsPage: FC = () => {
               className={` ${style.dropdownToggle}`}
               id="basic-nav-dropdown"
             >
-              <NavDropdown.Item className="border-bottom text-dark">
-                <NavLink className="nav-link" aria-current="page" to="owners/">
+              <NavDropdown.Item
+                className="border-bottom text-dark"
+                onClick={() => {
+                  const patient = {
+                    id: visits.patient_id,
+                    owner_id: visits.owner_id,
+                    nickname: visits.nickname,
+                    breed_id: visits.breed_id,
+                    animal_type_id: visits.animal_type_id,
+                    date_birth: visits.date_birth,
+                    gender: visits.gender,
+                    created_at: visits.created_at,
+                  };
+
+                  dispatch(setSelectedPatient(patient));
+                  dispatch(setShowModalChangePatient(true));
+                }}
+              >
+                <NavLink className="nav-link" aria-current="page" to="">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
                     Редактировать
                   </div>
                 </NavLink>
               </NavDropdown.Item>
-              <NavDropdown.Item className="border-top text-dark">
-                <NavLink className="nav-link" aria-current="page" to="breeds/">
+              <NavDropdown.Item
+                className="border-top text-dark"
+                onClick={() => {
+                  Swal.fire({
+                    title: 'Вы уверены?',
+                    text: 'При удалении пациента удалятся все связные данные: первичные, повторны визиты, вакцинации',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Да',
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      try {
+                        await axios.delete(
+                          `${URL_PROVET_API}directories/patients/patient/${visits.patient_id}`,
+                          {
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          },
+                        );
+
+                        Swal.fire({
+                          title: 'Успешно!',
+                          text: 'Запись была удалена',
+                          icon: 'success',
+                        });
+                        navigate('patients/' + visits.owner_id);
+                      } catch (error) {
+                        Swal.fire({
+                          title: 'Провал!',
+                          text: 'Что-то пошло не так',
+                          icon: 'error',
+                        });
+                      }
+                    }
+                  });
+                }}
+              >
+                <NavLink className="nav-link" aria-current="page" to="">
                   <div className="d-inline-flex align-items-center justify-content-center text-dark">
                     Удалить
                   </div>

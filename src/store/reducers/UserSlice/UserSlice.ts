@@ -106,7 +106,7 @@ export const userSlice = createSlice({
     setShowModalAddPatient(state, action: PayloadAction<boolean>) {
       state.modalAddPatient = action.payload;
     },
-    setSelectedPatient(state, action: PayloadAction<IPatient | null>) {
+    setSelectedPatient(state, action: PayloadAction<any | null>) {
       state.selectedPatient = action.payload;
     },
 
