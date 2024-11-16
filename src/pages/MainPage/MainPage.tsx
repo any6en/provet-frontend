@@ -10,15 +10,6 @@ const MainPage: FC = () => {
         <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
         </Breadcrumb>
-
-        <Link to="reception/">
-          <Container fluid className="d-flex justify-content-center">
-            <PlusCircle size={45} color="#099" style={{ cursor: 'pointer' }} />
-          </Container>
-          <Container fluid className="d-flex justify-content-center">
-            <div className="reception">Начать вести прием</div>
-          </Container>
-        </Link>
       </Container>
     </>
   );

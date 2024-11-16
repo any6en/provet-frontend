@@ -5,8 +5,8 @@ export default class User {
   id: string;
   login: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   patronymic: string;
   avatar: string;
   role: string;
@@ -16,8 +16,8 @@ export default class User {
     this.id = user.id;
     this.login = user.login;
     this.email = user.email;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
+    this.first_name = user.first_name;
+    this.last_name = user.last_name;
     this.patronymic = user.patronymic;
     this.avatar = user.avatar;
     this.role = user.role;

@@ -1,14 +1,11 @@
 import { FC } from 'react';
 import style from './Header.module.scss';
-import { Row, Col, Container, Image, NavDropdown, Nav, Dropdown } from 'react-bootstrap';
+import { Row, Col, Container, Image, NavDropdown, Nav } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { DoorOpen, Folder2Open, Search } from 'react-bootstrap-icons';
+import { DoorOpen } from 'react-bootstrap-icons';
 import { useAppSelector } from '../../hooks/redux';
-import { avatarEmpty } from '../../utils/Avatar';
 import ScienceIcon from '@mui/icons-material/Science';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
 
 const Header: FC = () => {
   const user = useAppSelector((state) => state.globalUserReducer.globalUser);
@@ -94,11 +91,11 @@ const Header: FC = () => {
               <Col className="col d-flex flex-row justify-content-end p-0">
                 <div className="d-flex align-items-center">
                   <div className="d-flex  justify-content-end text-muted">
-                    <span>{user.lastName}&nbsp;</span>
+                    <span>{user ? user.last_name : ''}&nbsp;</span>
                     <span className="d-flex">
-                      {user && user.firstName[0]}
+                      {user && user?.first_name[0]}
                       &nbsp;
-                      {user.patronymic[0]}
+                      {user && user?.patronymic[0]}
                     </span>
                   </div>
                   <div className="d-flex justify-content-end p-0 ms-1">
@@ -106,7 +103,7 @@ const Header: FC = () => {
                       title={
                         <div className={` d-flex justify-content-center`}>
                           <Image
-                            src={user.avatar}
+                            src={user && user?.avatar}
                             alt="Аватар пользователя"
                             style={{
                               borderRadius: '50%',
@@ -123,10 +120,11 @@ const Header: FC = () => {
                         <Row className="border-bottom m-1 text-center">
                           <Col>
                             <span>
-                              {user.lastName} {user.firstName} {user.patronymic}
+                              {user && user?.last_name} {user && user?.first_name}{' '}
+                              {user && user?.patronymic}
                             </span>
                             <br />
-                            <span className="text-muted">{user.email}</span>
+                            <span className="text-muted">{user && user?.email}</span>
                           </Col>
                         </Row>
                         <Row>

@@ -24,7 +24,13 @@ const SearchPatientsPage: FC = () => {
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const { setIsReloadTable, setShowModalAddOwner } = userSlice.actions;
+  const {
+    setIsReloadTable,
+    setShowModalAddOwner,
+    setShowModalAddPatient,
+    setShowModalChangeOwner,
+    setSelectedOwner,
+  } = userSlice.actions;
 
   const fetch = async () => {
     setIsReloadTable(true);
@@ -55,6 +61,43 @@ const SearchPatientsPage: FC = () => {
     dispatch(setIsReloadTable(false));
     fetch();
   }
+
+  const handleDeleteOwner = async (ownerId: number) => {
+    Swal.fire({
+      title: 'Вы уверены?',
+      text: 'Удаление записи владельца приведет к удалению ...',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Да',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${URL_PROVET_API}directories/owners/owner/${ownerId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          // Обновите состояние, чтобы удалить владельца из списка
+          setOwners((prevOwners) => prevOwners.filter((owner) => owner.id !== ownerId));
+
+          Swal.fire({
+            title: 'Успешно!',
+            text: 'Запись была удалена',
+            icon: 'success',
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Провал!',
+            text: 'Что-то пошло не так',
+            icon: 'error',
+          });
+        }
+      }
+    });
+  };
 
   const columns: MRT_ColumnDef<IOwner>[] = [
     {
@@ -191,8 +234,9 @@ const SearchPatientsPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          //handleDeleteBreed(row.original.id);
-          fetch();
+          dispatch(setSelectedOwner(row.original));
+          dispatch(setShowModalChangeOwner(true));
+
           closeMenu();
         }}
       >
@@ -204,8 +248,8 @@ const SearchPatientsPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          //handleDeleteBreed(row.original.id);
-          fetch();
+          handleDeleteOwner(row.original.id);
+
           closeMenu();
         }}
       >

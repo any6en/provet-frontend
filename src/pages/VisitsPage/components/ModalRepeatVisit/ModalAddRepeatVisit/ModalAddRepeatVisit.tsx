@@ -155,7 +155,7 @@ const ModalAddRepeatVisit: FC = () => {
                           });
                         }}
                       >
-                        <option value="" selected={user?.firstName === ''}>
+                        <option value="" selected={user?.first_name === ''}>
                           Выберите врача
                         </option>
                         {users.map((obj: any) => {

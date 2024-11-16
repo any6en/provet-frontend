@@ -23,12 +23,8 @@ const OwnerPatientsPage: FC = () => {
   const { owner_idParam } = useParams();
   const controller = useRef(new AbortController());
 
-  const {
-    setIsReloadTable,
-    setShowModalChangePatient,
-    setShowModalAddPatient,
-    setSelectedPatient,
-  } = userSlice.actions;
+  const { setIsReloadTable, setShowModalAddPatient, setShowModalChangeOwner, setSelectedOwner } =
+    userSlice.actions;
 
   const fetch = async () => {
     setIsReloadTable(true);
@@ -227,8 +223,6 @@ const OwnerPatientsPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          //handleDeleteBreed(row.original.id);
-          fetch();
           closeMenu();
         }}
       >
