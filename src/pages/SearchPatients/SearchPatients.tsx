@@ -24,13 +24,8 @@ const SearchPatientsPage: FC = () => {
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const {
-    setIsReloadTable,
-    setShowModalAddOwner,
-    setShowModalAddPatient,
-    setShowModalChangeOwner,
-    setSelectedOwner,
-  } = userSlice.actions;
+  const { setIsReloadTable, setShowModalAddOwner, setShowModalChangeOwner, setSelectedOwner } =
+    userSlice.actions;
 
   const fetch = async () => {
     setIsReloadTable(true);

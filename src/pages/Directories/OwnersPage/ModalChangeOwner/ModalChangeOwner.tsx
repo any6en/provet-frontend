@@ -7,36 +7,32 @@ import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { Tooltip } from '@mui/material';
+import FormField from '../components/FormField';
+import { Printer } from 'react-bootstrap-icons';
 
 const ModalChangeOwner: FC = () => {
-  // Флаг, открыта ли форма
   const show = useAppSelector((state) => state.userReducer.modalChangeOwner);
   const { setShowModalChangeOwner, setIsReloadTable } = userSlice.actions;
-
-  // Выбранная запись. Не подлежит редактированию!
   const selectedData = useAppSelector((state) => state.userReducer.selectedOwner);
-
   const dispatch = useAppDispatch();
 
-  // Состояние для хранения измененных данных в форме
   const [data, setData] = useState<any>({});
+  console.log(selectedData);
 
-  // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
+  const [isPreloadPrintDocument, setIsPreloadPrintDocument] = useState<boolean>(false);
 
   const controller = useRef(new AbortController());
 
-  // Обработчик монтирования компонента
   useEffect(() => {
     if (show) {
       controller.current = new AbortController();
       setData({ ...selectedData });
     }
-  }, [show]);
+  }, [show, selectedData]);
 
   const handleUpdate = async () => {
     setIsPreload(true);
-
     axios
       .patch(`${URL_PROVET_API}directories/owners/owner`, data, {
         headers: {
@@ -57,7 +53,27 @@ const ModalChangeOwner: FC = () => {
       });
   };
 
-  // Очистка формы
+  const handleDownloadDocument = async () => {
+    setIsPreloadPrintDocument(true);
+    axios
+      .post(`${URL_PROVET_API}document_generator/pd_agreement_sign`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        responseType: 'blob',
+      })
+      .then((response) => {
+        window.open(URL.createObjectURL(response.data));
+        handleClose();
+      })
+      .catch(() => {
+        errorHandler('Ошибка! Указаны неверные данные?');
+      })
+      .finally(() => {
+        setIsPreloadPrintDocument(false);
+      });
+  };
+
   const cleanForm = () => {
     setData({});
     setIsPreload(false);
@@ -65,21 +81,14 @@ const ModalChangeOwner: FC = () => {
 
   const handleClose = (): void => {
     dispatch(setShowModalChangeOwner(false));
-
-    // При закрытии обрыв всех запросов
     controller.current.abort();
     cleanForm();
   };
 
   return (
-    <Modal
-      show={show}
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      onHide={handleClose}
-    >
+    <Modal show={show} centered onHide={handleClose}>
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Карточка владельца`}</Modal.Title>
+        <Modal.Title className="fs-6">Карточка владельца</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>
@@ -87,123 +96,45 @@ const ModalChangeOwner: FC = () => {
             <Col className="ps-0">
               <Form id="formModal">
                 <Container>
-                  <p className="text-center">Общая информация</p>
-                  <Form.Group className="mb-3" as={Row}>
-                    <Form.Label className="fs-6" column sm={4}>
-                      Имя
-                      <span>
-                        <Tooltip arrow title="Обязательное поле" placement="top">
-                          <span
-                            style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
-                          >
-                            <span>*</span>
-                          </span>
-                        </Tooltip>
-                      </span>
-                    </Form.Label>
-                    <Col sm={8}>
-                      <Form.Control
-                        type="text"
-                        value={data?.first_name}
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            first_name: e.target.value,
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3" as={Row}>
-                    <Form.Label className="fs-6" column sm={4}>
-                      Фамилия
-                      <span>
-                        <Tooltip arrow title="Обязательное поле" placement="top">
-                          <span
-                            style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
-                          >
-                            <span>*</span>
-                          </span>
-                        </Tooltip>
-                      </span>
-                    </Form.Label>
-                    <Col sm={8}>
-                      <Form.Control
-                        type="text"
-                        value={data?.last_name}
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            last_name: e.target.value,
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3" as={Row}>
-                    <Form.Label className="fs-6" column sm={4}>
-                      Отчество
-                      <span>
-                        <Tooltip arrow title="Обязательное поле" placement="top">
-                          <span
-                            style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
-                          >
-                            <span>*</span>
-                          </span>
-                        </Tooltip>
-                      </span>
-                    </Form.Label>
-                    <Col sm={8}>
-                      <Form.Control
-                        type="text"
-                        value={data?.patronymic}
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            patronymic: e.target.value,
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3" as={Row}>
-                    <Form.Label className="fs-6" column sm={4}>
-                      Адрес
-                    </Form.Label>
-                    <Col sm={8}>
-                      <Form.Control
-                        type="text"
-                        value={data?.address}
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            address: e.target.value,
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Form.Group>
-
-                  <Form.Group className="mb-3" as={Row}>
-                    <Form.Label className="fs-6" column sm={4}>
-                      Дата рождения
-                    </Form.Label>
-                    <Col sm={8}>
-                      <Form.Control
-                        type="date"
-                        value={data?.date_birth && data.date_birth.substring(0, 10)}
-                        onChange={(e: any) => {
-                          setData({
-                            ...data,
-                            date_birth: e.target.value,
-                          });
-                        }}
-                      />
-                    </Col>
-                  </Form.Group>
+                  <h5 className="text-center">Общая информация</h5>
+                  <FormField
+                    label="Имя"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.first_name}
+                    onChange={(e) => setData({ ...data, first_name: e.target.value })}
+                    required
+                  />
+                  <FormField
+                    label="Фамилия"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.last_name}
+                    onChange={(e) => setData({ ...data, last_name: e.target.value })}
+                    required
+                  />
+                  <FormField
+                    label="Отчество"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.patronymic}
+                    onChange={(e) => setData({ ...data, patronymic: e.target.value })}
+                    required
+                  />
+                  <FormField
+                    label="Адрес"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.address}
+                    onChange={(e) => setData({ ...data, address: e.target.value })}
+                  />
+                  <FormField
+                    label="Дата рождения"
+                    type="date"
+                    value={data?.date_birth}
+                    onChange={(e) => setData({ ...data, date_birth: e.target.value })}
+                    required
+                  />
                   <Form.Group className="mb-3" as={Row}>
                     <Form.Label className="fs-6" column sm={4}>
                       Пол
@@ -243,138 +174,103 @@ const ModalChangeOwner: FC = () => {
                     </Col>
                   </Form.Group>
                 </Container>
+                <Container>
+                  <h5 className="text-center">Паспортные данные</h5>
+                  <FormField
+                    label="Серия паспорта"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.passport_series}
+                    onChange={(e) => setData({ ...data, passport_series: e.target.value })}
+                  />
+                  <FormField
+                    label="Номер паспорта"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.passport_number}
+                    onChange={(e) => setData({ ...data, passport_number: e.target.value })}
+                  />
+                  <FormField
+                    label="Кем выдан"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.issued_by}
+                    onChange={(e) => setData({ ...data, issued_by: e.target.value })}
+                  />
+                  <FormField
+                    label="Код подразделения"
+                    type="text"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data.subdivision_code}
+                    onChange={(e) => setData({ ...data, subdivision_code: e.target.value })}
+                  />
+                  <FormField
+                    label="Дата выдачи"
+                    type="date"
+                    tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
+                    value={data?.issue_date}
+                    onChange={(e) => setData({ ...data, issue_date: e.target.value })}
+                  />
+                  <Form.Group className="mb-3" as={Row}>
+                    <Form.Label className="fs-6" column sm={10}>
+                      Подписан ли договор об согласии на обработку персональных данных
+                      <span>
+                        <Tooltip arrow title="Обязательное поле" placement="top">
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                          >
+                            *
+                          </span>
+                        </Tooltip>
+                      </span>
+                    </Form.Label>
+                    <Col sm={2}>
+                      <Form.Check
+                        className="pt-2 checkSwitch"
+                        type="switch"
+                        checked={data?.pd_agreement_signed}
+                        onChange={(e) =>
+                          setData({ ...data, pd_agreement_signed: e.target.checked })
+                        }
+                      />
+                    </Col>
+                  </Form.Group>
+                </Container>
               </Form>
             </Col>
-            <Row>Дата создания профиля: {formatDate(selectedData?.created_at)}</Row>
+            <Row>Дата создания: {formatDate(selectedData?.created_at)}</Row>
+            {selectedData?.date_pd_agreement_sign && (
+              <Row>Договор подписан: {formatDate(selectedData?.date_pd_agreement_sign)}</Row>
+            )}
+
+            <Row>Для подписания договора заполните поля, помеченные синей звездочкой</Row>
           </Row>
-        </Container>
-        <Container>
-          <p className="text-center">Поспортные данные</p>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={4}>
-              Серия
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="text"
-                value={data?.passport_series}
-                onChange={(e: any) => {
-                  setData({
-                    ...data,
-                    passport_series: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={4}>
-              Номер
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="text"
-                value={data?.passport_number}
-                onChange={(e: any) => {
-                  setData({
-                    ...data,
-                    passport_number: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={4}>
-              Кем выдан
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="text"
-                value={data?.issued_by}
-                onChange={(e: any) => {
-                  setData({
-                    ...data,
-                    issued_by: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={4}>
-              Код подразделения
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="text"
-                value={data?.subdivision_code}
-                onChange={(e: any) => {
-                  setData({
-                    ...data,
-                    subdivision_code: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={4}>
-              Дата выдачи
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="date"
-                value={data?.issue_date}
-                onChange={(e: any) => {
-                  setData({
-                    ...data,
-                    issue_date: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group className="mb-3" as={Row}>
-            <Form.Label className="fs-6" column sm={10}>
-              Подписан ли договор об согласии на обработку персональных данных
-              <span>
-                <Tooltip arrow title="Обязательное поле" placement="top">
-                  <span style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}>
-                    <span>*</span>
-                  </span>
-                </Tooltip>
-              </span>
-            </Form.Label>
-            <Col sm={2}>
-              <Form.Check
-                className="pt-2 checkSwitch"
-                type="switch"
-                defaultChecked={data?.pd_agreement_signed}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    pd_agreement_signed: e.target.checked,
-                  })
-                }
-              />
-            </Col>
-          </Form.Group>
         </Container>
       </Modal.Body>
       <Modal.Footer>
         <Row className="w-100">
-          <Col sm={4}></Col>
-          <Col sm={8} className="d-flex align-items-center justify-content-end ">
+          <Col sm={5}>
+            <Tooltip arrow title="Печать договора об согласии на обработку персональных данных">
+              <Button
+                variant="secondary"
+                className="d-flex align-items-center"
+                onClick={handleDownloadDocument}
+                disabled={isPreloadPrintDocument}
+              >
+                <Printer color="black" size={20} /> Печать&nbsp;
+                {isPreloadPrintDocument && <Spinner size="sm" style={{ color: '#fff' }} />}
+              </Button>
+            </Tooltip>
+          </Col>
+          <Col sm={7} className="d-flex align-items-center justify-content-end">
             <Button
               variant="primary"
               onClick={handleUpdate}
-              disabled={false}
+              disabled={isPreload}
               className="px-0 sendFormAddDataButton"
             >
               <div className="d-flex align-items-center justify-content-center">
-                Изменить&nbsp;
-                {isPreload && <Spinner size="sm" style={{ color: '#fff' }} />}
+                Изменить&nbsp;{isPreload && <Spinner size="sm" style={{ color: '#fff' }} />}
               </div>
             </Button>
           </Col>

@@ -7,6 +7,14 @@ export interface IOwner {
   date_birth: string;
   gender: number;
   created_at: string;
+
+  passport_series: string;
+  passport_number: string;
+  issued_by: string;
+  subdivision_code: string;
+  issue_date: string;
+  pd_agreement_signed: boolean;
+  date_pd_agreement_sign: boolean;
 }
 
 export interface IPatient {

@@ -31,9 +31,6 @@ const Properties: FC<Props> = ({ patient }) => {
       })
       .then((response) => {
         setData(response.data.response);
-        console.log(response);
-        console.log(response.data);
-        console.log(response.data.response);
       })
       .catch(() => {})
       .finally(() => {});

@@ -88,7 +88,7 @@ const AuthPage: FC = () => {
                 onChange={(e: any) => {
                   setData({
                     ...data,
-                    login: e.target.value,
+                    login: e.target.value !== '' ? e.target.value : undefined,
                   });
                 }}
               />
@@ -106,7 +106,7 @@ const AuthPage: FC = () => {
                 onChange={(e: any) => {
                   setData({
                     ...data,
-                    password: e.target.value,
+                    password: e.target.value !== '' ? e.target.value : undefined,
                   });
                 }}
               />
