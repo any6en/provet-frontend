@@ -17,7 +17,6 @@ const ModalChangeOwner: FC = () => {
   const dispatch = useAppDispatch();
 
   const [data, setData] = useState<any>({});
-  console.log(selectedData);
 
   const [isPreload, setIsPreload] = useState<boolean>(false);
   const [isPreloadPrintDocument, setIsPreloadPrintDocument] = useState<boolean>(false);

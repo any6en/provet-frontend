@@ -45,6 +45,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
           <Box className="d-flex flex-nowrap align-items-center align-content-start">
             <Tooltip arrow title="Добавить повторный прием">
               <IconButton
+                className="icon-size"
                 onClick={() => {
                   dispatch(setSelectedRepeatVisit(visit));
                   dispatch(setShowModalAddRepeatVisit(true));
@@ -55,6 +56,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             </Tooltip>
             <Tooltip arrow title="Редактировать">
               <IconButton
+                className="icon-size"
                 onClick={() => {
                   if (isPrimary) {
                     dispatch(setShowModalChangePrimaryVisit(true));
@@ -70,6 +72,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             </Tooltip>
             <Tooltip arrow title="Удалить">
               <IconButton
+                className="icon-size"
                 onClick={() => {
                   const text = isPrimary
                     ? 'Удаление первичного приема приведет к удалению записей, связанных с ним, то есть вложенных повторных приемов на основе этого'
@@ -118,6 +121,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
             <Tooltip arrow title="Печать документа">
               {!isLoadPrintDocument ? (
                 <IconButton
+                  className="icon-size"
                   onClick={async () => {
                     setIsLoadPrintDocument(true);
                     const document_type = isPrimary
@@ -148,7 +152,7 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
               )}
             </Tooltip>
             <Tooltip arrow title="Получить справку">
-              <IconButton onClick={() => {}}>
+              <IconButton className="icon-size" onClick={() => {}}>
                 <QuestionCircle color="gray" size={20} />
               </IconButton>
             </Tooltip>

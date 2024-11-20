@@ -1,0 +1,42 @@
+/* VisitsPage.css */
+.nav-tabs {
+  border: none;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: 0;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #007bff; /* Цвет активной вкладки */
+  color: white; /* Цвет текста активной вкладки */
+}
+
+.nav-tabs .nav-link:hover {
+  background-color: #0056b3; /* Цвет при наведении */
+  color: white; /* Цвет текста при наведении */
+}
+
+/* styles.css or your component's CSS module */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 300ms, transform 300ms;
+}
