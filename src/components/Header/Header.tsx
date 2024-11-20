@@ -39,7 +39,7 @@ const Header: FC = () => {
             <Image src={require('./logo.png')} className={`${style.logo}`} />
           </Col>
           <Col sm={8} className="d-flex align-items-center p-0">
-            <Nav.Link as={NavLink} to="/search_patients" className="pe-3">
+            <Nav.Link as={NavLink} to="/search_owners" className="pe-3">
               <SearchIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
               <span style={{ color: '#fff' }}></span>
             </Nav.Link>

@@ -66,14 +66,14 @@ const PatientPage = () => {
           <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
           <Breadcrumb.Item
             onClick={() => {
-              navigate('/search_patients');
+              navigate('/search_owners');
             }}
           >
             Быстрый поиск
           </Breadcrumb.Item>
           <Breadcrumb.Item
             onClick={() => {
-              navigate(`/patients/${patient?.owner_id}`);
+              navigate(`/patients_of_owner/${patient?.owner_id}`);
             }}
           >
             Владелец пациентов №{patient?.owner_id}
@@ -167,7 +167,7 @@ const PatientPage = () => {
                           text: 'Запись была удалена',
                           icon: 'success',
                         });
-                        navigate('patients/' + patient.owner_id);
+                        navigate('patients_of_owner/' + patient.owner_id);
                       } catch (error) {
                         Swal.fire({
                           title: 'Провал!',

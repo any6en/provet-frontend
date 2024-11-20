@@ -121,7 +121,16 @@ input[type='number']:focus {
   z-index: 1;
   width: 100%;
 }
-
+// Стилизация контейнера для матриц
+.matrixContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #fcfcfc;
+  height: calc(100vh - 101px);
+  padding: 0.5rem !important;
+  padding-top: 0 !important;
+}
 .rightClick {
   z-index: 12;
   position: fixed;

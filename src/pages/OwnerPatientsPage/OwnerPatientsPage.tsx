@@ -2,7 +2,15 @@ import { FC, useState, useEffect, useRef } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { calculateAge, formatDate, formatDate2 } from '../../utils/dateFormatter';
-import { Breadcrumb, Button, Container, Spinner } from 'react-bootstrap';
+import {
+  Breadcrumb,
+  Button,
+  CardHeader,
+  Card,
+  Container,
+  Spinner,
+  CardBody,
+} from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, Pencil, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
@@ -251,22 +259,39 @@ const OwnerPatientsPage: FC = () => {
     <>
       {owner_idParam ? (
         <>
-          <Container fluid className="py-2">
-            <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
+          <Container fluid className="py-2" style={{ backgroundColor: '#ECECEC' }}>
+            <Breadcrumb className="p-2">
               <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
               <Breadcrumb.Item
                 onClick={() => {
-                  navigate(`/search_patients`);
+                  navigate(`/search_owners`);
                 }}
               >
                 Быстрый поиск
               </Breadcrumb.Item>
               <Breadcrumb.Item active>Владелец пациентов №{owner_idParam}</Breadcrumb.Item>
             </Breadcrumb>
-          </Container>
-          <Container className="py-2">
-            <p>Выберите в матрице нужного пациента</p>
-            <MaterialReactTable table={table} />
+            <Container
+              style={{ borderRadius: '25px', border: '1px solid #dee2e6', overflow: 'hidden' }}
+              className="p-0"
+            >
+              <Card style={{ border: 'none' }}>
+                <CardHeader
+                  style={{
+                    backgroundColor: '#cfe2ff',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    border: 'none',
+                  }}
+                >
+                  <h5>Справочник пациентов владельца</h5>
+                </CardHeader>
+                <CardBody style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
+                  <p>Выберите в матрице нужного пациента</p>
+                  <MaterialReactTable table={table} />
+                </CardBody>
+              </Card>
+            </Container>
           </Container>
         </>
       ) : (

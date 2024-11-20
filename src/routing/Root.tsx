@@ -11,9 +11,9 @@ import AuthPage from '../pages/AuthPage/AuthPage';
 import LogoutPage from '../pages/LogoutPage/LogoutPage';
 
 import PatientPage from '../pages/PatientPage/PatientPage';
-import SearchPatientsPage from '../pages/SearchPatients/SearchPatients';
 import OwnerPatientsPage from '../pages/OwnerPatientsPage/OwnerPatientsPage';
 import VisitsPage from '../pages/VisitsPage/VisitsPage';
+import SearchOwnersPage from '../pages/SearchOwnersPage/SearchOwnersPage';
 
 function Root() {
   const dispatch = useAppDispatch();
@@ -40,11 +40,11 @@ function Root() {
           <Route path="directories/animal_types" element={<AnimalTypesPage />} />
           <Route path="directories/breeds" element={<BreedsPage />} /> */}
 
-          {/* Медицинское дело */}
-          <Route path="search_patients" element={<SearchPatientsPage />} />
+          {/* Вет. дело */}
+          <Route path="search_owners" element={<SearchOwnersPage />} />
 
           <Route path="patient/:patient_idParam" element={<PatientPage />} />
-          <Route path="patients/:owner_idParam?" element={<OwnerPatientsPage />} />
+          <Route path="patients_of_owner/:owner_idParam?" element={<OwnerPatientsPage />} />
           {/* <Route path="primary_visits/:primary_visit_idParam?" element={<PrimaryVisitPage />} /> */}
           <Route path="visits/:primary_visit_idParam?" element={<VisitsPage />} />
         </Route>
