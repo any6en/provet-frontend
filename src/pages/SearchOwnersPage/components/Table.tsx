@@ -6,16 +6,16 @@ import { useAppSelector } from '../../../hooks/redux';
 import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import { useNavigate } from 'react-router-dom';
 import OwnerTableRowActions from './OwnerTableRowActions';
-import OwnerTableToolbar from './OwnerTableToolbar';
+import TableToolbar from './TableToolbar';
 
-interface OwnerTableProps {
+interface TableProps {
   owners: IOwner[];
   isLoadMatrix: boolean;
   fetch: () => Promise<void>;
   handleDeleteOwner: (ownerId: number) => Promise<void>;
 }
 
-const OwnerTable: FC<OwnerTableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner }) => {
+const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner }) => {
   const navigate = useNavigate();
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable); // Извлекаем isReloadTable из Redux
 
@@ -115,7 +115,7 @@ const OwnerTable: FC<OwnerTableProps> = ({ owners, isLoadMatrix, fetch, handleDe
     },
 
     renderTopToolbarCustomActions: () => (
-      <OwnerTableToolbar fetch={fetch} isReloadTable={isReloadTable} /> // Передаем isReloadTable
+      <TableToolbar fetch={fetch} isReloadTable={isReloadTable} /> // Передаем isReloadTable
     ),
     enableRowActions: true,
     renderRowActionMenuItems: ({ row, closeMenu }) => [
@@ -130,4 +130,4 @@ const OwnerTable: FC<OwnerTableProps> = ({ owners, isLoadMatrix, fetch, handleDe
   return <MaterialReactTable table={table} />;
 };
 
-export default OwnerTable;
+export default Table;

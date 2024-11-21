@@ -18,7 +18,7 @@ interface Props {
   patient: any;
 }
 
-const PatientJournal: FC<Props> = ({ patient }) => {
+const Journal: FC<Props> = ({ patient }) => {
   const dispatch = useAppDispatch();
 
   const { setIsReloadTable, setShowModalAddPrimaryVisit, setSelectedPrimaryVisit } =
@@ -166,4 +166,4 @@ const PatientJournal: FC<Props> = ({ patient }) => {
   );
 };
 
-export default PatientJournal;
+export default Journal;

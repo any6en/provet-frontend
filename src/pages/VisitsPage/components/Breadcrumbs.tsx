@@ -7,7 +7,7 @@ interface BreadcrumbsProps {
   visits: any;
 }
 
-const BreadcrumbsLoL: React.FC<BreadcrumbsProps> = ({ visits }) => {
+const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ visits }) => {
   const navigate = useNavigate();
 
   return (
@@ -27,4 +27,4 @@ const BreadcrumbsLoL: React.FC<BreadcrumbsProps> = ({ visits }) => {
   );
 };
 
-export default BreadcrumbsLoL;
+export default Breadcrumbs;

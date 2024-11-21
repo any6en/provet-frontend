@@ -4,7 +4,7 @@ import axios from 'axios';
 import { URL_PROVET_API } from '../../config/config';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import OwnerTable from './components/OwnerTable';
+import Table from './components/Table';
 import OwnerBreadcrumb from './components/OwnerBreadcrumb';
 import { IOwner } from '../../store/reducers/UserSlice/UserSliceTypes';
 import Swal from 'sweetalert2';
@@ -95,7 +95,7 @@ const SearchOwnersPage: FC = () => {
             </div>
             <div style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
               <p>Выберите в матрице нужного владельца</p>
-              <OwnerTable
+              <Table
                 owners={owners}
                 isLoadMatrix={isLoadMatrix}
                 fetch={fetch}

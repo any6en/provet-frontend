@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { URL_PROVET_API } from '../../config/config';
 import VisitCard from './components/VisitCard';
-import BreadcrumbsLoL from './components/BreadcrumbsLoL';
+import Breadcrumbs from './components/Breadcrumbs';
 import VisitTabs from './components/VisitTabs';
 import PatientHeader from './components/PatientHeader';
 
@@ -45,13 +45,13 @@ const VisitsPage: FC = () => {
 
   return (
     <Container fluid className="py-2" style={{ backgroundColor: '#ECECEC' }}>
-      <BreadcrumbsLoL visits={visits} />
+      <Breadcrumbs visits={visits} />
       <Row>
         <Col sm={2}>
           <VisitTabs visits={visits} value={value} handleChange={handleChange} />
         </Col>
         <Col sm={10}>
-          <PatientHeader visits={visits} getSrcImageIconPatient={getSrcImageIconPatient} />
+          <PatientHeader visits={visits} />
           <span className="p-2"></span>
           <VisitCard visits={visits} value={value} />
         </Col>

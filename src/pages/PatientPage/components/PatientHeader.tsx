@@ -8,27 +8,17 @@ import TocIcon from '@mui/icons-material/Toc';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import style from '../../PatientPage/PatientPage.module.scss';
+import { calculateAge } from '../../../utils/dateFormatter';
 
 interface PatientHeaderProps {
-  visits: any;
+  patient: any;
 }
 
-const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
+const PatientHeader: React.FC<PatientHeaderProps> = ({ patient }) => {
   const dispatch = useDispatch();
   const { setShowModalChangePatient, setSelectedPatient } = userSlice.actions;
 
   const handleEditPatient = () => {
-    const patient = {
-      id: visits.patient_id,
-      owner_id: visits.owner_id,
-      nickname: visits.nickname,
-      breed_id: visits.breed_id,
-      animal_type_id: visits.animal_type_id,
-      date_birth: visits.date_birth,
-      gender: visits.gender,
-      created_at: visits.created_at,
-    };
-
     dispatch(setSelectedPatient(patient));
     dispatch(setShowModalChangePatient(true));
   };
@@ -36,7 +26,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
   const handleDeletePatient = () => {
     Swal.fire({
       title: 'Вы уверены?',
-      text: 'При удалении пациента удалятся все связные данные: первичные, повторны визиты, вакцинации',
+      text: 'При удалении пациента удалятся все связные данные: первичные, повторные визиты, вакцинации',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -44,7 +34,6 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
       confirmButtonText: 'Да',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // Здесь будет код для удаления пациента
       }
     });
   };
@@ -68,7 +57,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
         <Col sm={8} className="d-flex align-items-center">
           <img
             alt="Изображение животного"
-            src={getSrcImageIconPatient(visits?.animal_type_id)}
+            src={getSrcImageIconPatient(patient?.animal_type_id)}
             className={`border border-3 align-self-center ${style.animalImage}`}
             style={{
               borderRadius: '50%',
@@ -76,7 +65,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
             }}
           />
           <span className="p-2" style={{ color: 'gray', fontSize: '24px' }}>
-            {visits?.nickname}
+            {patient?.nickname}
           </span>
           <NavDropdown
             title={<TocIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />}
@@ -100,14 +89,14 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
           </NavDropdown>
           <span className="p-2" style={{ fontSize: '14px' }}>
             <Tooltip arrow title="Номер медкарты" placement="top">
-              <span className={style.text}>№{visits?.patient_id}</span>
+              <span className={style.text}>№{patient?.patient_id}</span>
             </Tooltip>
           </span>
           <span className="p-2">
             <Tooltip arrow title="Возраст на данный момент времени" placement="top">
               <span className={style.text} style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <CalendarTodayIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />
-                <span className="ps-2">{visits?.now_age}</span>
+                <span className="ps-2">{calculateAge(patient?.date_birth)}</span>
               </span>
             </Tooltip>
           </span>
