@@ -50,7 +50,7 @@ const VisitsPage: FC = () => {
   };
 
   return (
-    <Container fluid className="py-2">
+    <Container fluid className="py-2" style={{ backgroundColor: '#ECECEC' }}>
       <BreadcrumbsLoL visits={visits} />
       <Row>
         <Col sm={2}>
@@ -58,6 +58,7 @@ const VisitsPage: FC = () => {
         </Col>
         <Col sm={10}>
           <PatientHeader visits={visits} getSrcImageIconPatient={getSrcImageIconPatient} />
+          <span className="p-2"></span>
           <VisitCard visits={visits} value={value} />
         </Col>
       </Row>

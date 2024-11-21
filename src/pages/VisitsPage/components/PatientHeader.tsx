@@ -53,7 +53,11 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits, getSrcImageIconPa
   };
 
   return (
-    <Container fluid className="py-2" style={{ backgroundColor: '#f8f8f8' }}>
+    <Container
+      fluid
+      className="py-2"
+      style={{ backgroundColor: '#f8f8f8', borderRadius: '25px', border: '1px solid #dee2e6' }}
+    >
       <Row>
         <Col sm={2}></Col>
         <Col sm={8} className="d-flex align-items-center">

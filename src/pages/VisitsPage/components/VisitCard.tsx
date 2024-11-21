@@ -44,8 +44,8 @@ const VisitCard: React.FC<VisitCardProps> = ({ visits, value }) => {
       style={{ borderRadius: '25px', border: '1px solid #dee2e6', overflow: 'hidden' }}
       className="p-0"
     >
-      <Card style={{ border: 'none' }}>
-        <CardHeader
+      <div style={{ border: 'none' }}>
+        <div
           style={{
             backgroundColor: '#cfe2ff',
             fontWeight: 'bold',
@@ -53,9 +53,9 @@ const VisitCard: React.FC<VisitCardProps> = ({ visits, value }) => {
             border: 'none',
           }}
         >
-          <h5>Информация о визитах</h5>
-        </CardHeader>
-        <CardBody style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
+          <h5 className="p-2">Информация о визите</h5>
+        </div>
+        <div style={{ borderRadius: '0 0 25px 25px', padding: '20px', backgroundColor: '#fff' }}>
           <TabPanel value={value} index={0}>
             {visits && <Visit visit={visits} isPrimary={true} />}
           </TabPanel>
@@ -64,8 +64,8 @@ const VisitCard: React.FC<VisitCardProps> = ({ visits, value }) => {
               <Visit visit={repeat_visit} isPrimary={false} />
             </TabPanel>
           ))}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </Container>
   );
 };

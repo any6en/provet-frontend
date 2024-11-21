@@ -12,7 +12,7 @@ const BreadcrumbsLoL: React.FC<BreadcrumbsProps> = ({ visits }) => {
   const navigate = useNavigate();
 
   return (
-    <Breadcrumb style={{ backgroundColor: '#f5f5f5' }} className="p-2">
+    <Breadcrumb className="p-2">
       <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
       <Breadcrumb.Item onClick={() => navigate('/search_owners')}>Быстрый поиск</Breadcrumb.Item>
       <Breadcrumb.Item onClick={() => navigate(`/patients_of_owner/${visits?.owner_id}`)}>

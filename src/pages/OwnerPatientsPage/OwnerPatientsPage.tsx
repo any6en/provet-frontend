@@ -1,16 +1,8 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { calculateAge, formatDate, formatDate2 } from '../../utils/dateFormatter';
-import {
-  Breadcrumb,
-  Button,
-  CardHeader,
-  Card,
-  Container,
-  Spinner,
-  CardBody,
-} from 'react-bootstrap';
+import { formatDate, formatDate2 } from '../../utils/dateFormatter';
+import { Breadcrumb, Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, Pencil, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
@@ -18,7 +10,6 @@ import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material'
 import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { IOwner } from '../../store/reducers/UserSlice/UserSliceTypes';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IPatient } from '../Directories/PatientsPage/IPatients';
 
@@ -272,11 +263,16 @@ const OwnerPatientsPage: FC = () => {
               <Breadcrumb.Item active>Владелец пациентов №{owner_idParam}</Breadcrumb.Item>
             </Breadcrumb>
             <Container
-              style={{ borderRadius: '25px', border: '1px solid #dee2e6', overflow: 'hidden' }}
+              style={{
+                borderRadius: '25px',
+                border: '1px solid #dee2e6',
+                overflow: 'hidden',
+                backgroundColor: '#fff',
+              }}
               className="p-0"
             >
-              <Card style={{ border: 'none' }}>
-                <CardHeader
+              <div style={{ border: 'none' }}>
+                <div
                   style={{
                     backgroundColor: '#cfe2ff',
                     fontWeight: 'bold',
@@ -284,13 +280,13 @@ const OwnerPatientsPage: FC = () => {
                     border: 'none',
                   }}
                 >
-                  <h5>Справочник пациентов владельца</h5>
-                </CardHeader>
-                <CardBody style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
+                  <h5 className="p-2">Справочник пациентов владельца</h5>
+                </div>
+                <div style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
                   <p>Выберите в матрице нужного пациента</p>
                   <MaterialReactTable table={table} />
-                </CardBody>
-              </Card>
+                </div>
+              </div>
             </Container>
           </Container>
         </>

@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { Card, CardBody, CardHeader, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import axios from 'axios';
 import { URL_PROVET_API } from '../../config/config';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
@@ -74,11 +74,16 @@ const SearchOwnersPage: FC = () => {
       <Container fluid className="py-2" style={{ backgroundColor: '#ECECEC' }}>
         <OwnerBreadcrumb isLoadMatrix={isLoadMatrix} />
         <Container
-          style={{ borderRadius: '25px', border: '1px solid #dee2e6', overflow: 'hidden' }}
+          style={{
+            borderRadius: '25px',
+            border: '1px solid #dee2e6',
+            overflow: 'hidden',
+            backgroundColor: '#fff',
+          }}
           className="p-0"
         >
-          <Card style={{ border: 'none' }}>
-            <CardHeader
+          <div style={{ border: 'none' }}>
+            <div
               style={{
                 backgroundColor: '#cfe2ff',
                 fontWeight: 'bold',
@@ -86,9 +91,9 @@ const SearchOwnersPage: FC = () => {
                 border: 'none',
               }}
             >
-              <h5>Справочник владельцов</h5>
-            </CardHeader>
-            <CardBody style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
+              <h5 className="p-2">Справочник владельцов</h5>
+            </div>
+            <div style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
               <p>Выберите в матрице нужного владельца</p>
               <OwnerTable
                 owners={owners}
@@ -96,8 +101,8 @@ const SearchOwnersPage: FC = () => {
                 fetch={fetch}
                 handleDeleteOwner={handleDeleteOwner}
               />
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         </Container>
       </Container>
     </>

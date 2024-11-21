@@ -11,7 +11,16 @@ interface VisitTabsProps {
 
 const VisitTabs: React.FC<VisitTabsProps> = ({ visits, value, handleChange }) => {
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 'auto' }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        bgcolor: 'background.paper',
+        display: 'flex',
+        height: 'auto',
+        borderRadius: '25px',
+        border: '1px solid #dee2e6',
+      }}
+    >
       <Tabs
         orientation="vertical"
         variant="scrollable"
