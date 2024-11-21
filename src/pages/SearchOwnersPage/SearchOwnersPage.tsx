@@ -14,7 +14,7 @@ const SearchOwnersPage: FC = () => {
   const [owners, setOwners] = useState<IOwner[]>([]);
   const [isLoadMatrix, setLoadMatrix] = useState<boolean>(true);
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
-  const { setIsReloadTable, setShowModalAddOwner } = userSlice.actions;
+  const { setIsReloadTable } = userSlice.actions;
 
   const fetch = async () => {
     setIsReloadTable(true);

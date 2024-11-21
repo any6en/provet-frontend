@@ -17,8 +17,7 @@ interface PatientHeaderProps {
 
 const PatientHeader: React.FC<PatientHeaderProps> = ({ visits, getSrcImageIconPatient }) => {
   const dispatch = useDispatch();
-  const { setShowModalChangePatient, setShowModalAddPatient, setSelectedPatient } =
-    userSlice.actions;
+  const { setShowModalChangePatient, setSelectedPatient } = userSlice.actions;
 
   const handleEditPatient = () => {
     const patient = {
@@ -62,6 +61,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits, getSrcImageIconPa
         <Col sm={2}></Col>
         <Col sm={8} className="d-flex align-items-center">
           <img
+            alt="Изображение животного"
             src={getSrcImageIconPatient(visits?.animal_type_id)}
             className={`border border-3 align-self-center ${style.animalImage}`}
             style={{

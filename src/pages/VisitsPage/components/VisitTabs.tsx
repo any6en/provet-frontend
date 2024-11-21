@@ -1,4 +1,3 @@
-// VisitTabs.tsx
 import React from 'react';
 import { Box, Tab, Tabs } from '@mui/material';
 import { formatDateDMYDT } from '../../../utils/dateFormatter';

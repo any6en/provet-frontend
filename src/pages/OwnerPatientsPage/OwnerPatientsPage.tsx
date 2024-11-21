@@ -233,7 +233,7 @@ const OwnerPatientsPage: FC = () => {
       <MenuItem
         key={0}
         onClick={() => {
-          //handleDeleteBreed(row.original.id);
+          handleDeletePatient(row.original.id);
           fetch();
           closeMenu();
         }}

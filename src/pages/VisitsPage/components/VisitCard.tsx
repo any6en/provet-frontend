@@ -1,6 +1,5 @@
-// VisitCard.tsx
 import React from 'react';
-import { Card, CardHeader, CardBody, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import Visit from './Visit';
 import { Box } from '@mui/material';
 
@@ -29,13 +28,6 @@ function TabPanel(props: TabPanelProps) {
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
 }
 
 const VisitCard: React.FC<VisitCardProps> = ({ visits, value }) => {

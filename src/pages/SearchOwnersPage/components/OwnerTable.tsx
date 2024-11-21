@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { useAppSelector } from '../../../hooks/redux';
 import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import { useNavigate } from 'react-router-dom';
 import OwnerTableRowActions from './OwnerTableRowActions';
@@ -16,7 +16,6 @@ interface OwnerTableProps {
 }
 
 const OwnerTable: FC<OwnerTableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner }) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable); // Извлекаем isReloadTable из Redux
 

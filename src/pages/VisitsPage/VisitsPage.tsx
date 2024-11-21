@@ -1,13 +1,9 @@
-// VisitsPage.tsx
 import React, { FC, useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { URL_PROVET_API } from '../../config/config';
 import VisitCard from './components/VisitCard';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { errorHandler } from '../../utils/alarmHandler';
 import BreadcrumbsLoL from './components/BreadcrumbsLoL';
 import VisitTabs from './components/VisitTabs';
 import PatientHeader from './components/PatientHeader';
@@ -15,8 +11,6 @@ import PatientHeader from './components/PatientHeader';
 const VisitsPage: FC = () => {
   const [visits, setVisits] = useState<any>(null);
   const { primary_visit_idParam } = useParams();
-  const dispatch = useAppDispatch();
-  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
   const [value, setValue] = useState(0);
 
   const fetchVisits = async () => {
