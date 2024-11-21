@@ -1,20 +1,18 @@
 import { FC } from 'react';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { ArrowClockwise, PlusLg, QuestionCircle } from 'react-bootstrap-icons';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 
-interface TableToolbarProps {
-  fetchPatients: () => Promise<void>;
-  dispatch: any;
-}
+const TableToolbar: FC = () => {
+  const dispatch = useAppDispatch();
 
-const TableToolbar: FC<TableToolbarProps> = ({ fetchPatients, dispatch }) => {
-  const { setShowModalAddPatient } = userSlice.actions;
+  const { setShowModalAddPatient, setIsReloadTable } = userSlice.actions;
 
   return (
     <Box className="d-flex flex-nowrap align-items-center align-content-start">
       <Tooltip arrow title="Обновить">
-        <IconButton onClick={fetchPatients}>
+        <IconButton onClick={() => dispatch(setIsReloadTable(true))}>
           <ArrowClockwise />
         </IconButton>
       </Tooltip>

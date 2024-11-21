@@ -208,6 +208,7 @@ const ModalAddOwner: FC = () => {
                         setData({
                           ...data,
                           pd_agreement_signed: e.target.checked,
+                          // Проблема по временем. По часам...
                           date_pd_agreement_sign: e.target.checked ? Date.now() : undefined,
                         })
                       }

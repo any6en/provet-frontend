@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { Breadcrumb, Spinner } from 'react-bootstrap';
 
-interface OwnerBreadcrumbProps {
+interface BreadcrumbsProps {
   isLoadMatrix: boolean;
 }
 
-const OwnerBreadcrumb: FC<OwnerBreadcrumbProps> = ({ isLoadMatrix }) => {
+const Breadcrumbs: FC<BreadcrumbsProps> = ({ isLoadMatrix }) => {
   return (
     <Breadcrumb className="p-2">
       <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
@@ -16,4 +16,4 @@ const OwnerBreadcrumb: FC<OwnerBreadcrumbProps> = ({ isLoadMatrix }) => {
   );
 };
 
-export default OwnerBreadcrumb;
+export default Breadcrumbs;

@@ -229,7 +229,11 @@ const ModalChangeOwner: FC = () => {
                         type="switch"
                         checked={data?.pd_agreement_signed}
                         onChange={(e) =>
-                          setData({ ...data, pd_agreement_signed: e.target.checked })
+                          setData({
+                            ...data,
+                            pd_agreement_signed: e.target.checked,
+                            date_pd_agreement_sign: e.target.checked ? Date.now() : null,
+                          })
                         }
                       />
                     </Col>

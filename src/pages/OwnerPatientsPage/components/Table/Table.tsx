@@ -1,25 +1,21 @@
 import { FC } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
-import { useAppSelector } from '../../../hooks/redux';
-import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
-import { useNavigate } from 'react-router-dom';
-import OwnerTableRowActions from './OwnerTableRowActions';
+import { IPatient } from '../../../Directories/PatientsPage/IPatients';
+import { formatDate, formatDate2 } from '../../../../utils/dateFormatter';
 import TableToolbar from './TableToolbar';
+import { useNavigate } from 'react-router-dom';
+import TableRowActions from './TableRowActions';
 
 interface TableProps {
-  owners: IOwner[];
+  patients: IPatient[];
   isLoadMatrix: boolean;
-  fetch: () => Promise<void>;
-  handleDeleteOwner: (ownerId: number) => Promise<void>;
 }
 
-const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner }) => {
+const Table: FC<TableProps> = ({ patients, isLoadMatrix }) => {
   const navigate = useNavigate();
-  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable); // Извлекаем isReloadTable из Redux
 
-  const columns: MRT_ColumnDef<IOwner>[] = [
+  const columns: MRT_ColumnDef<IPatient>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
@@ -27,31 +23,25 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner 
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'lastName',
-      header: 'Фамилия',
+      accessorKey: 'nickname',
+      header: 'Кличка',
       size: 150,
-      Cell: ({ row }) => row.original.last_name,
+      Cell: ({ row }) => row.original.nickname,
     },
     {
-      accessorKey: 'firstName',
-      header: 'Имя',
+      accessorKey: 'animal_type_name',
+      header: 'Вид',
       size: 150,
-      Cell: ({ row }) => row.original.first_name,
+      Cell: ({ row }) => row.original.animal_type_name,
     },
     {
-      accessorKey: 'patronymic',
-      header: 'Отчество',
+      accessorKey: 'breed_name',
+      header: 'Порода',
       size: 150,
-      Cell: ({ row }) => row.original.patronymic,
+      Cell: ({ row }) => row.original.breed_name,
     },
     {
-      accessorKey: 'address',
-      header: 'Адрес проживания',
-      size: 200,
-      Cell: ({ row }) => row.original.address,
-    },
-    {
-      accessorKey: 'dateBirth',
+      accessorKey: 'age',
       header: 'Дата рождения',
       size: 100,
       Cell: ({ row }) => formatDate2(row.original.date_birth),
@@ -60,7 +50,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner 
       accessorKey: 'gender',
       header: 'Пол',
       size: 200,
-      Cell: ({ row }) => (row.original.gender === 1 ? 'Мужской' : 'Женский'),
+      Cell: ({ row }) => (row.original.gender === 1 ? 'Самец' : 'Самка'),
     },
     {
       accessorKey: 'createdAt',
@@ -73,7 +63,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner 
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: owners,
+    data: patients,
     state: {
       isLoading: isLoadMatrix,
       showProgressBars: isLoadMatrix,
@@ -81,7 +71,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner 
     },
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        navigate(`/patients_of_owner/${row.original.id}`);
+        navigate(`/patient/${row.original.id}`);
       },
     }),
     muiTableContainerProps: {
@@ -113,17 +103,10 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix, fetch, handleDeleteOwner 
         borderBottom: '1px solid #dee2e6',
       },
     },
-
-    renderTopToolbarCustomActions: () => (
-      <TableToolbar fetch={fetch} isReloadTable={isReloadTable} /> // Передаем isReloadTable
-    ),
+    renderTopToolbarCustomActions: () => <TableToolbar />,
     enableRowActions: true,
     renderRowActionMenuItems: ({ row, closeMenu }) => [
-      <OwnerTableRowActions
-        row={row}
-        closeMenu={closeMenu}
-        handleDeleteOwner={handleDeleteOwner}
-      />,
+      <TableRowActions patient={row.original} closeMenu={closeMenu} />,
     ],
   });
 

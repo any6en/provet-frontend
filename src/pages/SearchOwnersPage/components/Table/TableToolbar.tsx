@@ -1,24 +1,18 @@
 import { FC } from 'react';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { ArrowClockwise, PlusLg, QuestionCircle } from 'react-bootstrap-icons';
-import { useAppDispatch } from '../../../hooks/redux';
-import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { Spinner } from 'react-bootstrap';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 
-interface TableToolbarProps {
-  fetch: () => Promise<void>;
-  isReloadTable: boolean;
-}
-
-const TableToolbar: FC<TableToolbarProps> = ({ fetch, isReloadTable }) => {
+const TableToolbar: FC = () => {
   const dispatch = useAppDispatch();
-  const { setShowModalAddOwner } = userSlice.actions;
+  const { setShowModalAddOwner, setIsReloadTable } = userSlice.actions;
 
   return (
     <Box className="d-flex flex-nowrap align-items-center align-content-start">
       <Tooltip arrow title="Обновить">
-        <IconButton onClick={fetch}>
-          {!isReloadTable ? <ArrowClockwise /> : <Spinner variant="primary" size="sm" />}
+        <IconButton onClick={() => dispatch(setIsReloadTable(true))}>
+          <ArrowClockwise />
         </IconButton>
       </Tooltip>
       <Tooltip arrow title="Добавить нового владельца">

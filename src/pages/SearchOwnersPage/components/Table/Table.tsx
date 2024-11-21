@@ -1,24 +1,23 @@
 import { FC } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
-import { ArrowClockwise, Pencil, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
-import { IPatient } from '../../Directories/PatientsPage/IPatients';
-import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
-import TableToolbar from './TableToolbar';
+import { formatDate, formatDate2 } from '../../../../utils/dateFormatter';
+import { useAppSelector } from '../../../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
+import TableRowActions from './TableRowActions';
+import TableToolbar from './TableToolbar';
+import { IOwner } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 
 interface TableProps {
-  patients: IPatient[];
-  fetchPatients: () => Promise<void>;
-  handleDeletePatient: (patientId: number) => Promise<void>;
-  dispatch: any;
+  owners: IOwner[];
+  isLoadMatrix: boolean;
 }
 
-const Table: FC<TableProps> = ({ patients, fetchPatients, handleDeletePatient, dispatch }) => {
+const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
   const navigate = useNavigate();
+  const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
-  const columns: MRT_ColumnDef<IPatient>[] = [
+  const columns: MRT_ColumnDef<IOwner>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
@@ -26,25 +25,31 @@ const Table: FC<TableProps> = ({ patients, fetchPatients, handleDeletePatient, d
       Cell: ({ row }) => row.original.id,
     },
     {
-      accessorKey: 'nickname',
-      header: 'Кличка',
+      accessorKey: 'lastName',
+      header: 'Фамилия',
       size: 150,
-      Cell: ({ row }) => row.original.nickname,
+      Cell: ({ row }) => row.original.last_name,
     },
     {
-      accessorKey: 'animal_type_name',
-      header: 'Вид',
+      accessorKey: 'firstName',
+      header: 'Имя',
       size: 150,
-      Cell: ({ row }) => row.original.animal_type_name,
+      Cell: ({ row }) => row.original.first_name,
     },
     {
-      accessorKey: 'breed_name',
-      header: 'Порода',
+      accessorKey: 'patronymic',
+      header: 'Отчество',
       size: 150,
-      Cell: ({ row }) => row.original.breed_name,
+      Cell: ({ row }) => row.original.patronymic,
     },
     {
-      accessorKey: 'age',
+      accessorKey: 'address',
+      header: 'Адрес проживания',
+      size: 200,
+      Cell: ({ row }) => row.original.address,
+    },
+    {
+      accessorKey: 'dateBirth',
       header: 'Дата рождения',
       size: 100,
       Cell: ({ row }) => formatDate2(row.original.date_birth),
@@ -53,7 +58,7 @@ const Table: FC<TableProps> = ({ patients, fetchPatients, handleDeletePatient, d
       accessorKey: 'gender',
       header: 'Пол',
       size: 200,
-      Cell: ({ row }) => (row.original.gender === 1 ? 'Самец' : 'Самка'),
+      Cell: ({ row }) => (row.original.gender === 1 ? 'Мужской' : 'Женский'),
     },
     {
       accessorKey: 'createdAt',
@@ -66,10 +71,18 @@ const Table: FC<TableProps> = ({ patients, fetchPatients, handleDeletePatient, d
   const table = useMaterialReactTable({
     columns: columns,
     localization: MRT_Localization_RU,
-    data: patients,
+    data: owners,
+    state: {
+      isLoading: isLoadMatrix,
+      showProgressBars: isLoadMatrix,
+      density: 'compact',
+    },
     muiTableBodyRowProps: ({ row }) => ({
       onDoubleClick: () => {
-        navigate(`/patient/${row.original.id}`);
+        navigate(`/patients_of_owner/${row.original.id}`);
+      },
+      sx: {
+        backgroundColor: row.original.pd_agreement_signed ? 'lightgreen' : 'lightcoral',
       },
     }),
     muiTableContainerProps: {
@@ -101,35 +114,11 @@ const Table: FC<TableProps> = ({ patients, fetchPatients, handleDeletePatient, d
         borderBottom: '1px solid #dee2e6',
       },
     },
-    renderTopToolbarCustomActions: () => (
-      <TableToolbar fetchPatients={fetchPatients} dispatch={dispatch} />
-    ),
+
+    renderTopToolbarCustomActions: () => <TableToolbar />,
     enableRowActions: true,
     renderRowActionMenuItems: ({ row, closeMenu }) => [
-      <MenuItem
-        key={0}
-        onClick={() => {
-          closeMenu();
-        }}
-      >
-        <ListItemIcon>
-          <Pencil />
-        </ListItemIcon>
-        Изменить
-      </MenuItem>,
-      <MenuItem
-        key={1}
-        onClick={() => {
-          handleDeletePatient(row.original.id);
-          fetchPatients();
-          closeMenu();
-        }}
-      >
-        <ListItemIcon>
-          <Trash />
-        </ListItemIcon>
-        Удалить
-      </MenuItem>,
+      <TableRowActions owner={row.original} closeMenu={closeMenu} />,
     ],
   });
 

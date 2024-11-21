@@ -8,7 +8,7 @@ import axios from 'axios';
 import { URL_PROVET_API } from '../../config/config';
 import Swal from 'sweetalert2';
 import Breadcrumbs from './components/Breadcrumbs';
-import Table from './components/Table';
+import Table from './components/Table/Table';
 
 const OwnerPatientsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -16,67 +16,51 @@ const OwnerPatientsPage: FC = () => {
   const controller = useRef(new AbortController());
   const [patients, setPatients] = useState<IPatient[]>([]);
 
-  const { setIsReloadTable, setShowModalAddPatient } = userSlice.actions;
+  const [isLoadMatrix, setLoadMatrix] = useState<boolean>(true);
 
-  const fetchPatients = async () => {
+  const { setIsReloadTable } = userSlice.actions;
+
+  const fetch = async () => {
     setIsReloadTable(true);
-    try {
-      const response = await axios.get(
-        `${URL_PROVET_API}directories/patients?owner_id=${owner_idParam}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    setLoadMatrix(true);
+    axios
+      .get(`${URL_PROVET_API}directories/patients?owner_id=${owner_idParam}`, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
-      setPatients(response.data.response.rows);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsReloadTable(false);
-    }
+      })
+      .then((response) => {
+        setPatients(response.data.response.rows);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsReloadTable(false);
+        setLoadMatrix(false);
+      });
   };
+
+  if (useAppSelector((state) => state.userReducer.isReloadTable)) {
+    dispatch(setIsReloadTable(false));
+    fetch();
+  }
 
   useEffect(() => {
     controller.current = new AbortController();
-    fetchPatients();
+
+    fetch();
 
     return () => {
       controller.current.abort();
     };
   }, []);
 
-  const handleDeletePatient = async (patientId: number) => {
-    const result = await Swal.fire({
-      title: 'Вы уверены?',
-      text: 'Отменить удаление нельзя...',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Да',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`${URL_PROVET_API}directories/patients/patient/${patientId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        setPatients((prevPatients) => prevPatients.filter((patient) => patient.id !== patientId));
-        Swal.fire('Успешно!', 'Запись была удалена', 'success');
-      } catch (error) {
-        Swal.fire('Провал!', 'Что-то пошло не так', 'error');
-      }
-    }
-  };
-
   return (
     <>
       {owner_idParam ? (
         <Container fluid className="py-2" style={{ backgroundColor: '#ECECEC' }}>
-          <Breadcrumbs ownerId={owner_idParam} />
+          <Breadcrumbs ownerId={owner_idParam} isLoadMatrix={isLoadMatrix} />
           <Container
             style={{
               borderRadius: '25px',
@@ -98,12 +82,7 @@ const OwnerPatientsPage: FC = () => {
                 <h5 className="p-2">Справочник пациентов владельца</h5>
               </div>
               <div style={{ borderRadius: '0 0 25px 25px', padding: '20px' }}>
-                <Table
-                  patients={patients}
-                  fetchPatients={fetchPatients}
-                  handleDeletePatient={handleDeletePatient}
-                  dispatch={dispatch}
-                />
+                <Table patients={patients} isLoadMatrix={isLoadMatrix} />
               </div>
             </div>
           </Container>
