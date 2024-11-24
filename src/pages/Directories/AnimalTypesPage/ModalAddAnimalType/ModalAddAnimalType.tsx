@@ -33,11 +33,8 @@ const ModalAddAnimalType: FC = () => {
       })
       .then((response) => {
         dispatch(setIsReloadTable(true));
-        console.log(isParent);
-        console.log(isParent !== null);
         if (isParent !== null) {
           dispatch(setSelectedAnimalTypeIdForParent(response.data.response.id));
-          console.log(response.data.response.id);
         }
 
         successHandler('Запись добавлена');

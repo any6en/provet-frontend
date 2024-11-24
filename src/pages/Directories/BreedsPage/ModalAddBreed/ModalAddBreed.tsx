@@ -77,11 +77,8 @@ const ModalAddBreed: FC = () => {
       .then((response) => {
         dispatch(setIsReloadTable(true));
         successHandler('Запись добавлена');
-        console.log(isParent);
-        console.log(isParent !== null);
         if (isParent) {
           dispatch(setSelectedBreedIdForParent(response.data.response.id));
-          console.log(response.data.response.id);
         }
         handleClose();
       })
