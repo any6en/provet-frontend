@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { formatDate, formatDate2 } from '../../../../utils/dateFormatter';
+import { formatDate, formatDate2, formatDateDMYDT } from '../../../../utils/dateFormatter';
 import { useAppSelector } from '../../../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import TableRowActions from './TableRowActions';
@@ -52,7 +52,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
       accessorKey: 'dateBirth',
       header: 'Дата рождения',
       size: 100,
-      Cell: ({ row }) => formatDate2(row.original.date_birth),
+      Cell: ({ row }) => formatDateDMYDT(row.original.date_birth, false, true),
     },
     {
       accessorKey: 'gender',
@@ -64,7 +64,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
       accessorKey: 'createdAt',
       header: 'Дата создания профиля',
       size: 200,
-      Cell: ({ row }) => formatDate(row.original.created_at),
+      Cell: ({ row }) => formatDateDMYDT(row.original.created_at, true, true),
     },
   ];
 

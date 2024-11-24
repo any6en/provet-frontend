@@ -10,4 +10,6 @@ export interface IPatient {
   created_at: string;
   breed_name: string;
   animal_type_name: string;
+  is_castrated: boolean;
+  color: string;
 }

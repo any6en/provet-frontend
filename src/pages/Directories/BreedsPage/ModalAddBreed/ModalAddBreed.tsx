@@ -10,7 +10,12 @@ import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes
 const ModalAddBreed: FC = () => {
   // Флаг, открыта ли форма
   const show = useAppSelector((state) => state.userReducer.modalAddBreed);
-  const { setShowModalAddBreed, setIsReloadTable } = userSlice.actions;
+  const {
+    setShowModalAddBreed,
+    setSelectedAnimalTypeIdForParent,
+    setSelectedBreedIdForParent,
+    setIsReloadTable,
+  } = userSlice.actions;
 
   const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
 
@@ -21,6 +26,19 @@ const ModalAddBreed: FC = () => {
 
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
+
+  let isParentAnimalType = useAppSelector(
+    (state) => state.userReducer.selectedAnimalTypeIdForParent,
+  );
+  let isParent = useAppSelector((state) => state.userReducer.selectedBreedIdForParent);
+
+  if (isParent && isParentAnimalType) {
+    if (data.animal_type_id !== isParentAnimalType)
+      setData({
+        ...data,
+        animal_type_id: Number(isParentAnimalType),
+      });
+  }
 
   // Обработчик монтирования компонента
   useEffect(() => {
@@ -56,10 +74,15 @@ const ModalAddBreed: FC = () => {
           'Content-Type': 'application/json',
         },
       })
-      .then((res) => {
+      .then((response) => {
         dispatch(setIsReloadTable(true));
         successHandler('Запись добавлена');
-
+        console.log(isParent);
+        console.log(isParent !== null);
+        if (isParent) {
+          dispatch(setSelectedBreedIdForParent(response.data.response.id));
+          console.log(response.data.response.id);
+        }
         handleClose();
       })
       .catch((error) => {
@@ -134,6 +157,27 @@ const ModalAddBreed: FC = () => {
                         <option value="" disabled selected>
                           Выберите вид животного
                         </option>
+                        {animalTypes.map((obj) => {
+                          if (isParent) {
+                            if (isParentAnimalType !== obj.id) {
+                              return (
+                                <option key={obj.id} value={obj.id}>
+                                  {obj.name}
+                                </option>
+                              );
+                            } else {
+                              return (
+                                <option key={obj.id} value={obj.id} selected>
+                                  {obj.name}
+                                </option>
+                              );
+                            }
+                          } else {
+                            <option key={obj.id} value={obj.id}>
+                              {obj.name}
+                            </option>;
+                          }
+                        })}
                         {animalTypes.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>

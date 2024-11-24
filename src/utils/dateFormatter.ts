@@ -91,5 +91,5 @@ export const formatDateDMYDT = (
   }
 
   // Если нужно время в формате [дата, время]
-  return [formattedDate, `${hours}:${minutes}`];
+  return [formattedDate, ` ${hours}:${minutes}`];
 };

@@ -15,10 +15,12 @@ interface UserState {
   modalChangeBreed: boolean;
   modalAddBreed: boolean;
   selectedBreed: IBreed | null;
+  selectedBreedIdForParent: number | null;
 
   modalChangeAnimalType: boolean;
   modalAddAnimalType: boolean;
   selectedAnimalType: IAnimalType | null;
+  selectedAnimalTypeIdForParent: number | null;
 
   modalChangePrimaryVisit: boolean;
   modalAddPrimaryVisit: boolean;
@@ -54,11 +56,13 @@ const initialState: UserState = {
   modalChangeAnimalType: false,
   modalAddAnimalType: false,
   selectedAnimalType: null,
+  selectedAnimalTypeIdForParent: null,
 
   // Состояния для форм Породы
   modalChangeBreed: false,
   modalAddBreed: false,
   selectedBreed: null,
+  selectedBreedIdForParent: null,
 
   // Состояния для форм Визиты
   modalChangePrimaryVisit: false,
@@ -120,6 +124,9 @@ export const userSlice = createSlice({
     setSelectedAnimalType(state, action: PayloadAction<IAnimalType | null>) {
       state.selectedAnimalType = action.payload;
     },
+    setSelectedAnimalTypeIdForParent(state, action: PayloadAction<number | null>) {
+      state.selectedAnimalTypeIdForParent = action.payload;
+    },
 
     // Состояния для форм Породы
     setShowModalChangeBreed(state, action: PayloadAction<boolean>) {
@@ -130,6 +137,9 @@ export const userSlice = createSlice({
     },
     setSelectedBreed(state, action: PayloadAction<IBreed | null>) {
       state.selectedBreed = action.payload;
+    },
+    setSelectedBreedIdForParent(state, action: PayloadAction<number | null>) {
+      state.selectedBreedIdForParent = action.payload;
     },
 
     // Состояния для форм Визиты

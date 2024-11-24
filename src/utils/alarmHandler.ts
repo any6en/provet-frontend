@@ -26,7 +26,7 @@ export const returnErrors = (error: any) => {
 
   if (status === 400) {
     const errors: any = error?.response?.data;
-    return errors.response.errors;
+    return errors.response.errors[0];
   }
 
   if (status >= 500) {

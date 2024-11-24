@@ -199,7 +199,7 @@ const ModalAddRepeatVisit: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          weight: e.target.value,
+                          weight: e.target.value.replace(/,/g, '.'),
                         });
                       }}
                     />

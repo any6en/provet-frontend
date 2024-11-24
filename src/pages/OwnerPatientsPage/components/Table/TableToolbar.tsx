@@ -3,6 +3,7 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import { ArrowClockwise, PlusLg, QuestionCircle } from 'react-bootstrap-icons';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { infoHandler } from '../../../../utils/alarmHandler';
 
 const TableToolbar: FC = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +25,7 @@ const TableToolbar: FC = () => {
       <Tooltip arrow title="Получить справку">
         <IconButton
           onClick={() => {
-            /* infoHandler здесь */
+            infoHandler('Пока что пусто');
           }}
         >
           <QuestionCircle color="gray" size={20} />

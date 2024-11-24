@@ -8,11 +8,20 @@ import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { IBreed, IAnimalType, IOwner } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 import ProvetAPI from '../../../../utils/ProvetAPI';
 import { useParams } from 'react-router-dom';
+import { IconButton, Tooltip } from '@mui/material';
+import { PlusLg } from 'react-bootstrap-icons';
 
 const ModalAddPatient: FC = () => {
   // Флаг, открыта ли форма
   const show = useAppSelector((state) => state.userReducer.modalAddPatient);
-  const { setShowModalAddPatient, setIsReloadTable } = userSlice.actions;
+  const {
+    setShowModalAddPatient,
+    setShowModalAddAnimalType,
+    setSelectedAnimalTypeIdForParent,
+    setSelectedBreedIdForParent,
+    setIsReloadTable,
+    setShowModalAddBreed,
+  } = userSlice.actions;
 
   const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
   const [breeds, setBreeds] = useState<IBreed[]>([]);
@@ -32,29 +41,65 @@ const ModalAddPatient: FC = () => {
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
 
+  let isAddingAnimalType = useAppSelector(
+    (state) => state.userReducer.selectedAnimalTypeIdForParent,
+  );
+  let isAddingBreed = useAppSelector((state) => state.userReducer.selectedBreedIdForParent);
+
+  const fetch = async () => {
+    const api = new ProvetAPI();
+
+    // Получаем справочники
+    let res: any = await api.getList('breeds', controller.current, true);
+    if (res) setBreeds(res.rows);
+
+    res = await api.getList('animal_types', controller.current, true);
+    if (res) setAnimalTypes(res.rows);
+
+    res = await api.getList('owners', controller.current, true);
+    if (res) setOwners(res.rows);
+  };
+
+  if (show) {
+    // Обновляем
+    if (isAddingAnimalType) {
+      if (isAddingAnimalType !== selectedAnimalType && isAddingAnimalType !== -1) {
+        setSelectedAnimalType(isAddingAnimalType);
+        setData({
+          ...data,
+          animal_type_id: Number(isAddingAnimalType),
+        });
+
+        fetch();
+      }
+    }
+
+    // Обновляем
+    if (isAddingBreed) {
+      if (isAddingBreed !== data.breed_id && isAddingBreed !== -1) {
+        setData({
+          ...data,
+          breed_id: Number(isAddingBreed),
+        });
+
+        fetch();
+      }
+    }
+  }
+
   // Обработчик монтирования компонента
   useEffect(() => {
     if (show) {
       controller.current = new AbortController();
 
+      setData({ ...data });
       setData({
+        ...data,
         owner_id: Number(owner_idParam),
+        is_castrated: false,
       });
 
-      const fetchData = async () => {
-        const api = new ProvetAPI();
-
-        // Получаем справочники
-        let res: any = await api.getList('breeds', controller.current, true);
-        if (res) setBreeds(res.rows);
-
-        res = await api.getList('animal_types', controller.current, true);
-        if (res) setAnimalTypes(res.rows);
-
-        res = await api.getList('owners', controller.current, true);
-        if (res) setOwners(res.rows);
-      };
-      fetchData();
+      fetch();
     }
   }, [show]);
 
@@ -85,11 +130,15 @@ const ModalAddPatient: FC = () => {
   const cleanForm = () => {
     setData({});
     setIsPreload(false);
+    setAnimalTypes([]);
+    setBreeds([]);
+    setSelectedAnimalType(-1);
+    dispatch(setSelectedAnimalTypeIdForParent(null));
+    dispatch(setSelectedBreedIdForParent(null));
   };
 
   const handleClose = (): void => {
     dispatch(setShowModalAddPatient(false));
-    setSelectedAnimalType(-1);
 
     // При закрытии обрыв всех запросов
     controller.current.abort();
@@ -114,6 +163,15 @@ const ModalAddPatient: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Кличка
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -124,6 +182,49 @@ const ModalAddPatient: FC = () => {
                           nickname: e.target.value != '' ? e.target.value : undefined,
                         });
                       }}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group className="mb-3" as={Row}>
+                  <Form.Label className="fs-6" column sm={4}>
+                    Окрас
+                  </Form.Label>
+                  <Col sm={8}>
+                    <Form.Control
+                      type="text"
+                      onChange={(e: any) => {
+                        setData({
+                          ...data,
+                          color: e.target.value != '' ? e.target.value : undefined,
+                        });
+                      }}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group className="mb-3" as={Row}>
+                  <Form.Label className="fs-6" column sm={10}>
+                    Кастрировано
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
+                  </Form.Label>
+                  <Col sm={2}>
+                    <Form.Check
+                      className="pt-2 checkSwitch"
+                      type="switch"
+                      checked={data?.is_castrated}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          is_castrated: e.target.checked,
+                        })
+                      }
                     />
                   </Col>
                 </Form.Group>
@@ -180,6 +281,15 @@ const ModalAddPatient: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Вид
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8} className="d-flex align-items-center justify-content-center">
                     {animalTypes.length !== 0 ? (
@@ -217,11 +327,33 @@ const ModalAddPatient: FC = () => {
                     ) : (
                       <Spinner variant="primary" />
                     )}
+                    {animalTypes.length !== 0 && (
+                      <Tooltip arrow title="Добавить вид">
+                        <IconButton
+                          onClick={() => {
+                            dispatch(setShowModalAddAnimalType(true));
+                            // Чтобы дочерняя форма поняла, что она нужна для родителя
+                            dispatch(setSelectedAnimalTypeIdForParent(data.animal_type));
+                          }}
+                        >
+                          <PlusLg color="green" size={20} />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Col>
                 </Form.Group>
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Порода
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8} className="d-flex align-items-center justify-content-center">
                     {selectedAnimalType != -1 ? (
@@ -253,11 +385,34 @@ const ModalAddPatient: FC = () => {
                     ) : (
                       <a>Не выбран вид животного</a>
                     )}
+                    {selectedAnimalType !== -1 && breeds.length !== 0 && (
+                      <Tooltip arrow title="Добавить породу">
+                        <IconButton
+                          onClick={() => {
+                            dispatch(setShowModalAddBreed(true));
+                            // Чтобы дочерняя форма поняла, что она нужна для родителя
+                            dispatch(setSelectedAnimalTypeIdForParent(data.animal_type_id));
+                            dispatch(setSelectedBreedIdForParent(-1));
+                          }}
+                        >
+                          <PlusLg color="green" size={20} />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Col>
                 </Form.Group>
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Дата рождения
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -275,6 +430,15 @@ const ModalAddPatient: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Пол
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={4} className="d-flex align-items-center">
                     <Form.Check

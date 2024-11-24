@@ -101,7 +101,12 @@ const ModalChangeOwner: FC = () => {
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.first_name}
-                    onChange={(e) => setData({ ...data, first_name: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        first_name: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                     required
                   />
                   <FormField
@@ -109,7 +114,12 @@ const ModalChangeOwner: FC = () => {
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.last_name}
-                    onChange={(e) => setData({ ...data, last_name: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        last_name: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                     required
                   />
                   <FormField
@@ -117,7 +127,12 @@ const ModalChangeOwner: FC = () => {
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.patronymic}
-                    onChange={(e) => setData({ ...data, patronymic: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        patronymic: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                     required
                   />
                   <FormField
@@ -125,7 +140,12 @@ const ModalChangeOwner: FC = () => {
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.address}
-                    onChange={(e) => setData({ ...data, address: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        address: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                   />
                   <FormField
                     label="Дата рождения"
@@ -180,35 +200,56 @@ const ModalChangeOwner: FC = () => {
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.passport_series}
-                    onChange={(e) => setData({ ...data, passport_series: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        passport_series: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                   />
                   <FormField
                     label="Номер паспорта"
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
                     value={data?.passport_number}
-                    onChange={(e) => setData({ ...data, passport_number: e.target.value })}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        passport_number: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                   />
                   <FormField
                     label="Кем выдан"
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
-                    value={data?.issued_by}
-                    onChange={(e) => setData({ ...data, issued_by: e.target.value })}
+                    value={data?.passport_issued_by}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        passport_issued_by: e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                   />
                   <FormField
                     label="Код подразделения"
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
-                    value={data.subdivision_code}
-                    onChange={(e) => setData({ ...data, subdivision_code: e.target.value })}
+                    value={data.passport_subdivision_code}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        passport_subdivision_code:
+                          e.target.value != '' ? e.target.value : undefined,
+                      })
+                    }
                   />
                   <FormField
                     label="Дата выдачи"
                     type="date"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
-                    value={data?.issue_date}
-                    onChange={(e) => setData({ ...data, issue_date: e.target.value })}
+                    value={data?.passport_issue_date}
+                    onChange={(e) => setData({ ...data, passport_issue_date: e.target.value })}
                   />
                   <Form.Group className="mb-3" as={Row}>
                     <Form.Label className="fs-6" column sm={10}>

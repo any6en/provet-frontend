@@ -9,7 +9,8 @@ import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 const ModalAddAnimalType: FC = () => {
   // Флаг, открыта ли форма
   const show = useAppSelector((state) => state.userReducer.modalAddAnimalType);
-  const { setShowModalAddAnimalType, setIsReloadTable } = userSlice.actions;
+  const { setShowModalAddAnimalType, setSelectedAnimalTypeIdForParent, setIsReloadTable } =
+    userSlice.actions;
 
   const dispatch = useAppDispatch();
 
@@ -18,6 +19,8 @@ const ModalAddAnimalType: FC = () => {
 
   // Состояние, характерное для загрузки
   const [isPreload, setIsPreload] = useState<boolean>(false);
+
+  let isParent = useAppSelector((state) => state.userReducer.selectedAnimalTypeIdForParent);
 
   const handleUpdate = async () => {
     setIsPreload(true);
@@ -28,8 +31,15 @@ const ModalAddAnimalType: FC = () => {
           'Content-Type': 'application/json',
         },
       })
-      .then((res) => {
+      .then((response) => {
         dispatch(setIsReloadTable(true));
+        console.log(isParent);
+        console.log(isParent !== null);
+        if (isParent !== null) {
+          dispatch(setSelectedAnimalTypeIdForParent(response.data.response.id));
+          console.log(response.data.response.id);
+        }
+
         successHandler('Запись добавлена');
 
         handleClose();
@@ -64,7 +74,7 @@ const ModalAddAnimalType: FC = () => {
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">
-        <Modal.Title className="fs-6">{`Добавление породы`}</Modal.Title>
+        <Modal.Title className="fs-6">{`Добавление вида`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-1 pb-1">
         <Container fluid>

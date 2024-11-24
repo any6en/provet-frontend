@@ -10,9 +10,9 @@ export interface IOwner {
 
   passport_series: string;
   passport_number: string;
-  issued_by: string;
-  subdivision_code: string;
-  issue_date: string;
+  passport_issued_by: string;
+  passport_subdivision_code: string;
+  passport_issue_date: string;
   pd_agreement_signed: boolean;
   date_pd_agreement_sign: boolean;
 }
