@@ -9,10 +9,10 @@ let config: IConfig;
 
 switch (currentEnv) {
   case 'production':
-    config = require('./config/production');
+    config = require('./production');
     break;
   default:
-    config = require('./config/development');
+    config = require('./development');
 }
 
 export default config;

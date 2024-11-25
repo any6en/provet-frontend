@@ -91,7 +91,7 @@ const Header: FC = () => {
               <Col className="col d-flex flex-row justify-content-end p-0">
                 <div className="d-flex align-items-center">
                   <div className="d-flex  justify-content-end text-muted">
-                    <span>{user ? user.last_name : ''}&nbsp;</span>
+                    <span>{user ? user?.last_name : ''}&nbsp;</span>
                     <span className="d-flex">
                       {user && user?.first_name[0]}
                       &nbsp;
