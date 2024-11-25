@@ -37,6 +37,15 @@ export default class User {
     }
   }
 
+  /**
+   * Проверка имеет ли пользователь роль role
+   * @param role string
+   * @returns boolean
+   */
+  hasRole(role: string): boolean {
+    return this.role === role;
+  }
+
   isAuth() {
     return this.email !== undefined && this.email !== '';
   }

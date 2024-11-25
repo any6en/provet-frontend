@@ -43,48 +43,52 @@ const Header: FC = () => {
               <SearchIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
               <span style={{ color: '#fff' }}></span>
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/laboratory" className="pe-3">
-              <ScienceIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
-              <span style={{ color: '#fff' }}></span>
-            </Nav.Link>
-            <NavDropdown
-              title={
-                <>
-                  <span style={{ color: '#fff', fontSize: 16 }}>Справочники</span>
-                </>
-              }
-              className="p-2"
-              id="basic-nav-dropdown"
-            >
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="directories/owners">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Владельцы
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="directories/patients">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Пациенты
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="directories/animal_types">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Виды животных
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
-              <NavDropdown.Item className="text-dark">
-                <NavLink className="nav-link" aria-current="page" to="directories/breeds">
-                  <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                    Породы
-                  </div>
-                </NavLink>
-              </NavDropdown.Item>
-            </NavDropdown>
+            {user.hasRole('админ') && (
+              <>
+                <Nav.Link as={NavLink} to="/laboratory" className="pe-3">
+                  <ScienceIcon viewBox="0 0 20 20" sx={{ color: 'white' }} />
+                  <span style={{ color: '#fff' }}></span>
+                </Nav.Link>
+                <NavDropdown
+                  title={
+                    <>
+                      <span style={{ color: '#fff', fontSize: 16 }}>Справочники</span>
+                    </>
+                  }
+                  className="p-2"
+                  id="basic-nav-dropdown"
+                >
+                  <NavDropdown.Item className="text-dark">
+                    <NavLink className="nav-link" aria-current="page" to="directories/owners">
+                      <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                        Владельцы
+                      </div>
+                    </NavLink>
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="text-dark">
+                    <NavLink className="nav-link" aria-current="page" to="directories/patients">
+                      <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                        Пациенты
+                      </div>
+                    </NavLink>
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="text-dark">
+                    <NavLink className="nav-link" aria-current="page" to="directories/animal_types">
+                      <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                        Виды животных
+                      </div>
+                    </NavLink>
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="text-dark">
+                    <NavLink className="nav-link" aria-current="page" to="directories/breeds">
+                      <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                        Породы
+                      </div>
+                    </NavLink>
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
+            )}
           </Col>
           <Col sm={2}>
             <Row className="row d-flex  align-items-center">
