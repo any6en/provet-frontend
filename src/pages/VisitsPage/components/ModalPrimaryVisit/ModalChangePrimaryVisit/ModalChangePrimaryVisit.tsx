@@ -208,6 +208,7 @@ const ModalChangePrimaryVisit: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="date"
+                      value={data?.disease_onset_date}
                       onChange={(e: any) => {
                         setData({
                           ...data,
