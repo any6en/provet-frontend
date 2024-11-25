@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import config from '../../../../config/config';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import { Tooltip } from '@mui/material';
 
 const ModalAddAnimalType: FC = () => {
   // Флаг, открыта ли форма
@@ -83,6 +84,15 @@ const ModalAddAnimalType: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Вид
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control

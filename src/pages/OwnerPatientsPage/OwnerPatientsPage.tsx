@@ -1,11 +1,10 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { IPatient } from '../Directories/PatientsPage/IPatients';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import Breadcrumbs from './components/Breadcrumbs';
 import Table from './components/Table/Table';
 import config from '../../config/config';

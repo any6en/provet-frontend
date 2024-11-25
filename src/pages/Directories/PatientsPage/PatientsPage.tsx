@@ -3,7 +3,6 @@ import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'materi
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { Breadcrumb, Container, Spinner } from 'react-bootstrap';
-import { IBreed, IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';

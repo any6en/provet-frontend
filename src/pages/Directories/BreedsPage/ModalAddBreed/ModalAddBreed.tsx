@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 import config from '../../../../config/config';
+import { Tooltip } from '@mui/material';
 
 const ModalAddBreed: FC = () => {
   // Флаг, открыта ли форма
@@ -127,6 +128,15 @@ const ModalAddBreed: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Порода
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -144,6 +154,15 @@ const ModalAddBreed: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Вид
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8} className="d-flex align-items-center justify-content-center">
                     {animalTypes.length !== 0 ? (

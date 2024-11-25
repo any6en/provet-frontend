@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import config from '../../../../config/config';
+import { Tooltip } from '@mui/material';
 
 const ModalChangeAnimalType: FC = () => {
   // Флаг, открыта ли форма
@@ -87,6 +88,15 @@ const ModalChangeAnimalType: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Вид
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control

@@ -1,7 +1,5 @@
 import { FC } from 'react';
 import { Breadcrumb, Container } from 'react-bootstrap';
-import { PlusCircle } from 'react-bootstrap-icons';
-import { Link } from 'react-router-dom';
 
 const MainPage: FC = () => {
   return (

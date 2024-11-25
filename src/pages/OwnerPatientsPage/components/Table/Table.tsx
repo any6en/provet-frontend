@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
 import { IPatient } from '../../../Directories/PatientsPage/IPatients';
-import { formatDate, formatDate2, formatDateDMYDT } from '../../../../utils/dateFormatter';
+import { formatDateDMYDT } from '../../../../utils/dateFormatter';
 import TableToolbar from './TableToolbar';
 import { useNavigate } from 'react-router-dom';
 import TableRowActions from './TableRowActions';

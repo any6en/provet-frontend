@@ -4,9 +4,9 @@ import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
 import { userSlice } from '../../../../../store/reducers/UserSlice/UserSlice';
-import { IAnimalType } from '../../../../../store/reducers/UserSlice/UserSliceTypes';
 import AutoResizeTextarea from '../../../../../components/AutoResizeTextarea/AutoResizeTextarea';
 import config from '../../../../../config/config';
+import { Tooltip } from '@mui/material';
 
 const ModalAddRepeatVisit: FC = () => {
   // Флаг, открыта ли форма
@@ -147,6 +147,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Врач
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     {users.length !== 0 ? (
@@ -212,6 +221,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Дата возникновения болезни
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control
@@ -228,6 +246,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Анамнез
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <AutoResizeTextarea
@@ -242,6 +269,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Обследование
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <AutoResizeTextarea
@@ -255,6 +291,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Предварительный диагноз
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <AutoResizeTextarea
@@ -281,6 +326,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Назначение
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <AutoResizeTextarea
@@ -294,6 +348,15 @@ const ModalAddRepeatVisit: FC = () => {
                 <Form.Group className="mb-3" as={Row}>
                   <Form.Label className="fs-6" column sm={4}>
                     Дата визита
+                    <span>
+                      <Tooltip arrow title="Обязательное поле" placement="top">
+                        <span
+                          style={{ display: 'inline-flex', alignItems: 'center', color: 'red' }}
+                        >
+                          <span>*</span>
+                        </span>
+                      </Tooltip>
+                    </span>
                   </Form.Label>
                   <Col sm={8}>
                     <Form.Control

@@ -1,4 +1,5 @@
 //@ts-nocheck
+import { avatarEmpty } from './Avatar';
 import { IUser } from './UserTypes.ts';
 
 export default class User {
@@ -19,7 +20,7 @@ export default class User {
     this.first_name = user.first_name;
     this.last_name = user.last_name;
     this.patronymic = user.patronymic;
-    this.avatar = user.avatar;
+    this.avatar = user.avatar ? user.avatar : avatarEmpty;
     this.role = user.role;
   }
 
