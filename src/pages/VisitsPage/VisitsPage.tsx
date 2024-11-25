@@ -7,13 +7,19 @@ import Breadcrumbs from './components/Breadcrumbs';
 import VisitTabs from './components/VisitTabs';
 import PatientHeader from './components/PatientHeader';
 import config from '../../config/config';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 
 const VisitsPage: FC = () => {
+  const dispatch = useAppDispatch();
+
+  const { setIsReloadTable } = userSlice.actions;
+
   const [visits, setVisits] = useState<any>(null);
   const { primary_visit_idParam } = useParams();
   const [value, setValue] = useState(0);
 
-  const fetchVisits = () => {
+  const fetch = () => {
     if (config.url_provet_api) {
       axios
         .get(`${config.url_provet_api}journal_visits?primary_visit_id=${primary_visit_idParam}`, {
@@ -28,8 +34,13 @@ const VisitsPage: FC = () => {
   };
 
   useEffect(() => {
-    fetchVisits();
+    fetch();
   }, [primary_visit_idParam]);
+
+  if (useAppSelector((state) => state.userReducer.isReloadTable)) {
+    dispatch(setIsReloadTable(false));
+    fetch();
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
