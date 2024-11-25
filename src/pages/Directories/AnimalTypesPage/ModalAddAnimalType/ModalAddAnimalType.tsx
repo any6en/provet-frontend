@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { URL_PROVET_API } from '../../../../config/config';
+import config from '../../../../config/config';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
@@ -25,28 +25,30 @@ const ModalAddAnimalType: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    axios
-      .post(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        dispatch(setIsReloadTable(true));
-        if (isParent !== null) {
-          dispatch(setSelectedAnimalTypeIdForParent(response.data.response.id));
-        }
+    if (config.url_provet_api) {
+      axios
+        .post(`${config.url_provet_api}directories/animal_types/animal_type`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          dispatch(setIsReloadTable(true));
+          if (isParent !== null) {
+            dispatch(setSelectedAnimalTypeIdForParent(response.data.response.id));
+          }
 
-        successHandler('Запись добавлена');
+          successHandler('Запись добавлена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   // Очистка формы

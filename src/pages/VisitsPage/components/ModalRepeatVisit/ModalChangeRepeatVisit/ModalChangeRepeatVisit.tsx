@@ -2,10 +2,10 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
-import { URL_PROVET_API } from '../../../../../config/config';
 import { errorHandler, successHandler } from '../../../../../utils/alarmHandler';
 import { userSlice } from '../../../../../store/reducers/UserSlice/UserSlice';
 import AutoResizeTextarea from '../../../../../components/AutoResizeTextarea/AutoResizeTextarea';
+import config from '../../../../../config/config';
 
 const ModalChangeRepeatVisit: FC = () => {
   // Флаг, открыта ли форма
@@ -30,21 +30,23 @@ const ModalChangeRepeatVisit: FC = () => {
   const fetch = async () => {
     setIsPreload(true);
 
-    axios
-      .get(`${URL_PROVET_API}directories/users`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setUsers(response.data.response.rows);
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/users`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setUsers(response.data.response.rows);
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   // Обработчик монтирования компонента
@@ -74,25 +76,28 @@ const ModalChangeRepeatVisit: FC = () => {
     setIsPreload(true);
 
     setIsReloadTable(true);
-    axios
-      .patch(`${URL_PROVET_API}directories/repeat_visits/repeat_visit`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        dispatch(setIsReloadTable(true));
-        successHandler('Запись изменена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsReloadTable(true);
-        setIsPreload(false);
-      });
+    if (config.url_provet_api) {
+      axios
+        .patch(`${config.url_provet_api}directories/repeat_visits/repeat_visit`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          dispatch(setIsReloadTable(true));
+          successHandler('Запись изменена');
+
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsReloadTable(true);
+          setIsPreload(false);
+        });
+    }
   };
 
   // Очистка формы

@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { IAnimalType } from '../../../../store/reducers/UserSlice/UserSliceTypes';
+import config from '../../../../config/config';
 
 const ModalChangeBreed: FC = () => {
   // Флаг, открыта ли форма
@@ -33,19 +33,22 @@ const ModalChangeBreed: FC = () => {
 
       const fetch = async () => {
         setIsReloadTable(true);
-        axios
-          .get(`${URL_PROVET_API}directories/animal_types`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-          .then((response) => {
-            setAnimalTypes(response.data.response.rows);
-          })
-          .catch(() => {})
-          .finally(() => {
-            setIsReloadTable(false);
-          });
+
+        if (config.url_provet_api) {
+          axios
+            .get(`${config.url_provet_api}directories/animal_types`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then((response) => {
+              setAnimalTypes(response.data.response.rows);
+            })
+            .catch(() => {})
+            .finally(() => {
+              setIsReloadTable(false);
+            });
+        }
       };
       fetch();
     }
@@ -54,24 +57,26 @@ const ModalChangeBreed: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    axios
-      .patch(`${URL_PROVET_API}directories/breeds/breed`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        dispatch(setIsReloadTable(true));
-        successHandler('Запись изменена');
+    if (config.url_provet_api) {
+      axios
+        .patch(`${config.url_provet_api}directories/breeds/breed`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          dispatch(setIsReloadTable(true));
+          successHandler('Запись изменена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   // Очистка формы

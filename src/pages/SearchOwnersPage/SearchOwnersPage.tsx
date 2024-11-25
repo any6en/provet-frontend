@@ -1,13 +1,13 @@
 import { FC, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import axios from 'axios';
-import { URL_PROVET_API } from '../../config/config';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { userSlice } from '../../store/reducers/UserSlice/UserSlice';
 import Table from './components/Table/Table';
 import Breadcrumbs from './components/Breadcrumbs';
 import { IOwner } from '../../store/reducers/UserSlice/UserSliceTypes';
 import Swal from 'sweetalert2';
+import config from '../../config/config';
 
 const SearchOwnersPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -16,21 +16,27 @@ const SearchOwnersPage: FC = () => {
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
   const { setIsReloadTable } = userSlice.actions;
 
-  const fetch = async () => {
+  const fetch = () => {
     setIsReloadTable(true);
     setLoadMatrix(true);
-    try {
-      const response = await axios.get(`${URL_PROVET_API}directories/owners`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      setOwners(response.data.response.rows);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsReloadTable(false);
-      setLoadMatrix(false);
+
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/owners`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setOwners(response.data.response.rows);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsReloadTable(false);
+          setLoadMatrix(false);
+        });
     }
   };
 
@@ -43,8 +49,8 @@ const SearchOwnersPage: FC = () => {
     fetch();
   }
 
-  const handleDeleteOwner = async (ownerId: number) => {
-    const result = await Swal.fire({
+  const handleDeleteOwner = (ownerId: number) => {
+    Swal.fire({
       title: 'Вы уверены?',
       text: 'Удаление записи владельца приведет к удалению ...',
       icon: 'warning',
@@ -52,21 +58,26 @@ const SearchOwnersPage: FC = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Да',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`${URL_PROVET_API}directories/owners/owner/${ownerId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        setOwners((prevOwners) => prevOwners.filter((owner) => owner.id !== ownerId));
-        Swal.fire('Успешно!', 'Запись была удалена', 'success');
-      } catch (error) {
-        Swal.fire('Провал!', 'Что-то пошло не так', 'error');
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (config.url_provet_api) {
+          axios
+            .delete(`${config.url_provet_api}directories/owners/owner/${ownerId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(() => {
+              // Обновите состояние владельцев
+              setOwners((prevOwners) => prevOwners.filter((owner) => owner.id !== ownerId));
+              Swal.fire('Успешно!', 'Запись была удалена', 'success');
+            })
+            .catch(() => {
+              Swal.fire('Провал!', 'Что-то пошло не так', 'error');
+            });
+        }
       }
-    }
+    });
   };
 
   return (

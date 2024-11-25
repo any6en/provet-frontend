@@ -1,7 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import { formatDate } from '../../../../utils/dateFormatter';
-import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
@@ -9,6 +8,7 @@ import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import { Tooltip } from '@mui/material';
 import FormField from '../components/FormField';
 import { Printer } from 'react-bootstrap-icons';
+import config from '../../../../config/config';
 
 const ModalChangeOwner: FC = () => {
   const show = useAppSelector((state) => state.userReducer.modalChangeOwner);
@@ -32,45 +32,51 @@ const ModalChangeOwner: FC = () => {
 
   const handleUpdate = async () => {
     setIsPreload(true);
-    axios
-      .patch(`${URL_PROVET_API}directories/owners/owner`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        dispatch(setIsReloadTable(true));
-        successHandler('Запись изменена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+    if (config.url_provet_api) {
+      axios
+        .patch(`${config.url_provet_api}directories/owners/owner`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          dispatch(setIsReloadTable(true));
+          successHandler('Запись изменена');
+
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   const handleDownloadDocument = async () => {
     setIsPreloadPrintDocument(true);
-    axios
-      .post(`${URL_PROVET_API}document_generator/pd_agreement_sign`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        responseType: 'blob',
-      })
-      .then((response) => {
-        window.open(URL.createObjectURL(response.data));
-        handleClose();
-      })
-      .catch(() => {
-        errorHandler('Ошибка! Указаны неверные данные?');
-      })
-      .finally(() => {
-        setIsPreloadPrintDocument(false);
-      });
+
+    if (config.url_provet_api) {
+      axios
+        .post(`${config.url_provet_api}document_generator/pd_agreement_sign`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          responseType: 'blob',
+        })
+        .then((response) => {
+          window.open(URL.createObjectURL(response.data));
+          handleClose();
+        })
+        .catch(() => {
+          errorHandler('Ошибка! Указаны неверные данные?');
+        })
+        .finally(() => {
+          setIsPreloadPrintDocument(false);
+        });
+    }
   };
 
   const cleanForm = () => {

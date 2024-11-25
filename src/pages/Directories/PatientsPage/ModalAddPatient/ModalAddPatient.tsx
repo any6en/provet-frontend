@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
@@ -10,6 +9,7 @@ import ProvetAPI from '../../../../utils/ProvetAPI';
 import { useParams } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
 import { PlusLg } from 'react-bootstrap-icons';
+import config from '../../../../config/config';
 
 const ModalAddPatient: FC = () => {
   // Флаг, открыта ли форма
@@ -106,24 +106,26 @@ const ModalAddPatient: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    axios
-      .post(`${URL_PROVET_API}directories/patients/patient`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        dispatch(setIsReloadTable(true));
-        successHandler('Запись добавлена');
+    if (config.url_provet_api) {
+      axios
+        .post(`${config.url_provet_api}directories/patients/patient`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          dispatch(setIsReloadTable(true));
+          successHandler('Запись добавлена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   // Очистка формы

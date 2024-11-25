@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
-import { URL_PROVET, URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
@@ -10,6 +9,7 @@ import { formatDate } from '../../../../utils/dateFormatter';
 import ProvetAPI from '../../../../utils/ProvetAPI';
 import { IconButton, Tooltip } from '@mui/material';
 import { PlusLg } from 'react-bootstrap-icons';
+import config from '../../../../config/config';
 
 const ModalChangePatient: FC = () => {
   // Флаг, открыта ли форма
@@ -100,9 +100,9 @@ const ModalChangePatient: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    if (URL_PROVET) {
+    if (config.url_provet_api) {
       axios
-        .patch(`${URL_PROVET_API}directories/patients/patient`, data, {
+        .patch(`${config.url_provet_api}directories/patients/patient`, data, {
           headers: {
             'Content-Type': 'application/json',
           },

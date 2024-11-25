@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { URL_PROVET_API } from '../config/config';
 import { errorHandler } from './alarmHandler';
+import config from '../config/config';
 
 export default class ProvetAPI {
   /* 
@@ -15,15 +15,17 @@ export default class ProvetAPI {
    * @returns
    */
   async getList(path: string, controller?: AbortController, showError: boolean = true) {
-    try {
-      const resp = await axios.get(`${URL_PROVET_API}directories/${path}`, {
-        signal: controller?.signal,
-      });
+    if (config.url_provet_api) {
+      try {
+        const resp = await axios.get(`${config.url_provet_api}directories/${path}`, {
+          signal: controller?.signal,
+        });
 
-      return await resp.data.response;
-    } catch (error: any) {
-      if (error && showError) {
-        errorHandler(error);
+        return await resp.data.response;
+      } catch (error: any) {
+        if (error && showError) {
+          errorHandler(error);
+        }
       }
     }
   }

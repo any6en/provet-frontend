@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Breadcrumb, Container, NavDropdown, Row, Tab, Tabs } from 'react-bootstrap';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { URL_PROVET_API } from '../../config/config';
 import axios from 'axios';
 import Journal from './components/Journal/Journal';
 import Properties from './components/Properties/Properties';
 import PatientHeader from './components/PatientHeader';
 import Breadcrumbs from './components/Breadcrumbs';
+import config from '../../config/config';
 
 const PatientPage = () => {
   const { patient_idParam } = useParams();
@@ -18,17 +18,17 @@ const PatientPage = () => {
   const activeTab = location.hash.split('#')[1];
 
   const fetch = async () => {
-    axios
-      .get(`${URL_PROVET_API}directories/patients?id=${patient_idParam}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setPatient(response.data.response);
-      })
-      .catch(() => {})
-      .finally(() => {});
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/patients?id=${patient_idParam}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setPatient(response.data.response);
+        });
+    }
   };
 
   // При монтировании компонента

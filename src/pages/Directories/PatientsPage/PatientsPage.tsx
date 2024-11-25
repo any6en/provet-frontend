@@ -9,18 +9,16 @@ import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
 import { infoHandler } from '../../../utils/alarmHandler';
-import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ProvetAPI from '../../../utils/ProvetAPI';
 import { IPatient } from './IPatients';
+import config from '../../../config/config';
 
 const PatientsPage: FC = () => {
   const dispatch = useAppDispatch();
 
   const [patients, setPatients] = useState<IPatient[]>([]);
-  const [breeds, setBreeds] = useState<IBreed[]>([]);
-  const [animalTypes, setAnimalTypes] = useState<IAnimalType[]>([]);
 
   const isReloadTable = useAppSelector((state) => state.userReducer.isReloadTable);
 
@@ -61,7 +59,7 @@ const PatientsPage: FC = () => {
     fetch();
   }
 
-  const handleDeletePatient = async (patientId: number) => {
+  const handleDeletePatient = (patientId: number) => {
     Swal.fire({
       title: 'Вы уверены?',
       text: 'Отменить удаление нельзя...',
@@ -70,29 +68,34 @@ const PatientsPage: FC = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Да',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(`${URL_PROVET_API}directories/patients/patient/${patientId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+        if (config.url_provet_api) {
+          axios
+            .delete(`${config.url_provet_api}directories/patients/patient/${patientId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(() => {
+              // Обновите состояние, чтобы удалить пациента из списка
+              setPatients((prevPatients) =>
+                prevPatients.filter((patient) => patient.id !== patientId),
+              );
 
-          // Обновите состояние, чтобы удалить владельца из списка
-          setPatients((prevPatients) => prevPatients.filter((patient) => patient.id !== patientId));
-
-          Swal.fire({
-            title: 'Успешно!',
-            text: 'Запись была удалена',
-            icon: 'success',
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Провал!',
-            text: 'Что-то пошло не так',
-            icon: 'error',
-          });
+              Swal.fire({
+                title: 'Успешно!',
+                text: 'Запись была удалена',
+                icon: 'success',
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Провал!',
+                text: 'Что-то пошло не так',
+                icon: 'error',
+              });
+            });
         }
       }
     });

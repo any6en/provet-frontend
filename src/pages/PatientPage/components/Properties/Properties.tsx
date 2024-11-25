@@ -1,17 +1,8 @@
 import { FC, useState, useEffect } from 'react';
-import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { Breadcrumb, Button, Container, Form, Row, Col, Spinner } from 'react-bootstrap';
-import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
-import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
+import { Form, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
-import Swal from 'sweetalert2';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { infoHandler } from '../../../../utils/alarmHandler';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../../config/config';
-import { formatDate, formatDateDMYDT } from '../../../../utils/dateFormatter';
+import { useParams } from 'react-router-dom';
+import config from '../../../../config/config';
 
 interface Props {
   patient: any;
@@ -23,17 +14,17 @@ const Properties: FC<Props> = ({ patient }) => {
   const [data, setData] = useState<any>(null);
 
   const fetch = async () => {
-    axios
-      .get(`${URL_PROVET_API}directories/patients/patient/info?id=${patient_idParam}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setData(response.data.response);
-      })
-      .catch(() => {})
-      .finally(() => {});
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/patients/patient/info?id=${patient_idParam}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setData(response.data.response);
+        });
+    }
   };
 
   // При монтировании компонента

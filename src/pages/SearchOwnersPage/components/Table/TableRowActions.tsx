@@ -2,12 +2,11 @@ import { FC } from 'react';
 import { MenuItem, ListItemIcon } from '@mui/material';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import Swal from 'sweetalert2';
-import { IOwner } from '../../../../store/reducers/UserSlice/UserSliceTypes';
 import { useAppDispatch } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../../config/config';
 import axios from 'axios';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import config from '../../../../config/config';
 
 interface TableRowActionsProps {
   owner: any;
@@ -32,19 +31,21 @@ const TableRowActions: FC<TableRowActionsProps> = ({ owner, closeMenu }) => {
     });
 
     if (result.isConfirmed) {
-      axios
-        .delete(`${URL_PROVET_API}directories/owners/owner/${owner.id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(() => {
-          dispatch(setIsReloadTable(true));
-          successHandler('Запись была удалена');
-        })
-        .catch((error) => {
-          errorHandler(error);
-        });
+      if (config.url_provet_api) {
+        axios
+          .delete(`${config.url_provet_api}directories/owners/owner/${owner.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(() => {
+            dispatch(setIsReloadTable(true));
+            successHandler('Запись была удалена');
+          })
+          .catch((error) => {
+            errorHandler(error);
+          });
+      }
     }
     closeMenu();
   };

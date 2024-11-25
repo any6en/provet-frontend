@@ -5,10 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { IPatient } from '../Directories/PatientsPage/IPatients';
 import axios from 'axios';
-import { URL_PROVET_API } from '../../config/config';
 import Swal from 'sweetalert2';
 import Breadcrumbs from './components/Breadcrumbs';
 import Table from './components/Table/Table';
+import config from '../../config/config';
 
 const OwnerPatientsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -23,22 +23,25 @@ const OwnerPatientsPage: FC = () => {
   const fetch = async () => {
     setIsReloadTable(true);
     setLoadMatrix(true);
-    axios
-      .get(`${URL_PROVET_API}directories/patients?owner_id=${owner_idParam}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setPatients(response.data.response.rows);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsReloadTable(false);
-        setLoadMatrix(false);
-      });
+
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/patients?owner_id=${owner_idParam}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setPatients(response.data.response.rows);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsReloadTable(false);
+          setLoadMatrix(false);
+        });
+    }
   };
 
   if (useAppSelector((state) => state.userReducer.isReloadTable)) {

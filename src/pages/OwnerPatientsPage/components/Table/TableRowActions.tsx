@@ -5,8 +5,8 @@ import { useAppDispatch } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { URL_PROVET_API } from '../../../../config/config';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
+import config from '../../../../config/config';
 
 interface TableRowActionsProps {
   patient: any;
@@ -31,19 +31,21 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({ patient, closeMenu })
     });
 
     if (result.isConfirmed) {
-      axios
-        .delete(`${URL_PROVET_API}directories/patients/patient/${patient.id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(() => {
-          setIsReloadTable(true);
-          successHandler('Запись была удалена');
-        })
-        .catch((error) => {
-          errorHandler(error);
-        });
+      if (config.url_provet_api) {
+        axios
+          .delete(`${config.url_provet_api}directories/patients/patient/${patient.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(() => {
+            setIsReloadTable(true);
+            successHandler('Запись была удалена');
+          })
+          .catch((error) => {
+            errorHandler(error);
+          });
+      }
     }
     closeMenu();
   };

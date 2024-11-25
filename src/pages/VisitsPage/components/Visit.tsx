@@ -1,21 +1,14 @@
 import { FC, useState } from 'react';
 import { Form, Row, Button, Col, Spinner } from 'react-bootstrap';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import {
-  ArrowClockwise,
-  Pencil,
-  PlusLg,
-  Printer,
-  QuestionCircle,
-  Trash,
-} from 'react-bootstrap-icons';
+import { Pencil, PlusLg, Printer, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch } from '../../../hooks/redux';
 import AutoResizeTextarea from '../../../components/AutoResizeTextarea/AutoResizeTextarea';
-import { URL_PROVET_API } from '../../../config/config';
 import axios from 'axios';
 import { errorHandler } from '../../../utils/alarmHandler';
 import Swal from 'sweetalert2';
+import config from '../../../config/config';
 
 interface Props {
   visit: any;
@@ -35,6 +28,78 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
   const dispatch = useAppDispatch();
 
   const [isLoadPrintDocument, setIsLoadPrintDocument] = useState<boolean>(false);
+
+  const printDocument = (isPrimary: boolean, visit: any) => {
+    setIsLoadPrintDocument(true);
+    const document_type = isPrimary
+      ? `primary_visit?primary_visit_id=${visit?.id}`
+      : `repeat_visit?repeat_visit_id=${visit?.id}`;
+
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}document_generator/${document_type}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          responseType: 'blob',
+        })
+        .then((response) => {
+          window.open(URL.createObjectURL(response.data));
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsLoadPrintDocument(false);
+        });
+    }
+  };
+
+  const handleDeleteVisit = (isPrimary: boolean, visit: any) => {
+    const text = isPrimary
+      ? 'Удаление первичного приема приведет к удалению записей, связанных с ним, то есть вложенных повторных приемов на основе этого'
+      : 'Вы действительно хотите удалить этот повторный прием?';
+
+    const query = isPrimary
+      ? `primary_visits/primary_visit/${visit?.id}`
+      : `repeat_visits/repeat_visit/${visit?.id}`;
+
+    Swal.fire({
+      title: 'Вы уверены?',
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Да',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (config.url_provet_api) {
+          axios
+            .delete(`${config.url_provet_api}directories/${query}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(() => {
+              dispatch(setIsReloadTable(true));
+              Swal.fire({
+                title: 'Успешно!',
+                text: 'Запись была удалена',
+                icon: 'success',
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Провал!',
+                text: 'Что-то пошло не так',
+                icon: 'error',
+              });
+            });
+        }
+      }
+    });
+  };
 
   return (
     <Form className="px-3">
@@ -71,80 +136,13 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
               </IconButton>
             </Tooltip>
             <Tooltip arrow title="Удалить">
-              <IconButton
-                className="icon-size"
-                onClick={() => {
-                  const text = isPrimary
-                    ? 'Удаление первичного приема приведет к удалению записей, связанных с ним, то есть вложенных повторных приемов на основе этого'
-                    : 'Вы действительно хотите удалить этот повторный прием?';
-                  const query = isPrimary
-                    ? `primary_visits/primary_visit/${visit?.id}`
-                    : `repeat_visits/repeat_visit/${visit?.id}`;
-                  Swal.fire({
-                    title: 'Вы уверены?',
-                    text: text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Да',
-                  }).then(async (result) => {
-                    if (result.isConfirmed) {
-                      try {
-                        await axios.delete(`${URL_PROVET_API}directories/${query}`, {
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                        });
-
-                        dispatch(setIsReloadTable(true));
-
-                        Swal.fire({
-                          title: 'Успешно!',
-                          text: 'Запись была удалена',
-                          icon: 'success',
-                        });
-                      } catch (error) {
-                        Swal.fire({
-                          title: 'Провал!',
-                          text: 'Что-то пошло не так',
-                          icon: 'error',
-                        });
-                      }
-                    }
-                  });
-                }}
-              >
+              <IconButton className="icon-size" onClick={() => handleDeleteVisit(isPrimary, visit)}>
                 <Trash color="red" size={20} />
               </IconButton>
             </Tooltip>
             <Tooltip arrow title="Печать документа">
               {!isLoadPrintDocument ? (
-                <IconButton
-                  className="icon-size"
-                  onClick={async () => {
-                    setIsLoadPrintDocument(true);
-                    const document_type = isPrimary
-                      ? `primary_visit?primary_visit_id=${visit?.id}`
-                      : `repeat_visit?repeat_visit_id=${visit?.id}`;
-                    axios
-                      .get(`${URL_PROVET_API}document_generator/${document_type}`, {
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        responseType: 'blob',
-                      })
-                      .then((response) => {
-                        window.open(URL.createObjectURL(response.data));
-                      })
-                      .catch((error) => {
-                        errorHandler(error);
-                      })
-                      .finally(() => {
-                        setIsLoadPrintDocument(false);
-                      });
-                  }}
-                >
+                <IconButton className="icon-size" onClick={() => printDocument(isPrimary, visit)}>
                   <Printer color="black" size={20} />
                 </IconButton>
               ) : (

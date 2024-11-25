@@ -9,8 +9,8 @@ import FormData from 'form-data';
 import { globalUserSlice } from '../../store/reducers/GlobalUserSlice/GlobalUserSlice';
 import { useAppDispatch } from '../../hooks/redux';
 import User from '../../utils/User';
-import { URL_PROVET } from '../../config/config';
 import { errorHandler } from '../../utils/alarmHandler';
+import config from '../../config/config';
 
 const AuthPage: FC = () => {
   const user = new User();
@@ -46,25 +46,27 @@ const AuthPage: FC = () => {
     }
 
     setIsBtnDisabled(true);
-    axios
-      .post(`${URL_PROVET}auth/login`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        user.saveUser(res.data.response);
-        dispatch(setGlobalUser(user));
-        isRefresh(true);
-      })
-      .catch((error) => {
-        if (error) {
-          errorHandler(error);
-        }
-      })
-      .finally(() => {
-        setIsBtnDisabled(false);
-      });
+    if (config.url_provet) {
+      axios
+        .post(`${config.url_provet}auth/login`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          user.saveUser(res.data.response);
+          dispatch(setGlobalUser(user));
+          isRefresh(true);
+        })
+        .catch((error) => {
+          if (error) {
+            errorHandler(error);
+          }
+        })
+        .finally(() => {
+          setIsBtnDisabled(false);
+        });
+    }
   };
 
   return (

@@ -6,12 +6,12 @@ import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material'
 import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { URL_PROVET_API } from '../../../config/config';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { infoHandler } from '../../../utils/alarmHandler';
 import { formatDate, formatDate2 } from '../../../utils/dateFormatter';
 import { IOwner } from '../../../store/reducers/UserSlice/UserSliceTypes';
+import config from '../../../config/config';
 
 const OwnersPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -25,19 +25,22 @@ const OwnersPage: FC = () => {
 
   const fetchOwners = async () => {
     setIsReloadTable(true);
-    axios
-      .get(`${URL_PROVET_API}directories/owners`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setOwners(response.data.response.rows);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setIsReloadTable(false);
-      });
+
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/owners`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setOwners(response.data.response.rows);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsReloadTable(false);
+        });
+    }
   };
 
   // Обновляем матрицу после изменения данных
@@ -101,7 +104,7 @@ const OwnersPage: FC = () => {
     },
   ];
 
-  const handleDeleteOwner = async (ownerId: number) => {
+  const handleDeleteOwner = (ownerId: number) => {
     Swal.fire({
       title: 'Вы уверены?',
       text: 'Отменить удаление записи нельзя...',
@@ -110,29 +113,36 @@ const OwnersPage: FC = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Да',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(`${URL_PROVET_API}directories/owners/owner/${ownerId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+        if (config.url_provet_api) {
+          axios
+            .delete(`${config.url_provet_api}directories/owners/owner/${ownerId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(() => {
+              // Обновите состояние, чтобы удалить владельца из списка
+              setOwners((prevOwners) => prevOwners.filter((owner) => owner.id !== ownerId));
 
-          // Обновите состояние, чтобы удалить владельца из списка
-          setOwners((prevOwners) => prevOwners.filter((owner) => owner.id !== ownerId));
-
-          Swal.fire({
-            title: 'Успешно!',
-            text: 'Запись была удалена',
-            icon: 'success',
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Провал!',
-            text: 'Что-то пошло не так',
-            icon: 'error',
-          });
+              Swal.fire({
+                title: 'Успешно!',
+                text: 'Запись была удалена',
+                icon: 'success',
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Провал!',
+                text: 'Что-то пошло не так',
+                icon: 'error',
+              });
+            })
+            .finally(() => {
+              // Завершена операция удаления
+              console.log('Удаление завершено для владельца с ID:', ownerId);
+            });
         }
       }
     });

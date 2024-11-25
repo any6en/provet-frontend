@@ -6,11 +6,11 @@ import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material'
 import { PlusLg, ArrowClockwise, Trash, QuestionCircle } from 'react-bootstrap-icons';
 import axios from 'axios';
 import { infoHandler } from '../../../utils/alarmHandler';
-import { URL_PROVET_API } from '../../../config/config';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import Swal from 'sweetalert2';
 import { IBreed } from './IBreeds';
+import config from '../../../config/config';
 
 const BreedsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -24,19 +24,22 @@ const BreedsPage: FC = () => {
 
   const fetch = async () => {
     setIsReloadTable(true);
-    axios
-      .get(`${URL_PROVET_API}directories/breeds`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setBreeds(response.data.response.rows);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setIsReloadTable(false);
-      });
+
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/breeds`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setBreeds(response.data.response.rows);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsReloadTable(false);
+        });
+    }
   };
 
   // Обновляем матрицу после изменения данных роли устройства
@@ -70,7 +73,7 @@ const BreedsPage: FC = () => {
     },
   ];
 
-  const handleDeleteBreed = async (breedId: number) => {
+  const handleDeleteBreed = (breedId: number) => {
     Swal.fire({
       title: 'Вы уверены?',
       text: 'Отменить удаление невозможно',
@@ -79,29 +82,31 @@ const BreedsPage: FC = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Да',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(`${URL_PROVET_API}directories/breeds/breed/${breedId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+        if (config.url_provet_api) {
+          axios
+            .delete(`${config.url_provet_api}directories/breeds/breed/${breedId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(() => {
+              setBreeds((prevBreeds) => prevBreeds.filter((breed) => breed.id !== breedId));
 
-          // Обновите состояние, чтобы удалить владельца из списка
-          setBreeds((prevBreeds) => prevBreeds.filter((breed) => breed.id !== breedId));
-
-          Swal.fire({
-            title: 'Успешно!',
-            text: 'Запись была удалена',
-            icon: 'success',
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Провал!',
-            text: 'Что-то пошло не так',
-            icon: 'error',
-          });
+              Swal.fire({
+                title: 'Успешно!',
+                text: 'Запись была удалена',
+                icon: 'success',
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Провал!',
+                text: 'Что-то пошло не так',
+                icon: 'error',
+              });
+            });
         }
       }
     });

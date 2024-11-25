@@ -2,29 +2,29 @@ import React, { FC, useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { URL_PROVET_API } from '../../config/config';
 import VisitCard from './components/VisitCard';
 import Breadcrumbs from './components/Breadcrumbs';
 import VisitTabs from './components/VisitTabs';
 import PatientHeader from './components/PatientHeader';
+import config from '../../config/config';
 
 const VisitsPage: FC = () => {
   const [visits, setVisits] = useState<any>(null);
   const { primary_visit_idParam } = useParams();
   const [value, setValue] = useState(0);
 
-  const fetchVisits = async () => {
-    try {
-      const response = await axios.get(
-        `${URL_PROVET_API}journal_visits?primary_visit_id=${primary_visit_idParam}`,
-        {
+  const fetchVisits = () => {
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}journal_visits?primary_visit_id=${primary_visit_idParam}`, {
           headers: {
             'Content-Type': 'application/json',
           },
-        },
-      );
-      setVisits(response.data.response);
-    } catch (error) {}
+        })
+        .then((response) => {
+          setVisits(response.data.response);
+        });
+    }
   };
 
   useEffect(() => {

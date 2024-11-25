@@ -2,9 +2,9 @@ import { FC, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { URL_PROVET_API } from '../../../../config/config';
 import { errorHandler, successHandler } from '../../../../utils/alarmHandler';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
+import config from '../../../../config/config';
 
 const ModalChangeAnimalType: FC = () => {
   // Флаг, открыта ли форма
@@ -33,24 +33,26 @@ const ModalChangeAnimalType: FC = () => {
   const handleUpdate = async () => {
     setIsPreload(true);
 
-    axios
-      .patch(`${URL_PROVET_API}directories/animal_types/animal_type`, data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        dispatch(setIsReloadTable(true));
-        successHandler('Запись изменена');
+    if (config.url_provet_api) {
+      axios
+        .patch(`${config.url_provet_api}directories/animal_types/animal_type`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          dispatch(setIsReloadTable(true));
+          successHandler('Запись изменена');
 
-        handleClose();
-      })
-      .catch((error) => {
-        errorHandler(error);
-      })
-      .finally(() => {
-        setIsPreload(false);
-      });
+          handleClose();
+        })
+        .catch((error) => {
+          errorHandler(error);
+        })
+        .finally(() => {
+          setIsPreload(false);
+        });
+    }
   };
 
   // Очистка формы

@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IAnimalType } from '../../../store/reducers/UserSlice/UserSliceTypes';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../config/config';
+import config from '../../../config/config';
 
 const AnimalTypesPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -27,19 +27,21 @@ const AnimalTypesPage: FC = () => {
 
   const fetchAnimalTypes = async () => {
     setIsReloadTable(true);
-    axios
-      .get(`${URL_PROVET_API}directories/animal_types`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setAnimalTypes(response.data.response.rows);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setIsReloadTable(false);
-      });
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}directories/animal_types`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setAnimalTypes(response.data.response.rows);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsReloadTable(false);
+        });
+    }
   };
 
   // Обновляем матрицу после изменения данных роли устройства
@@ -76,34 +78,37 @@ const AnimalTypesPage: FC = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Да',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(
-            `${URL_PROVET_API}directories/animal_types/animal_type/${animalTypeId}`,
-            {
-              headers: {
-                'Content-Type': 'application/json',
+        if (config.url_provet_api) {
+          axios
+            .delete(
+              `${config.url_provet_api}directories/animal_types/animal_type/${animalTypeId}`,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
               },
-            },
-          );
+            )
+            .then(() => {
+              // Обновите состояние, чтобы удалить владельца из списка
+              setAnimalTypes((prevAnimalType) =>
+                prevAnimalType.filter((animalType) => animalType.id !== animalTypeId),
+              );
 
-          // Обновите состояние, чтобы удалить владельца из списка
-          setAnimalTypes((prevAnimalType) =>
-            prevAnimalType.filter((animalType) => animalType.id !== animalTypeId),
-          );
-
-          Swal.fire({
-            title: 'Успешно!',
-            text: 'Запись была удалена',
-            icon: 'success',
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Провал!',
-            text: 'Что-то пошло не так',
-            icon: 'error',
-          });
+              Swal.fire({
+                title: 'Успешно!',
+                text: 'Запись была удалена',
+                icon: 'success',
+              });
+            })
+            .catch(() => {
+              Swal.fire({
+                title: 'Провал!',
+                text: 'Что-то пошло не так',
+                icon: 'error',
+              });
+            });
         }
       }
     });

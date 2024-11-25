@@ -1,18 +1,17 @@
 import { FC, useState, useEffect } from 'react';
 import { MRT_ColumnDef, MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { MRT_Localization_RU } from 'material-react-table/locales/ru';
-import { Breadcrumb, Button, Container, Form, Row, Spinner } from 'react-bootstrap';
-import { ArrowClockwise, PlusLg, QuestionCircle, Trash } from 'react-bootstrap-icons';
-import { Box, IconButton, ListItemIcon, MenuItem, Tooltip } from '@mui/material';
+import { Form, Row, Spinner } from 'react-bootstrap';
+import { ArrowClockwise, PlusLg, QuestionCircle } from 'react-bootstrap-icons';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import axios from 'axios';
-import Swal from 'sweetalert2';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { infoHandler } from '../../../../utils/alarmHandler';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { userSlice } from '../../../../store/reducers/UserSlice/UserSlice';
-import { URL_PROVET_API } from '../../../../config/config';
 import { IJournal } from './IJournal';
-import { formatDate, formatDateDMYDT } from '../../../../utils/dateFormatter';
+import { formatDateDMYDT } from '../../../../utils/dateFormatter';
+import config from '../../../../config/config';
 
 interface Props {
   patient: any;
@@ -30,19 +29,21 @@ const Journal: FC<Props> = ({ patient }) => {
   const fetch = async () => {
     setIsReloadTable(true);
 
-    axios
-      .get(`${URL_PROVET_API}journal?patient_id=${patient?.id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        setData(response.data.response.rows);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setIsReloadTable(false);
-      });
+    if (config.url_provet_api) {
+      axios
+        .get(`${config.url_provet_api}journal?patient_id=${patient?.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          setData(response.data.response.rows);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsReloadTable(false);
+        });
+    }
   };
 
   useEffect(() => {
