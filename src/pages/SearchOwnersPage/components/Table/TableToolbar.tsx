@@ -20,15 +20,6 @@ const TableToolbar: FC = () => {
           <PlusLg color="green" size={20} />
         </IconButton>
       </Tooltip>
-      <Tooltip arrow title="Получить справку">
-        <IconButton
-          onClick={() => {
-            /* infoHandler здесь */
-          }}
-        >
-          <QuestionCircle color="gray" size={20} />
-        </IconButton>
-      </Tooltip>
     </Box>
   );
 };

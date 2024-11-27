@@ -44,6 +44,7 @@ const Table: FC<TableProps> = ({ patients, isLoadMatrix }) => {
     {
       accessorKey: 'age',
       header: 'Дата рождения',
+      enableColumnFilter: false,
       size: 100,
       Cell: ({ row }) => formatDateDMYDT(row.original.date_birth, false, true),
     },
@@ -70,6 +71,7 @@ const Table: FC<TableProps> = ({ patients, isLoadMatrix }) => {
     {
       accessorKey: 'createdAt',
       header: 'Дата создания профиля',
+      enableColumnFilter: false,
       size: 200,
       Cell: ({ row }) => formatDateDMYDT(row.original.created_at, true, true),
     },
