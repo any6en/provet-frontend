@@ -47,19 +47,20 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
       Cell: ({ row }) => row.original.patronymic,
     },
     {
-      accessorKey: 'address',
-      header: 'Адрес проживания',
-      filterFn: 'contains',
-      size: 200,
-      Cell: ({ row }) => row.original.address,
-    },
-    {
       accessorKey: 'phone_number',
       header: 'Номер телефона',
       filterFn: 'contains',
       size: 150,
       Cell: ({ row }) => row.original.phone_number,
     },
+    {
+      accessorKey: 'address',
+      header: 'Адрес проживания',
+      filterFn: 'contains',
+      size: 200,
+      Cell: ({ row }) => row.original.address,
+    },
+
     {
       accessorKey: 'date_birth',
       header: 'Дата рождения',

@@ -142,6 +142,16 @@ const ModalChangeOwner: FC = () => {
                     required
                   />
                   <FormField
+                    label="Номер телефона"
+                    value={data?.phone_number}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        phone_number: e.target.value != '' ? Number(e.target.value) : undefined,
+                      })
+                    }
+                  />
+                  <FormField
                     label="Адрес"
                     type="text"
                     tooltip="Обязательное поле для подписания договора об согласии на обработку персональных данных"
@@ -153,16 +163,7 @@ const ModalChangeOwner: FC = () => {
                       })
                     }
                   />
-                  <FormField
-                    label="Номер телефона"
-                    value={data?.phone_number}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        phone_number: e.target.value != '' ? Number(e.target.value) : undefined,
-                      })
-                    }
-                  />
+
                   <FormField
                     label="Дата рождения"
                     type="date"
