@@ -54,6 +54,13 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
       Cell: ({ row }) => row.original.address,
     },
     {
+      accessorKey: 'phone_number',
+      header: 'Номер телефона',
+      filterFn: 'contains',
+      size: 150,
+      Cell: ({ row }) => row.original.phone_number,
+    },
+    {
       accessorKey: 'date_birth',
       header: 'Дата рождения',
       enableColumnFilter: false,

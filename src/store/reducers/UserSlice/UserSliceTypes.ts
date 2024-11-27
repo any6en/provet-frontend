@@ -4,6 +4,7 @@ export interface IOwner {
   first_name: string;
   patronymic: string;
   address: string;
+  phone_number: number;
   date_birth: string;
   gender: number;
   created_at: string;

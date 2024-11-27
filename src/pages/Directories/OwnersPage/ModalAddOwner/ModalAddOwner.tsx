@@ -140,6 +140,15 @@ const ModalAddOwner: FC = () => {
                     }
                   />
                   <FormField
+                    label="Номер телефона"
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        phone_number: e.target.value != '' ? Number(e.target.value) : undefined,
+                      })
+                    }
+                  />
+                  <FormField
                     label="Дата рождения"
                     type="date"
                     onChange={(e) => setData({ ...data, date_birth: e.target.value })}
