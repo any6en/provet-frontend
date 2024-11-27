@@ -134,6 +134,7 @@ const ModalAddRepeatVisit: FC = () => {
       show={show}
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      size="lg"
       onHide={handleClose}
     >
       <Modal.Header className="justify-content-center">

@@ -129,6 +129,7 @@ const ModalAddPrimaryVisit: FC = () => {
     <Modal
       show={show}
       aria-labelledby="contained-modal-title-vcenter"
+      size="lg"
       centered
       onHide={handleClose}
     >
