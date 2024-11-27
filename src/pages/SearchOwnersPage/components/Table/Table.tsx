@@ -51,7 +51,7 @@ const Table: FC<TableProps> = ({ owners, isLoadMatrix }) => {
       header: 'Номер телефона',
       filterFn: 'contains',
       size: 150,
-      Cell: ({ row }) => row.original.phone_number,
+      Cell: ({ row }) => (row.original.phone_number ? row.original.phone_number : '—'),
     },
     {
       accessorKey: 'address',
