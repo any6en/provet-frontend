@@ -147,7 +147,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        phone_number: e.target.value != '' ? e.target.value : undefined,
+                        phone_number: e.target.value != '' ? e.target.value : null,
                       })
                     }
                   />
@@ -159,7 +159,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        address: e.target.value != '' ? e.target.value : undefined,
+                        address: e.target.value != '' ? e.target.value : null,
                       })
                     }
                   />
