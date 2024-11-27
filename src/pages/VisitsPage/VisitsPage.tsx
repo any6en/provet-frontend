@@ -29,7 +29,8 @@ const VisitsPage: FC = () => {
         })
         .then((response) => {
           setVisits(response.data.response);
-        });
+        })
+        .catch(() => {});
     }
   };
 

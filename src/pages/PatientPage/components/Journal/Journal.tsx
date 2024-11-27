@@ -161,7 +161,13 @@ const Journal: FC<Props> = ({ patient }) => {
   return (
     <Form className="px-3 py-2">
       <Row>
-        <MaterialReactTable table={table} />
+        {patient ? (
+          <MaterialReactTable table={table} />
+        ) : (
+          <span className="text-center">
+            <Spinner variant="primary" />
+          </span>
+        )}
       </Row>
     </Form>
   );

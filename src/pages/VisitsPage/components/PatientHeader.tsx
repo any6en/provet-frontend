@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, NavDropdown, Container } from 'react-bootstrap';
+import { Col, Row, NavDropdown, Container, Spinner } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { NavLink } from 'react-router-dom';
@@ -57,6 +57,8 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
     }
   };
 
+  console.log(visits);
+
   return (
     <Container
       fluid
@@ -64,54 +66,65 @@ const PatientHeader: React.FC<PatientHeaderProps> = ({ visits }) => {
       style={{ backgroundColor: '#f8f8f8', borderRadius: '25px', border: '1px solid #dee2e6' }}
     >
       <Row>
-        <Col sm={2}></Col>
-        <Col sm={8} className="d-flex align-items-center">
-          <img
-            alt="Изображение животного"
-            src={getSrcImageIconPatient(visits?.animal_type_id)}
-            className={`border border-3 align-self-center ${style.animalImage}`}
-            style={{
-              borderRadius: '50%',
-              objectFit: 'cover',
-            }}
-          />
-          <span className="p-2" style={{ color: 'gray', fontSize: '24px' }}>
-            {visits?.nickname}
-          </span>
-          <NavDropdown
-            title={<TocIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />}
-            className={` ${style.dropdownToggle}`}
-            id="basic-nav-dropdown"
-          >
-            <NavDropdown.Item className="border-bottom text-dark" onClick={handleEditPatient}>
-              <NavLink className="nav-link" aria-current="page" to="">
-                <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                  Редактировать
-                </div>
-              </NavLink>
-            </NavDropdown.Item>
-            <NavDropdown.Item className="border-top text-dark" onClick={handleDeletePatient}>
-              <NavLink className="nav-link" aria-current="page" to="">
-                <div className="d-inline-flex align-items-center justify-content-center text-dark">
-                  Удалить
-                </div>
-              </NavLink>
-            </NavDropdown.Item>
-          </NavDropdown>
-          <span className="p-2" style={{ fontSize: '14px' }}>
-            <Tooltip arrow title="Номер медкарты" placement="top">
-              <span className={style.text}>№{visits?.patient_id}</span>
-            </Tooltip>
-          </span>
-          <span className="p-2">
-            <Tooltip arrow title="Возраст на данный момент времени" placement="top">
-              <span className={style.text} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <CalendarTodayIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />
-                <span className="ps-2">{visits?.now_age}</span>
+        {visits ? (
+          <>
+            <Col sm={2}></Col>
+            <Col sm={8} className="d-flex align-items-center">
+              <img
+                alt="Изображение животного"
+                src={getSrcImageIconPatient(visits?.animal_type_id)}
+                className={`border border-3 align-self-center ${style.animalImage}`}
+                style={{
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+              <span className="p-2" style={{ color: 'gray', fontSize: '24px' }}>
+                {visits?.nickname}
               </span>
-            </Tooltip>
+              <NavDropdown
+                title={<TocIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />}
+                className={` ${style.dropdownToggle}`}
+                id="basic-nav-dropdown"
+              >
+                <NavDropdown.Item className="border-bottom text-dark" onClick={handleEditPatient}>
+                  <NavLink className="nav-link" aria-current="page" to="">
+                    <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                      Редактировать
+                    </div>
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item className="border-top text-dark" onClick={handleDeletePatient}>
+                  <NavLink className="nav-link" aria-current="page" to="">
+                    <div className="d-inline-flex align-items-center justify-content-center text-dark">
+                      Удалить
+                    </div>
+                  </NavLink>
+                </NavDropdown.Item>
+              </NavDropdown>
+              <span className="p-2" style={{ fontSize: '14px' }}>
+                <Tooltip arrow title="Номер медкарты" placement="top">
+                  <span className={style.text}>№{visits?.patient_id}</span>
+                </Tooltip>
+              </span>
+              <span className="p-2">
+                <Tooltip arrow title="Возраст на данный момент времени" placement="top">
+                  <span
+                    className={style.text}
+                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                  >
+                    <CalendarTodayIcon viewBox="0 0 25 25" style={{ color: 'gray' }} />
+                    <span className="ps-2">{visits?.now_age}</span>
+                  </span>
+                </Tooltip>
+              </span>
+            </Col>
+          </>
+        ) : (
+          <span className="text-center">
+            <Spinner variant="primary" />
           </span>
-        </Col>
+        )}
       </Row>
     </Container>
   );

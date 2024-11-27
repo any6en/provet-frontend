@@ -27,7 +27,8 @@ const PatientPage = () => {
         })
         .then((response) => {
           setPatient(response.data.response);
-        });
+        })
+        .catch(() => {});
     }
   };
 
