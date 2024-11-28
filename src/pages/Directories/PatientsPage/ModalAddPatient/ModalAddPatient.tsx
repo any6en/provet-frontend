@@ -182,7 +182,7 @@ const ModalAddPatient: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          nickname: e.target.value != '' ? e.target.value : undefined,
+                          nickname: e.target.value !== '' ? e.target.value : undefined,
                         });
                       }}
                     />
@@ -199,7 +199,7 @@ const ModalAddPatient: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          color: e.target.value != '' ? e.target.value : undefined,
+                          color: e.target.value !== '' ? e.target.value : undefined,
                         });
                       }}
                     />
