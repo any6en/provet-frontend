@@ -169,7 +169,6 @@ const ModalChangeOwner: FC = () => {
                     type="date"
                     value={data?.date_birth}
                     onChange={(e) => setData({ ...data, date_birth: e.target.value })}
-                    required
                   />
                   <Form.Group className="mb-3" as={Row}>
                     <Form.Label className="fs-6" column sm={4}>

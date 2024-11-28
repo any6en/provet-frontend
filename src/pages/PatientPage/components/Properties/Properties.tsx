@@ -3,6 +3,7 @@ import { Form, Row, Col, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import config from '../../../../config/config';
+import { formatDateDMYDT } from '../../../../utils/dateFormatter';
 
 interface Props {
   patient: any;
@@ -75,20 +76,20 @@ const Properties: FC<Props> = ({ patient }) => {
                 <Col sm={6}>
                   <strong>Окрас</strong>
                 </Col>
-                <Col sm={6}>{data?.color}</Col>
+                <Col sm={6}>{data?.color ? data?.color : '—'}</Col>
               </Row>
               <hr />
               <Row>
                 <Col sm={6}>
                   <strong>Дата регистрации</strong>
                 </Col>
-                <Col sm={6}>{data?.created_at}</Col>
+                <Col sm={6}>{formatDateDMYDT(data?.created_at, true, true)}</Col>
               </Row>
               <Row>
                 <Col sm={6}>
                   <strong>Дата рождения</strong>
                 </Col>
-                <Col sm={6}>{data?.date_birth}</Col>
+                <Col sm={6}>{formatDateDMYDT(data?.date_birth, false, true)}</Col>
               </Row>
               <Row>
                 <Col sm={6}>
@@ -100,7 +101,7 @@ const Properties: FC<Props> = ({ patient }) => {
                 <Col sm={6}>
                   <strong>Кастрировано</strong>
                 </Col>
-                <Col sm={6}>{data?.castrated}</Col>
+                <Col sm={6}>{data?.is_castrated ? 'да' : 'нет'}</Col>
               </Row>
             </>
           ) : (
