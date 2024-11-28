@@ -110,7 +110,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        first_name: e.target.value != '' ? e.target.value : undefined,
+                        first_name: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                     required
@@ -123,7 +123,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        last_name: e.target.value != '' ? e.target.value : undefined,
+                        last_name: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                     required
@@ -136,7 +136,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        patronymic: e.target.value != '' ? e.target.value : undefined,
+                        patronymic: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                     required
@@ -147,7 +147,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        phone_number: e.target.value != '' ? e.target.value : null,
+                        phone_number: e.target.value !== '' ? e.target.value : null,
                       })
                     }
                   />
@@ -159,7 +159,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        address: e.target.value != '' ? e.target.value : null,
+                        address: e.target.value !== '' ? e.target.value : null,
                       })
                     }
                   />
@@ -219,7 +219,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        passport_series: e.target.value != '' ? e.target.value : undefined,
+                        passport_series: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -231,7 +231,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        passport_number: e.target.value != '' ? e.target.value : undefined,
+                        passport_number: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -243,7 +243,7 @@ const ModalChangeOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        passport_issued_by: e.target.value != '' ? e.target.value : undefined,
+                        passport_issued_by: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -256,7 +256,7 @@ const ModalChangeOwner: FC = () => {
                       setData({
                         ...data,
                         passport_subdivision_code:
-                          e.target.value != '' ? e.target.value : undefined,
+                          e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />

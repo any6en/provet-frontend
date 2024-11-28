@@ -145,7 +145,7 @@ const ModalAddBreed: FC = () => {
                       onChange={(e: any) => {
                         setData({
                           ...data,
-                          name: e.target.value,
+                          name: e.target.value !== '' ? e.target.value : undefined,
                         });
                       }}
                     />

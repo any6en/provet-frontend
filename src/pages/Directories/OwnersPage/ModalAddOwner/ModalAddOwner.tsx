@@ -103,7 +103,7 @@ const ModalAddOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        first_name: e.target.value != '' ? e.target.value : undefined,
+                        first_name: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -114,7 +114,7 @@ const ModalAddOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        last_name: e.target.value != '' ? e.target.value : undefined,
+                        last_name: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -125,7 +125,7 @@ const ModalAddOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        patronymic: e.target.value != '' ? e.target.value : undefined,
+                        patronymic: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -134,7 +134,7 @@ const ModalAddOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        phone_number: e.target.value != '' ? e.target.value : undefined,
+                        phone_number: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
@@ -144,7 +144,7 @@ const ModalAddOwner: FC = () => {
                     onChange={(e) =>
                       setData({
                         ...data,
-                        address: e.target.value != '' ? e.target.value : undefined,
+                        address: e.target.value !== '' ? e.target.value : undefined,
                       })
                     }
                   />
