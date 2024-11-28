@@ -97,6 +97,7 @@ const ModalAddAnimalType: FC = () => {
                   <Col sm={8}>
                     <Form.Control
                       type="text"
+                      autoComplete="off"
                       onChange={(e: any) => {
                         setData({
                           ...data,

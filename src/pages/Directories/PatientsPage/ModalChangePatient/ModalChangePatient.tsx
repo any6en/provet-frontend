@@ -165,6 +165,7 @@ const ModalChangePatient: FC = () => {
                     <Form.Control
                       type="text"
                       value={data?.nickname}
+                      autoComplete="off"
                       onChange={(e: any) => {
                         setData({
                           ...data,
@@ -182,6 +183,7 @@ const ModalChangePatient: FC = () => {
                     <Form.Control
                       type="text"
                       value={data?.color}
+                      autoComplete="off"
                       onChange={(e: any) => {
                         setData({
                           ...data,

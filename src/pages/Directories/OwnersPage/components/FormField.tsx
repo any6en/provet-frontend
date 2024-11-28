@@ -42,7 +42,7 @@ const FormField: React.FC<FormFieldProps> = ({
         )}
       </Form.Label>
       <Col sm={8}>
-        <Form.Control type={type} value={value} onChange={onChange} />
+        <Form.Control type={type} value={value} autoComplete="off" onChange={onChange} />
       </Col>
     </Form.Group>
   );

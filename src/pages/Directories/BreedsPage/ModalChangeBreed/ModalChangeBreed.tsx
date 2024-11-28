@@ -126,6 +126,7 @@ const ModalChangeBreed: FC = () => {
                     <Form.Control
                       type="text"
                       value={data?.name}
+                      autoComplete="off"
                       onChange={(e: any) => {
                         setData({
                           ...data,
