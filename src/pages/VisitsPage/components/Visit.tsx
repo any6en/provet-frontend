@@ -1,5 +1,5 @@
-import { FC, useState } from 'react';
-import { Form, Row, Col, Spinner } from 'react-bootstrap';
+import { FC, useEffect, useState } from 'react';
+import { Form, Row, Col, Spinner, Container } from 'react-bootstrap';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { Pencil, PlusLg, Printer, QuestionCircle, Trash } from 'react-bootstrap-icons';
 import { userSlice } from '../../../store/reducers/UserSlice/UserSlice';
@@ -159,131 +159,133 @@ const Visit: FC<Props> = ({ visit, isPrimary }) => {
       </Row>
 
       <Row>
-        <Form.Group className="mb-3" as={Row}>
-          <Form.Label className="fs-6" column sm={2}>
-            Врач
-          </Form.Label>
-          <Col sm={3} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.doctor_full_name} size="sm" readOnly />
-          </Col>
-        </Form.Group>
-        <Form.Group className="mb-3" as={Row}>
-          <Form.Label className="fs-6" column sm={2}>
-            Владелец животного
-          </Form.Label>
-          <Col sm={3} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.owner_full_name} size="sm" readOnly />
-          </Col>
-        </Form.Group>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Кличка
-          </Form.Label>
-          <Col sm={2} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.nickname} size="sm" readOnly />
-          </Col>
-        </Row>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Вид животного
-          </Form.Label>
-          <Col sm={2} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.animal_name} size="sm" readOnly />
-          </Col>
-          <Form.Label className="fs-6" column sm={1}>
-            Порода
-          </Form.Label>
-          <Col sm={3} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.breed_name} size="sm" readOnly />
-          </Col>
-        </Row>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Возраст
-          </Form.Label>
-          <Col sm={2} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.age} size="sm" readOnly />
-          </Col>
-          <Form.Label className="fs-6" column sm={1}>
-            Пол
-          </Form.Label>
-          <Col sm={3} className="d-flex align-items-center justify-content-center">
-            <Form.Control
-              aria-label="text"
-              value={visit?.gender === 1 ? 'Самец' : 'Самка'}
-              size="sm"
-              readOnly
-            />
-          </Col>
-          <Form.Label className="fs-6" column sm={1}>
-            Вес
-          </Form.Label>
-          <Col sm={3} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.weight} size="sm" readOnly />
-          </Col>
-        </Row>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Анамнез
-          </Form.Label>
-          <Col sm={10} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.anamnesis} size="sm" readOnly />
-          </Col>
-        </Row>
+        <Col>
+          <Form.Group className="mb-3" as={Row}>
+            <Form.Label className="fs-6" column sm={2}>
+              Врач
+            </Form.Label>
+            <Col sm={3} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.doctor_full_name} size="sm" readOnly />
+            </Col>
+          </Form.Group>
+          <Form.Group className="mb-3" as={Row}>
+            <Form.Label className="fs-6" column sm={2}>
+              Владелец животного
+            </Form.Label>
+            <Col sm={3} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.owner_full_name} size="sm" readOnly />
+            </Col>
+          </Form.Group>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Кличка
+            </Form.Label>
+            <Col sm={2} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.nickname} size="sm" readOnly />
+            </Col>
+          </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Вид животного
+            </Form.Label>
+            <Col sm={2} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.animal_name} size="sm" readOnly />
+            </Col>
+            <Form.Label className="fs-6" column sm={1}>
+              Порода
+            </Form.Label>
+            <Col sm={3} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.breed_name} size="sm" readOnly />
+            </Col>
+          </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Возраст
+            </Form.Label>
+            <Col sm={2} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.age} size="sm" readOnly />
+            </Col>
+            <Form.Label className="fs-6" column sm={1}>
+              Пол
+            </Form.Label>
+            <Col sm={3} className="d-flex align-items-center justify-content-center">
+              <Form.Control
+                aria-label="text"
+                value={visit?.gender === 1 ? 'Самец' : 'Самка'}
+                size="sm"
+                readOnly
+              />
+            </Col>
+            <Form.Label className="fs-6" column sm={1}>
+              Вес
+            </Form.Label>
+            <Col sm={3} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.weight} size="sm" readOnly />
+            </Col>
+          </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Анамнез
+            </Form.Label>
+            <Col sm={10} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.anamnesis} size="sm" readOnly />
+            </Col>
+          </Row>
 
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Обследование
-          </Form.Label>
-          <Col sm={10} className="d-flex align-items-center justify-content-center">
-            <Form.Control aria-label="text" value={visit?.examination} size="sm" readOnly />
-          </Col>
-        </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Обследование
+            </Form.Label>
+            <Col sm={10} className="d-flex align-items-center justify-content-center">
+              <Form.Control aria-label="text" value={visit?.examination} size="sm" readOnly />
+            </Col>
+          </Row>
 
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={3}>
-            Предварительный диагноз
-          </Form.Label>
-          <Col sm={5} className="d-flex align-items-center justify-content-center">
-            <AutoResizeTextarea
-              value={visit?.prelim_diagnosis}
-              onChange={(e: any) => {}}
-              readOnly={true}
-            />
-          </Col>
-        </Row>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={3}>
-            Подтвержденный диагноз
-          </Form.Label>
-          <Col sm={5} className="d-flex align-items-center justify-content-center">
-            <AutoResizeTextarea
-              value={visit?.confirmed_diagnosis}
-              onChange={(e: any) => {}}
-              readOnly={true}
-            />
-          </Col>
-        </Row>
-        <Row className="mb-3" as={Form.Group}>
-          <Form.Label className="fs-6" column sm={2}>
-            Назначение
-          </Form.Label>
-          <Col sm={10} className="d-flex align-items-center justify-content-center">
-            <AutoResizeTextarea value={visit?.result} onChange={(e: any) => {}} readOnly={true} />
-          </Col>
-        </Row>
-        <Form.Group className="mb-3" as={Row}>
-          <Form.Label className="fs-6" column sm={2}>
-            Дата визита
-          </Form.Label>
-          <Col sm={2}>
-            <Form.Control
-              type="date"
-              value={visit?.date_visit && visit.date_visit.substring(0, 10)}
-              disabled
-            />
-          </Col>
-        </Form.Group>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={3}>
+              Предварительный диагноз
+            </Form.Label>
+            <Col sm={5} className="d-flex align-items-center justify-content-center">
+              <AutoResizeTextarea
+                value={visit?.prelim_diagnosis}
+                onChange={(e: any) => {}}
+                readOnly={true}
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={3}>
+              Подтвержденный диагноз
+            </Form.Label>
+            <Col sm={5} className="d-flex align-items-center justify-content-center">
+              <AutoResizeTextarea
+                value={visit?.confirmed_diagnosis}
+                onChange={(e: any) => {}}
+                readOnly={true}
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3" as={Form.Group}>
+            <Form.Label className="fs-6" column sm={2}>
+              Назначение
+            </Form.Label>
+            <Col sm={10} className="d-flex align-items-center justify-content-center">
+              <AutoResizeTextarea value={visit?.result} onChange={(e: any) => {}} readOnly={true} />
+            </Col>
+          </Row>
+          <Form.Group className="mb-3" as={Row}>
+            <Form.Label className="fs-6" column sm={2}>
+              Дата визита
+            </Form.Label>
+            <Col sm={2}>
+              <Form.Control
+                type="date"
+                value={visit?.date_visit && visit.date_visit.substring(0, 10)}
+                disabled
+              />
+            </Col>
+          </Form.Group>
+        </Col>
 
         {/* Добавьте сюда остальные поля формы с использованием visitData для отображения данных */}
         {/* <iframe

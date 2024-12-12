@@ -20,8 +20,12 @@ interface Props {
 const Journal: FC<Props> = ({ patient }) => {
   const dispatch = useAppDispatch();
 
-  const { setIsReloadTable, setShowModalAddPrimaryVisit, setSelectedPrimaryVisit } =
-    userSlice.actions;
+  const {
+    setIsReloadTable,
+    setShowModalAddPrimaryVisit,
+    setSelectedPrimaryVisit,
+    setShowModalSelectVisitType,
+  } = userSlice.actions;
 
   const [data, setData] = useState<IJournal[]>([]);
   const navigate = useNavigate();
@@ -135,10 +139,11 @@ const Journal: FC<Props> = ({ patient }) => {
             {!isReloadTable ? <ArrowClockwise /> : <Spinner variant="primary" size="sm" />}
           </IconButton>
         </Tooltip>
-        <Tooltip arrow title="Добавить первичный прием">
+        <Tooltip arrow title="Добавить новый случай обращения">
           <IconButton
             onClick={() => {
-              dispatch(setShowModalAddPrimaryVisit(true));
+              dispatch(setShowModalSelectVisitType(true));
+              //dispatch(setShowModalAddPrimaryVisit(true));
               dispatch(setSelectedPrimaryVisit(patient));
             }}
           >

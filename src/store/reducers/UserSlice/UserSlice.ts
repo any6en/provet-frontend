@@ -25,18 +25,17 @@ interface UserState {
   modalChangePrimaryVisit: boolean;
   modalAddPrimaryVisit: boolean;
 
-  setShowModalChangePrimaryVisit: boolean;
-  setShowModalAddPrimaryVisit: boolean;
-
   selectedPrimaryVisit: any | null;
 
   modalChangeRepeatVisit: boolean;
   modalAddRepeatVisit: boolean;
 
-  setShowModalChangeRepeatVisit: boolean;
-  setShowModalAddRepeatVisit: boolean;
-
   selectedRepeatVisit: any | null;
+
+  modalSelectVisitType: boolean;
+
+  modalAddSurgicalIntervention: boolean;
+  modalChangeSurgicalIntervention: boolean;
 }
 
 const initialState: UserState = {
@@ -68,19 +67,18 @@ const initialState: UserState = {
   modalChangePrimaryVisit: false,
   modalAddPrimaryVisit: false,
 
-  setShowModalChangePrimaryVisit: false,
-  setShowModalAddPrimaryVisit: false,
-
   selectedPrimaryVisit: null,
 
   // Состояния для формы повторного приема
   modalChangeRepeatVisit: false,
   modalAddRepeatVisit: false,
 
-  setShowModalChangeRepeatVisit: false,
-  setShowModalAddRepeatVisit: false,
-
   selectedRepeatVisit: null,
+
+  modalSelectVisitType: false,
+
+  modalAddSurgicalIntervention: false,
+  modalChangeSurgicalIntervention: false,
 };
 
 export const userSlice = createSlice({
@@ -162,6 +160,15 @@ export const userSlice = createSlice({
     },
     setSelectedRepeatVisit(state, action: PayloadAction<any | null>) {
       state.selectedRepeatVisit = action.payload;
+    },
+    setShowModalSelectVisitType(state, action: PayloadAction<boolean>) {
+      state.modalSelectVisitType = action.payload;
+    },
+    setShowModalAddSurgicalIntervention(state, action: PayloadAction<boolean>) {
+      state.modalAddSurgicalIntervention = action.payload;
+    },
+    setShowModalChangeSurgicalIntervention(state, action: PayloadAction<boolean>) {
+      state.modalChangeSurgicalIntervention = action.payload;
     },
   },
 });

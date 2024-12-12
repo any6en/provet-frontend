@@ -13,6 +13,7 @@ import ModalChangeBreed from '../../pages/Directories/BreedsPage/ModalChangeBree
 import ModalAddBreed from '../../pages/Directories/BreedsPage/ModalAddBreed/ModalAddBreed';
 import ModalAddAnimalType from '../../pages/Directories/AnimalTypesPage/ModalAddAnimalType/ModalAddAnimalType';
 import ModalChangeAnimalType from '../../pages/Directories/AnimalTypesPage/ModalChangeAnimalType/ModalChangeAnimalType';
+import ModalSelectVisitType from '../../pages/PatientPage/components/Journal/components/ModalSelectVisitTypeVisit/ModalSelectVisitType';
 
 function Layout() {
   return (
@@ -34,6 +35,7 @@ function Layout() {
         <ModalChangeRepeatVisit />
         <ModalAddPrimaryVisit />
         <ModalChangePrimaryVisit />
+        <ModalSelectVisitType />
         {/* Приемы */}
       </main>
       <footer>{/* <Footer /> */}</footer>
